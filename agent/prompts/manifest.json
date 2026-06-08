@@ -1,0 +1,22 @@
+{
+  "triage_proxy": {
+    "version": "1.0",
+    "compiled_path": "backend/prompts/compiled/triage_proxy_v1.json"
+  },
+  "generator": {
+    "version": "1.0",
+    "compiled_path": "backend/prompts/compiled/generator_v1.json"
+  },
+  "critic": {
+    "version": "1.0",
+    "compiled_path": "backend/prompts/compiled/critic_v1.json"
+  },
+  "effort_estimator": {
+    "version": "1.0",
+    "compiled_path": "backend/prompts/compiled/effort_estimator_v1.json"
+  },
+  "priority_ranker": {
+    "version": "1.0",
+    "compiled_path": "backend/prompts/compiled/priority_ranker_v1.json"
+  }
+}
