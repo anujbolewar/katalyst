@@ -1,0 +1,121 @@
+# =========================
+
+# General
+
+# =========================
+
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+.vscode/
+.idea/
+
+# =========================
+
+# Environment Variables
+
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# =========================
+
+# Node / Next.js (apps/web)
+
+# =========================
+
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+
+# Python / Django (apps/api)
+
+# =========================
+
+**pycache**/
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# Django specific
+
+*.log
+local_settings.py
+
+# =========================
+
+# Virtual Environments
+
+# =========================
+
+.venv/
+venv/
+env/
+
+# =========================
+
+# uv (Python package manager)
+
+# =========================
+
+.uv/
+.python-version
+
+# =========================
+
+# Migrations (optional)
+
+# =========================
+
+# Uncomment if you don't want to track migrations
+
+# apps/api/**/migrations/*
+
+# !apps/api/**/migrations/**init**.py
+
+# =========================
+
+# Build / Cache
+
+# =========================
+
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# =========================
+
+# Docker (if you add later)
+
+# =========================
+
+*.pid
+*.seed
+*.pid.lock
+
+# =========================
+
+# Misc
+
+# =========================
+
+coverage.xml
+htmlcov/
