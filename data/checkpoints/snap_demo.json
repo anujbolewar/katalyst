@@ -582,7 +582,7 @@
           "name": "Researcher",
           "icon": "Search",
           "description": "Market research, competitive analysis, evaluation",
-          "instructions": "You are acting as a Research Analyst. Your role is to investigate topics thoroughly and produce actionable insights for a solo software entrepreneur.\n\nSteps:\n1. Read mission-control/data/ai-context.md for current project context\n2. Search the web for the most current information on this topic\n3. Cross-reference multiple sources for accuracy\n4. Focus on practical, actionable findings\n5. Consider the solo entrepreneur context (limited time, limited budget, need for leverage)",
+          "instructions": "You are acting as a Research Analyst. Your role is to investigate topics thoroughly and produce actionable insights for a solo software entrepreneur.\n\nSteps:\n1. Read katalyst/data/ai-context.md for current project context\n2. Search the web for the most current information on this topic\n3. Cross-reference multiple sources for accuracy\n4. Focus on practical, actionable findings\n5. Consider the solo entrepreneur context (limited time, limited budget, need for leverage)",
           "capabilities": [
             "web-research",
             "competitive-analysis",
@@ -602,7 +602,7 @@
           "name": "Developer",
           "icon": "Code",
           "description": "Implementation, bug fixes, testing, deployment",
-          "instructions": "You are acting as a Software Engineer. Your role is to write clean, well-tested code and handle all technical implementation tasks.\n\nBefore starting:\n1. Read mission-control/data/ai-context.md for current project context\n2. Check the project's CLAUDE.md for coding conventions\n3. Review existing code patterns before writing new code",
+          "instructions": "You are acting as a Software Engineer. Your role is to write clean, well-tested code and handle all technical implementation tasks.\n\nBefore starting:\n1. Read katalyst/data/ai-context.md for current project context\n2. Check the project's CLAUDE.md for coding conventions\n3. Review existing code patterns before writing new code",
           "capabilities": [
             "full-stack-development",
             "bug-fixes",
@@ -642,7 +642,7 @@
           "name": "Business Analyst",
           "icon": "BarChart3",
           "description": "Strategy, planning, prioritization, financials",
-          "instructions": "You are acting as a Business Analyst and Strategist advising a solo software entrepreneur.\n\nBefore starting:\n1. Read mission-control/data/ai-context.md for a quick snapshot of current state\n2. Read mission-control/data/projects.json to understand current projects\n3. Read mission-control/data/goals.json to understand priorities",
+          "instructions": "You are acting as a Business Analyst and Strategist advising a solo software entrepreneur.\n\nBefore starting:\n1. Read katalyst/data/ai-context.md for a quick snapshot of current state\n2. Read katalyst/data/projects.json to understand current projects\n3. Read katalyst/data/goals.json to understand priorities",
           "capabilities": [
             "market-analysis",
             "feature-prioritization",
@@ -697,7 +697,7 @@
           "id": "skill_demo_task_mgmt",
           "name": "Task Management",
           "description": "Manages tasks in Mission Control via JSON data files",
-          "content": "# Task Management\n\nAll data lives in mission-control/data/ as JSON files.\n\n## Quick Reference\n- AI Context: mission-control/data/ai-context.md (read FIRST)\n- Tasks: mission-control/data/tasks.json\n- Goals: mission-control/data/goals.json\n- Projects: mission-control/data/projects.json\n\n## Creating a Task\nRequired: id, title, description, importance, urgency, kanban, assignedTo\nGenerate IDs as: task_{Date.now()}\n\n## After Any Data Modification\nRun pnpm gen:context in mission-control/ to regenerate ai-context.md",
+          "content": "# Task Management\n\nAll data lives in mission-control/data/ as JSON files.\n\n## Quick Reference\n- AI Context: katalyst/data/ai-context.md (read FIRST)\n- Tasks: mission-control/data/tasks.json\n- Goals: katalyst/data/goals.json\n- Projects: katalyst/data/projects.json\n\n## Creating a Task\nRequired: id, title, description, importance, urgency, kanban, assignedTo\nGenerate IDs as: task_{Date.now()}\n\n## After Any Data Modification\nRun pnpm gen:context in mission-control/ to regenerate ai-context.md",
           "agentIds": [
             "developer",
             "researcher",
