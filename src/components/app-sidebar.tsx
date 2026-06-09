@@ -631,3 +631,5 @@ export function AppSidebar({ collapsed, unreadInbox = 0, pendingDecisions = 0, p
 }
 
 // Workflow Flow View Link added here
+
+// Brain Dump Link added here
