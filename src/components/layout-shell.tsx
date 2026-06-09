@@ -24,7 +24,7 @@ export function LayoutShell({ children }: LayoutShellProps) {
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { tasks, agents, unreadInbox, pendingDecisions, pendingFieldApprovals } = useSidebar();
+  const { tasks, agents, unreadInbox, pendingDecisions } = useSidebar();
   const { online } = useConnection();
 
   // Detect mobile viewport and auto-close sidebar
@@ -86,7 +86,7 @@ export function LayoutShell({ children }: LayoutShellProps) {
       {/* Mobile sidebar backdrop */}
       {isMobile && sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-40 bg-[var(--background)]/50 backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -95,7 +95,6 @@ export function LayoutShell({ children }: LayoutShellProps) {
         collapsed={!sidebarOpen}
         unreadInbox={unreadInbox}
         pendingDecisions={pendingDecisions}
-        pendingFieldApprovals={pendingFieldApprovals}
         isMobile={isMobile}
         onClose={() => setSidebarOpen(false)}
         agents={agents}
