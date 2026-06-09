@@ -1,0 +1,20 @@
+{
+  "decisions": [
+    {
+      "id": "dec_demo_1",
+      "requestedBy": "developer",
+      "taskId": "task_demo_1",
+      "question": "Which animation library for the hero section?",
+      "options": [
+        "Framer Motion (full-featured, +30kb)",
+        "CSS animations only (lightweight)",
+        "GSAP (powerful, commercial license)"
+      ],
+      "context": "Hero needs smooth entrance animations and scroll-triggered effects.",
+      "status": "pending",
+      "answer": null,
+      "answeredAt": null,
+      "createdAt": "2026-02-23T18:26:59.160Z"
+    }
+  ]
+}
