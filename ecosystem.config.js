@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "mission-control",
+      name: "katalyst",
       script: "node_modules/next/dist/bin/next",
       args: "start",
       cwd: __dirname,
