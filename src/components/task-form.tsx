@@ -513,7 +513,7 @@ export function TaskForm({ initial, projects, goals, allTasks, currentTaskId, on
             <Link2 className="h-3.5 w-3.5" />
             Dependencies
             {form.blockedBy.length > 0 && (
-              <span className="text-xs text-yellow-500 ml-1 tabular-nums">
+              <span className="text-xs text-[var(--warning)] ml-1 tabular-nums">
                 {form.blockedBy.length} selected
               </span>
             )}
