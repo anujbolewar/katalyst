@@ -1,0 +1,52 @@
+{
+  "messages": [
+    {
+      "id": "msg_demo_1",
+      "from": "system",
+      "to": "developer",
+      "type": "delegation",
+      "taskId": "task_demo_1",
+      "subject": "New assignment: Design hero section",
+      "body": "You have been assigned to: \"Design hero section for landing page\"",
+      "status": "read",
+      "createdAt": "2026-02-17T18:26:59.160Z",
+      "readAt": "2026-02-17T18:26:59.160Z"
+    },
+    {
+      "id": "msg_demo_2",
+      "from": "business-analyst",
+      "to": "me",
+      "type": "report",
+      "taskId": "task_demo_6",
+      "subject": "Completed: Content strategy analysis",
+      "body": "Recommendation: Blog + Twitter threads. Newsletter after 500 subs.",
+      "status": "unread",
+      "createdAt": "2026-02-22T18:26:59.160Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_demo_3",
+      "from": "researcher",
+      "to": "me",
+      "type": "update",
+      "taskId": "task_demo_3",
+      "subject": "Progress: API pricing research",
+      "body": "Found 7 competitors. Most offer free tiers with 1000 req/month. Full comparison tomorrow.",
+      "status": "read",
+      "createdAt": "2026-02-24T10:26:59.160Z",
+      "readAt": "2026-06-09T20:40:07.120Z"
+    },
+    {
+      "id": "msg_demo_4",
+      "from": "system",
+      "to": "marketer",
+      "type": "delegation",
+      "taskId": "task_demo_5",
+      "subject": "New assignment: Write launch blog post",
+      "body": "You have been assigned to: \"Write launch announcement blog post\"",
+      "status": "unread",
+      "createdAt": "2026-02-21T18:26:59.160Z",
+      "readAt": null
+    }
+  ]
+}
