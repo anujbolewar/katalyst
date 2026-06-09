@@ -1,0 +1,55 @@
+{
+  "projects": [
+    {
+      "id": "proj_demo_1",
+      "name": "SaaS Landing Page",
+      "description": "Build a conversion-optimized landing page for our new SaaS product.",
+      "status": "active",
+      "color": "#3b82f6",
+      "teamMembers": [
+        "developer",
+        "marketer"
+      ],
+      "tags": [
+        "marketing",
+        "web"
+      ],
+      "createdAt": "2026-02-10T18:26:59.160Z",
+      "deletedAt": null
+    },
+    {
+      "id": "proj_demo_2",
+      "name": "API Integration Layer",
+      "description": "Create a unified API layer that connects to third-party services.",
+      "status": "active",
+      "color": "#8b5cf6",
+      "teamMembers": [
+        "developer",
+        "researcher"
+      ],
+      "tags": [
+        "backend",
+        "infrastructure"
+      ],
+      "createdAt": "2026-02-03T18:26:59.160Z",
+      "deletedAt": null
+    },
+    {
+      "id": "proj_demo_3",
+      "name": "Q4 Marketing Campaign",
+      "description": "Multi-channel marketing campaign for Q4 product launch.",
+      "status": "completed",
+      "color": "#10b981",
+      "teamMembers": [
+        "marketer",
+        "business-analyst"
+      ],
+      "tags": [
+        "marketing",
+        "growth"
+      ],
+      "createdAt": "2025-12-26T18:26:59.160Z",
+      "deletedAt": null
+    }
+  ]
+}
