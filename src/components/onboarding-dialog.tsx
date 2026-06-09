@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Rocket,
-  Lock,
   Database,
   Zap,
   Loader2,
@@ -19,14 +18,13 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { VaultSetupWizard } from "@/components/vault-setup-wizard";
 import { apiFetch } from "@/lib/api-client";
 
 const STORAGE_KEY = "mc-onboarded";
 
 // ─── Step types ─────────────────────────────────────────────────────────────
 
-type StepType = "bullets" | "vault-setup" | "demo-data" | "data-management" | "ready";
+type StepType = "bullets" | "demo-data" | "data-management" | "ready";
 
 interface BaseStep {
   icon: typeof Rocket;
@@ -41,7 +39,7 @@ interface BulletsStep extends BaseStep {
 }
 
 interface SpecialStep extends BaseStep {
-  type: "vault-setup" | "demo-data" | "data-management" | "ready";
+  type: "demo-data" | "data-management" | "ready";
 }
 
 type Step = BulletsStep | SpecialStep;
@@ -50,7 +48,7 @@ const steps: Step[] = [
   {
     type: "bullets",
     icon: Rocket,
-    title: "Welcome to Mission Control",
+    title: "Welcome to Katalyst",
     description:
       "Your AI-powered command center. Organize work, delegate to agents, and execute real actions across services.",
     bullets: [
@@ -59,13 +57,6 @@ const steps: Step[] = [
       "Delegate to specialized AI agents (Researcher, Developer, Marketer, etc.)",
       "Execute real actions via Field Ops — social posts, transactions, API calls",
     ],
-  },
-  {
-    type: "vault-setup",
-    icon: Lock,
-    title: "Secure Your Vault",
-    description:
-      "Set a master password to encrypt your API keys and tokens. Your agents need credentials to execute tasks on your behalf.",
   },
   {
     type: "demo-data",
@@ -86,7 +77,7 @@ const steps: Step[] = [
     icon: Zap,
     title: "You're All Set!",
     description:
-      "Mission Control is ready. Here are some tips to get started.",
+      "Katalyst is ready. Here are some tips to get started.",
   },
 ];
 
@@ -97,8 +88,6 @@ export function OnboardingDialog() {
   const [step, setStep] = useState(0);
   const [loadingDemo, setLoadingDemo] = useState(false);
   const [demoLoaded, setDemoLoaded] = useState(false);
-  const [vaultDone, setVaultDone] = useState(false);
-
   useEffect(() => {
     if (typeof window !== "undefined" && !localStorage.getItem(STORAGE_KEY)) {
       setOpen(true);
@@ -155,36 +144,11 @@ export function OnboardingDialog() {
           </ul>
         );
 
-      case "vault-setup":
-        if (vaultDone) {
-          return (
-            <div className="text-center py-4 space-y-2">
-              <CheckCircle2 className="h-8 w-8 text-green-400 mx-auto" />
-              <p className="text-sm font-medium">Vault Initialized</p>
-              <p className="text-xs text-muted-foreground">
-                You can now store API keys and tokens securely.
-              </p>
-            </div>
-          );
-        }
-        return (
-          <div className="py-2">
-            <VaultSetupWizard
-              compact
-              onComplete={() => {
-                setVaultDone(true);
-                setTimeout(() => handleNext(), 1000);
-              }}
-              onSkip={handleNext}
-            />
-          </div>
-        );
-
       case "demo-data":
         if (demoLoaded) {
           return (
             <div className="text-center py-4 space-y-2">
-              <CheckCircle2 className="h-8 w-8 text-green-400 mx-auto" />
+              <CheckCircle2 className="h-8 w-8 text-[var(--success)] mx-auto" />
               <p className="text-sm font-medium">Demo Data Loaded</p>
               <p className="text-xs text-muted-foreground">
                 Sample tasks, projects, goals, and Field Ops missions are ready
@@ -279,7 +243,7 @@ export function OnboardingDialog() {
               <span>
                 All data files live in{" "}
                 <code className="text-xs bg-muted px-1 py-0.5 rounded">
-                  mission-control/data/
+                  katalyst/data/
                 </code>
               </span>
             </li>
@@ -354,7 +318,6 @@ export function OnboardingDialog() {
     current.type === "bullets" ||
     current.type === "data-management" ||
     current.type === "ready" ||
-    (current.type === "vault-setup" && vaultDone) ||
     (current.type === "demo-data" && demoLoaded);
 
   return (
@@ -363,7 +326,7 @@ export function OnboardingDialog() {
       onOpenChange={(o) => {
         if (!o) {
           const currentType = steps[step]?.type;
-          if (currentType === "vault-setup" || currentType === "demo-data") {
+          if (currentType === "demo-data") {
             // Don't close during interactive steps
             return;
           }
@@ -376,13 +339,13 @@ export function OnboardingDialog() {
         onPointerDownOutside={(e) => {
           // Prevent accidental close during interactive steps
           const currentType = steps[step]?.type;
-          if (currentType === "vault-setup" || currentType === "demo-data") {
+          if (currentType === "demo-data") {
             e.preventDefault();
           }
         }}
         onEscapeKeyDown={(e) => {
           const currentType = steps[step]?.type;
-          if (currentType === "vault-setup" || currentType === "demo-data") {
+          if (currentType === "demo-data") {
             e.preventDefault();
           }
         }}
