@@ -41,7 +41,7 @@ export function RunButton({
           className={cn(
             btnSize,
             "shrink-0 rounded-full transition-colors",
-            "text-red-500 hover:text-red-600 hover:bg-red-500/10"
+            "text-[var(--destructive)] hover:text-[var(--destructive)] hover:bg-[var(--destructive)]/10"
           )}
           title={title ?? "Stop run"}
           onPointerDown={(e) => e.stopPropagation()}
@@ -66,8 +66,8 @@ export function RunButton({
           btnSize,
           "shrink-0 rounded-full transition-colors",
           isRunning
-            ? "text-green-500 cursor-default"
-            : "text-muted-foreground hover:text-green-500 hover:bg-green-500/10"
+            ? "text-[var(--success)] cursor-default"
+            : "text-muted-foreground hover:text-[var(--success)] hover:bg-[var(--success)]/10"
         )}
         disabled={disabled || isRunning}
         title={title ?? (isRunning ? "Running..." : "Launch task")}
