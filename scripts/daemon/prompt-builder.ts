@@ -4,7 +4,7 @@ import { logger } from "./logger";
 import { fenceTaskData, enforcePromptLimit } from "./security";
 import type { ProjectRunsFile, ProjectRunTaskEntry } from "./types";
 
-// Paths relative to mission-control/
+// Paths relative to katalyst/
 const DATA_DIR = path.resolve(__dirname, "../../data");
 const FIELD_OPS_DIR = path.join(DATA_DIR, "field-ops");
 const WORKSPACE_ROOT = path.resolve(__dirname, "../../..");
@@ -169,7 +169,7 @@ function buildSOP(agentId: string, task: TaskDef): string {
     "## Standard Operating Procedures",
     "",
     "You MUST follow these steps:",
-    "1. Read `mission-control/data/ai-context.md` for current state",
+    "1. Read `katalyst/data/ai-context.md` for current state",
     `2. Check inbox for messages addressed to you: filter \`to: "${agentId}"\``,
     "3. Execute the work described in the task",
     "4. When done, write a clear summary of what was accomplished, results, and any follow-up needed",
@@ -189,11 +189,11 @@ function buildSOP(agentId: string, task: TaskDef): string {
     lines.push("");
     lines.push("## Subtask Progress Tracking");
     lines.push("");
-    lines.push("As you complete each subtask, update its `done` field to `true` in `mission-control/data/tasks.json`.");
+    lines.push("As you complete each subtask, update its `done` field to `true` in `katalyst/data/tasks.json`.");
     lines.push("This lets the dashboard show real-time progress to the user.");
     lines.push("");
     lines.push("To update a subtask:");
-    lines.push("1. Read `mission-control/data/tasks.json`");
+    lines.push("1. Read `katalyst/data/tasks.json`");
     lines.push(`2. Find the task with id \`${task.id}\``);
     lines.push("3. In its `subtasks` array, set `done: true` for the completed subtask");
     lines.push("4. Update the task's `updatedAt` to the current ISO timestamp");
@@ -518,7 +518,7 @@ export function buildScheduledPrompt(command: string): string {
 
   // Fallback: generic prompt
   logger.warn("prompt-builder", `No command file found for /${command}, using generic prompt`);
-  return `Run the /${command} workflow. Read mission-control/data/ai-context.md first for context.`;
+  return `Run the /${command} workflow. Read katalyst/data/ai-context.md first for context.`;
 }
 
 /**
