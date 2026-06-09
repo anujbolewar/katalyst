@@ -21,7 +21,7 @@ export default function Error({
   const [autoRetryDone, setAutoRetryDone] = useState(false);
 
   useEffect(() => {
-    console.error("[Mission Control Error]", error);
+    console.error("[Katalyst Error]", error);
   }, [error]);
 
   // Auto-retry once after a delay
