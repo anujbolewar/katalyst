@@ -1,0 +1,112 @@
+{
+  "goals": [
+    {
+      "id": "goal_demo_1",
+      "title": "Launch SaaS product to first 100 users",
+      "type": "long-term",
+      "timeframe": "Q2 2026",
+      "parentGoalId": null,
+      "projectId": "proj_demo_1",
+      "status": "in-progress",
+      "milestones": [
+        "mile_demo_1",
+        "mile_demo_2"
+      ],
+      "tasks": [
+        "task_demo_1",
+        "task_demo_2",
+        "task_demo_5"
+      ],
+      "createdAt": "2026-01-25T18:26:59.160Z",
+      "deletedAt": null
+    },
+    {
+      "id": "mile_demo_1",
+      "title": "Landing page live and collecting signups",
+      "type": "medium-term",
+      "timeframe": "2026-03-03T18:26:59.160Z",
+      "parentGoalId": "goal_demo_1",
+      "projectId": "proj_demo_1",
+      "status": "in-progress",
+      "milestones": [],
+      "tasks": [
+        "task_demo_1",
+        "task_demo_2"
+      ],
+      "createdAt": "2026-02-10T18:26:59.160Z",
+      "deletedAt": null
+    },
+    {
+      "id": "mile_demo_2",
+      "title": "Beta API ready for testing",
+      "type": "medium-term",
+      "timeframe": "2026-03-17T18:26:59.160Z",
+      "parentGoalId": "goal_demo_1",
+      "projectId": "proj_demo_2",
+      "status": "not-started",
+      "milestones": [],
+      "tasks": [
+        "task_demo_3",
+        "task_demo_4"
+      ],
+      "createdAt": "2026-02-10T18:26:59.160Z",
+      "deletedAt": null
+    },
+    {
+      "id": "goal_demo_2",
+      "title": "Build sustainable content engine",
+      "type": "long-term",
+      "timeframe": "Q3 2026",
+      "parentGoalId": null,
+      "projectId": null,
+      "status": "not-started",
+      "milestones": [],
+      "tasks": [
+        "task_demo_6"
+      ],
+      "createdAt": "2026-02-17T18:26:59.160Z",
+      "deletedAt": null
+    },
+    {
+      "id": "goal_md2B-X5_q1pr",
+      "title": "Build a SaaS\"",
+      "type": "medium-term",
+      "timeframe": "2026-06-09T20:50:39.366Z",
+      "parentGoalId": null,
+      "projectId": null,
+      "status": "in-progress",
+      "milestones": [],
+      "tasks": [
+        "task_SBXJaGrHlFtM",
+        "task_n-R9v4f9e2cr",
+        "task_14gvCNkdq0UR",
+        "task_5N0Q6jymKw1J",
+        "task_L9ULlmePD1Lk"
+      ],
+      "createdAt": "2026-06-09T20:50:39.366Z",
+      "deletedAt": null
+    },
+    {
+      "id": "goal_LP3pX9xA9wVP",
+      "title": "build a saas product",
+      "type": "medium-term",
+      "timeframe": "2026-06-09T20:59:53.559Z",
+      "parentGoalId": null,
+      "projectId": null,
+      "status": "in-progress",
+      "milestones": [],
+      "tasks": [
+        "task_lqdEU380JpRE",
+        "task_luH2duViuTZU",
+        "task_SseHJyuiRI19",
+        "task_4FljW1thZa9R",
+        "task_Yfe32rrgOUBV",
+        "task_U7isv38oRRq9",
+        "task_RFC3j4FZy13s",
+        "task_AR4fayKujfEH"
+      ],
+      "createdAt": "2026-06-09T20:59:53.559Z",
+      "deletedAt": null
+    }
+  ]
+}
