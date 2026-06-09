@@ -37,10 +37,10 @@ export function ProjectRunProgress({ projectRun, runs, onStop }: ProjectRunProgr
   const isActive = status === "running" || status === "stalled";
 
   const statusColor = {
-    running: "bg-emerald-500",
-    completed: "bg-blue-500",
-    stopped: "bg-orange-500",
-    stalled: "bg-amber-500",
+    running: "bg-[var(--success)]",
+    completed: "bg-[var(--info)]",
+    stopped: "bg-[var(--warning)]",
+    stalled: "bg-[var(--warning)]",
   }[status];
 
   const statusLabel = {
@@ -96,7 +96,7 @@ export function ProjectRunProgress({ projectRun, runs, onStop }: ProjectRunProgr
           <div className="flex items-center justify-between text-[11px] text-muted-foreground">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1">
-                <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                <CheckCircle2 className="h-3 w-3 text-[var(--success)]" />
                 {completedTasks} done
               </span>
               {failedTasks > 0 && (
@@ -107,7 +107,7 @@ export function ProjectRunProgress({ projectRun, runs, onStop }: ProjectRunProgr
               )}
               {skippedTasks > 0 && (
                 <span className="flex items-center gap-1">
-                  <AlertTriangle className="h-3 w-3 text-amber-500" />
+                  <AlertTriangle className="h-3 w-3 text-[var(--warning)]" />
                   {skippedTasks} blocked
                 </span>
               )}
@@ -133,9 +133,9 @@ export function ProjectRunProgress({ projectRun, runs, onStop }: ProjectRunProgr
 
         {/* Stalled warning */}
         {status === "stalled" && (
-          <div className="flex items-start gap-2 rounded-md border border-amber-500/20 bg-amber-500/5 px-3 py-2">
-            <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
-            <p className="text-xs text-amber-700 dark:text-amber-400">
+          <div className="flex items-start gap-2 rounded-md border border-[var(--warning)]/20 bg-[var(--warning)]/5 px-3 py-2">
+            <AlertTriangle className="h-4 w-4 text-[var(--warning)] mt-0.5 shrink-0" />
+            <p className="text-xs text-[var(--warning)]">
               Run stalled — remaining tasks are blocked by dependencies, pending decisions, or repeated failures.
               Check the Decisions page for items that need your input.
             </p>
