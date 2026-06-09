@@ -125,7 +125,7 @@ export function CommandBar({ onCapture, sidebarOpen, onToggleSidebar, isMobile =
           <button
             type="button"
             onClick={() => inputRef.current?.focus()}
-            className="shrink-0 text-muted-foreground hover:text-amber-500 transition-colors"
+            className="shrink-0 text-muted-foreground hover:text-[var(--warning)] transition-colors"
           >
             <Lightbulb className="h-4 w-4" />
           </button>
