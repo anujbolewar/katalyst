@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Target, Pencil, Trash2 } from "lucide-react";
+import { Plus, Target, Pencil, Trash2, Eye } from "lucide-react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
@@ -162,8 +163,13 @@ export default function GoalsPage() {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <CardTitle className="text-base">{goal.title}</CardTitle>
-                    {project && (
+                      <CardTitle className="text-base">{goal.title}</CardTitle>
+                      <Link href={`/objectives/${goal.id}`}>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground" aria-label="View goal tree">
+                          <Eye className="h-3 w-3" />
+                        </Button>
+                      </Link>
+                      {project && (
                       <Badge variant="outline" className="text-xs" style={{ borderColor: project.color, color: project.color }}>
                         {project.name}
                       </Badge>
