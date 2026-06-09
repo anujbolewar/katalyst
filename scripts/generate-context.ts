@@ -193,7 +193,7 @@ async function main(): Promise<void> {
 
   // Build markdown
   const lines: string[] = [];
-  lines.push("# Mission Control — AI Context Snapshot");
+  lines.push("# Katalyst — AI Context Snapshot");
   lines.push(`Generated: ${now}`);
   lines.push("");
 
