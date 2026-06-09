@@ -1,0 +1,440 @@
+{
+  "trees": [
+    {
+      "goalId": "goal_md2B-X5_q1pr",
+      "goalTitle": "Build a SaaS\"",
+      "taskIds": [
+        "task_SBXJaGrHlFtM",
+        "task_n-R9v4f9e2cr",
+        "task_14gvCNkdq0UR",
+        "task_5N0Q6jymKw1J",
+        "task_L9ULlmePD1Lk"
+      ],
+      "rootNode": {
+        "id": "R9yopD2fRUBTkJT2ERySq",
+        "title": "Build a SaaS — API-first B2C Developer Tool MVP",
+        "description": "Ship a solo-built API-first B2C developer tool MVP within 4–6 weeks to reach 100+ active users or paid customers.",
+        "children": [
+          {
+            "id": "9eVGdbQDbxoMSo7791FYp",
+            "title": "Validate & Scope the API Product",
+            "children": [
+              {
+                "id": "nnUkrS5z0x3weXm2MX2lK",
+                "title": "Identify a high-frequency B2C API need (e.g., AI image gen, personal automation, data enrichment)",
+                "children": []
+              },
+              {
+                "id": "Wwq4T0fi0chqWzUU7Kwml",
+                "title": "Interview 10–15 potential consumers in target communities (Reddit, Discord, Twitter)",
+                "children": []
+              },
+              {
+                "id": "QrRLUx8nU-SG4mB-kdJUz",
+                "title": "Define 3 core API endpoints that solve the validated pain point end-to-end",
+                "children": []
+              },
+              {
+                "id": "BQhGI3WCThYKiyTqUvrHZ",
+                "title": "Set pricing tiers: free tier (rate-limited) + 1 paid tier under $10/mo",
+                "children": []
+              },
+              {
+                "id": "PqAOK0P6BznVqI90jQEo-",
+                "title": "Write a one-page product spec with input/output schemas and rate limits",
+                "children": []
+              },
+              {
+                "id": "En58u8hgi4DSKP9Xy_8pu",
+                "title": "Spike the riskiest technical dependency and confirm it works within constraints",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "DGWJA5_pke68AWoxXL259",
+            "title": "Build the Core API Backend",
+            "children": [
+              {
+                "id": "9qFjQ3V6uQO4fXV8GXA3Y",
+                "title": "Scaffold project with FastAPI/Express + PostgreSQL + Redis stack",
+                "children": []
+              },
+              {
+                "id": "8DNnkqj8l0GZbCQsmOUDE",
+                "title": "Implement API key generation, hashing, and storage",
+                "children": []
+              },
+              {
+                "id": "cg9-OGgaSI1zi6hIyEu2E",
+                "title": "Build authentication middleware that validates API keys per request",
+                "children": []
+              },
+              {
+                "id": "lRMUBC5cFfowtcxzEjHro",
+                "title": "Develop the 3 core endpoints with input validation and error handling",
+                "children": []
+              },
+              {
+                "id": "Y_xWl6I9ZCpGo_1DdkZGv",
+                "title": "Add per-key rate limiting and usage tracking with Redis counters",
+                "children": []
+              },
+              {
+                "id": "BRvtb-AHn3MILi6LxBeKF",
+                "title": "Create async background job pipeline for heavy endpoint processing",
+                "children": []
+              },
+              {
+                "id": "X9bR-IcSNe9FqIbOZ_z-P",
+                "title": "Write integration tests covering auth, rate limiting, and all endpoints",
+                "children": []
+              },
+              {
+                "id": "goQpkNdkTMRboaguoXDwz",
+                "title": "Containerize with Docker and deploy to a $20–30/mo cloud VM",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "VQsuz2JluRbNTuSWH0mjp",
+            "title": "Ship Developer-Facing Surfaces",
+            "children": [
+              {
+                "id": "o-D04LAYGxoxH7k0vSeBY",
+                "title": "Build a clean API reference docs page with code snippets in 3 languages (curl, Python, JS)",
+                "children": []
+              },
+              {
+                "id": "Eh_3qXHe5C11IEXNUiYF8",
+                "title": "Create a signup/login dashboard for consumers to get API keys and manage billing",
+                "children": []
+              },
+              {
+                "id": "W_6la8bnHJjq0F_YfUi3Q",
+                "title": "Implement Stripe checkout for the paid tier and auto-upgrade on payment",
+                "children": []
+              },
+              {
+                "id": "3zfw4ITteVzHfMvAyY2FK",
+                "title": "Add webhook receiver to Stripe to suspend/reactivate API keys on subscription changes",
+                "children": []
+              },
+              {
+                "id": "WF0WSlVXKgiOWnsOb_4fn",
+                "title": "Write a Quickstart guide that gets a user from signup to first API call in under 5 minutes",
+                "children": []
+              },
+              {
+                "id": "KY6ajfi7TfDW3dsVxvIMm",
+                "title": "Set up a public status page (e.g., BetterStack) for uptime transparency",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "bbToU1t_BnR2NkuSrEXsW",
+            "title": "Acquire First 100+ Users",
+            "children": [
+              {
+                "id": "5O6qiVi2uUCHP5zB8isxg",
+                "title": "Launch on Product Hunt with a compelling demo video and founder story",
+                "children": []
+              },
+              {
+                "id": "FSdvmOzMo7YUU_NsYi3J1",
+                "title": "Post the API with open-source wrapper examples on GitHub and pin to profile",
+                "children": []
+              },
+              {
+                "id": "iM5Chl9UArKLXhvVobRL-",
+                "title": "Write 3 blog posts: tutorial, comparison vs DIY, and a creative consumer use case",
+                "children": []
+              },
+              {
+                "id": "SaD1lcD_0mw-bAaXf9yCd",
+                "title": "Share in relevant subreddits and Hacker News (Show HN) during week 4–5",
+                "children": []
+              },
+              {
+                "id": "Jzc1OL8GqN0V-YKzoqQJI",
+                "title": "Create 2–3 short-form demo videos and post on Twitter, TikTok, and YouTube Shorts",
+                "children": []
+              },
+              {
+                "id": "unQI6uBHQl8UIUMG06V41",
+                "title": "Set up referral system: free users get bonus credits for each referred paid signup",
+                "children": []
+              },
+              {
+                "id": "rV0DgwkBA_4s2W_ZEWCga",
+                "title": "Monitor churn and collect NPS feedback weekly; patch top-3 friction points within 48 hours",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "3x6TfR4Hq8luMNh9TRa7L",
+            "title": "Operate & Iterate Post-Launch",
+            "children": [
+              {
+                "id": "NZrMS2Pm3z9SRLl_GR0TX",
+                "title": "Set up error alerting (Sentry) and latency monitoring dashboards for all endpoints",
+                "children": []
+              },
+              {
+                "id": "WtgS6w_1n9SUGT2ikFYbm",
+                "title": "Add automated daily usage email digests to keep users engaged",
+                "children": []
+              },
+              {
+                "id": "Ui74sKvcCiBJ7yCVqGLsW",
+                "title": "Triage feature requests in a public Canny/feedback board and ship top-voted item bi-weekly",
+                "children": []
+              },
+              {
+                "id": "4YvxSP8ntP_O2Z9Lv7AR3",
+                "title": "Benchmark API latency vs closest competitor and optimize to win on speed by week 6",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "createdAt": "2026-06-09T20:50:39.366Z",
+      "updatedAt": "2026-06-09T20:50:39.366Z"
+    },
+    {
+      "goalId": "goal_LP3pX9xA9wVP",
+      "goalTitle": "build a saas product",
+      "taskIds": [
+        "task_lqdEU380JpRE",
+        "task_luH2duViuTZU",
+        "task_SseHJyuiRI19",
+        "task_4FljW1thZa9R",
+        "task_Yfe32rrgOUBV",
+        "task_U7isv38oRRq9",
+        "task_RFC3j4FZy13s",
+        "task_AR4fayKujfEH"
+      ],
+      "rootNode": {
+        "id": "FYc0IHMMdva2ppE7uYbD0",
+        "title": "Build a B2B Enterprise Workflow Automation SaaS Product",
+        "description": "Build and launch a workflow automation and productivity SaaS for B2B enterprise teams, integrating with existing enterprise stacks (SSO, APIs), and generating paying customers within 3 months.",
+        "children": [
+          {
+            "id": "j7qwzaXTUS5L-bu-qwy2F",
+            "title": "Market Validation & Product Definition",
+            "children": [
+              {
+                "id": "rrno8tl3XQJMacNpgNXbj",
+                "title": "Conduct 15+ customer discovery interviews with target enterprise teams",
+                "children": []
+              },
+              {
+                "id": "G6cMtWISyhksXQTpBp8q_",
+                "title": "Define MVP feature set and prioritization based on interview insights",
+                "children": []
+              },
+              {
+                "id": "WXmlsOBuHkFzE1Ssng974",
+                "title": "Map top 3-5 enterprise integration requirements (SSO, APIs, directories)",
+                "children": []
+              },
+              {
+                "id": "d1r-6xq84UuNfz0gT3c5g",
+                "title": "Document core user personas, use cases, and success metrics",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "yk9mBzJnI7-ZMJEhTNwE7",
+            "title": "Core Platform Architecture & Infrastructure",
+            "children": [
+              {
+                "id": "weS_7wdUeKivvHSZTnWVE",
+                "title": "Set up cloud infrastructure with multi-tenant data isolation",
+                "children": []
+              },
+              {
+                "id": "G7M0JzrLeVk3hWVGQSpk5",
+                "title": "Implement authentication system with SAML/OIDC SSO support",
+                "children": []
+              },
+              {
+                "id": "cVvijNSbIkC38nw6QgB7L",
+                "title": "Build role-based access control (RBAC) and team management",
+                "children": []
+              },
+              {
+                "id": "Vx6HWHPUaOrL4046D4xn7",
+                "title": "Design and implement REST and webhook API layer",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "_7lk-RbYYmuSbYOyNmdBe",
+            "title": "Workflow Automation Engine",
+            "children": [
+              {
+                "id": "425mey9NkJBq0SuledNay",
+                "title": "Build visual workflow builder with drag-and-drop interface",
+                "children": []
+              },
+              {
+                "id": "E9Hn2iMC54MIcpEA0pqzk",
+                "title": "Implement trigger system (scheduled, webhook, event-driven)",
+                "children": []
+              },
+              {
+                "id": "uk1ZPa_6igC7WSEbbpDPL",
+                "title": "Develop action library with pre-built integrations and custom scripting",
+                "children": []
+              },
+              {
+                "id": "Siz5bJDzj41l91GjiPCkM",
+                "title": "Create workflow execution engine with logging and error handling",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "4X6KHjbVJSJzX2AZigAUk",
+            "title": "Productivity Tooling Features",
+            "children": [
+              {
+                "id": "o2UXIwudxz0ceVCP8J6gr",
+                "title": "Build task and project management dashboard",
+                "children": []
+              },
+              {
+                "id": "2iFgOJv1NAIYgSPKURh5H",
+                "title": "Implement team collaboration tools (comments, assignments, notifications)",
+                "children": []
+              },
+              {
+                "id": "R_9mgi8dS_awgpxMlXB6V",
+                "title": "Create reporting and analytics module with exportable insights",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "gNmjVJ_Qk7VJygH9nIgoW",
+            "title": "Enterprise Integrations",
+            "children": [
+              {
+                "id": "CKM8vIfIgldfu9nL4vA8B",
+                "title": "Integrate with major SSO providers (Okta, Azure AD, Google Workspace)",
+                "children": []
+              },
+              {
+                "id": "mFGuxn_6qv6bfmKqsv0w1",
+                "title": "Build native connectors for top 5 enterprise tools (Slack, Jira, Salesforce, etc.)",
+                "children": []
+              },
+              {
+                "id": "clWQKC-tD2D84evqH5OqA",
+                "title": "Implement SCIM for automated user provisioning and deprovisioning",
+                "children": []
+              },
+              {
+                "id": "hCGMNyCX6f9P9XEpQJ1J4",
+                "title": "Set up API gateway with rate limiting and usage auditing",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "bRhpuBQ_ilgv8cVYm3Z-5",
+            "title": "Billing, Pricing & Revenue Operations",
+            "children": [
+              {
+                "id": "TyIKFaAhlT5VYbQatJLHZ",
+                "title": "Integrate subscription billing platform (Stripe Billing or similar)",
+                "children": []
+              },
+              {
+                "id": "81MnspnOS9t20GfyvgqRj",
+                "title": "Define tiered pricing model with self-serve and sales-led options",
+                "children": []
+              },
+              {
+                "id": "Dxg4ppJhWt6J2BYJ6G0rY",
+                "title": "Build usage tracking and metering for pay-as-you-go components",
+                "children": []
+              },
+              {
+                "id": "X6N7qj-5IlYlzIWt5_bWV",
+                "title": "Create customer onboarding checkout and contract flow for enterprises",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "gsija6CFZNVexGT0giFFD",
+            "title": "Security, Compliance & Trust",
+            "children": [
+              {
+                "id": "1keA7ruLGkjuH-81Nxeme",
+                "title": "Implement SOC 2 Type II controls and documentation framework",
+                "children": []
+              },
+              {
+                "id": "c92D5bSsplyytvImCJHwh",
+                "title": "Set up encryption at rest and in transit with key management",
+                "children": []
+              },
+              {
+                "id": "H-5cHMX5CgFjTrphWoKQe",
+                "title": "Conduct penetration test and remediate findings",
+                "children": []
+              },
+              {
+                "id": "HT0m6_x3WHLr8WRB_qgk-",
+                "title": "Create security whitepaper and compliance documentation for buyers",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "n-C0y27egj9QES2bZA7z0",
+            "title": "Go-to-Market & Early Revenue",
+            "children": [
+              {
+                "id": "MIGGR13AmiS62ssu1bytu",
+                "title": "Launch private beta with 5-10 design partner companies",
+                "children": []
+              },
+              {
+                "id": "-OuUIhm69P1W192A5t-a2",
+                "title": "Build sales collateral (decks, demo scripts, ROI calculator)",
+                "children": []
+              },
+              {
+                "id": "OmsYkYJabSvE-IZ69I2RK",
+                "title": "Run outbound sales campaign targeting 200 ideal customer profiles",
+                "children": []
+              },
+              {
+                "id": "E3CJJu2yy6SLAOM_7Oli4",
+                "title": "Publish on enterprise marketplaces (Slack App Directory, Atlassian, etc.)",
+                "children": []
+              },
+              {
+                "id": "TaPC4RW6V20Bla2xY5PEC",
+                "title": "Close first 3-5 paid customers with annual contracts",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "createdAt": "2026-06-09T20:59:53.560Z",
+      "updatedAt": "2026-06-09T20:59:53.560Z"
+    }
+  ]
+}
