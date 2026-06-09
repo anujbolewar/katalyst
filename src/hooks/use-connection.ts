@@ -6,7 +6,7 @@ const PING_INTERVAL = 30_000; // 30 seconds
 const PING_TIMEOUT = 5_000;   // 5 second timeout for health check
 
 /**
- * Hook that monitors connection to the Mission Control API server.
+ * Hook that monitors connection to the Katalyst API server.
  *
  * Detects both:
  * - Browser offline (navigator.onLine === false)
