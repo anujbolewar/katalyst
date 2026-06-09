@@ -1,0 +1,44 @@
+{
+  "entries": [
+    {
+      "id": "bd_demo_1",
+      "content": "Add a referral program? Give users unique links for signup rewards.",
+      "capturedAt": "2026-02-22T18:26:59.160Z",
+      "processed": false,
+      "convertedTo": null,
+      "tags": [
+        "growth"
+      ]
+    },
+    {
+      "id": "bd_demo_2",
+      "content": "Compare Stripe vs Paddle for international tax handling.",
+      "capturedAt": "2026-02-23T18:26:59.160Z",
+      "processed": false,
+      "convertedTo": null,
+      "tags": [
+        "payments"
+      ]
+    },
+    {
+      "id": "bd_demo_3",
+      "content": "Add dark mode to the landing page — match the Mission Control vibe.",
+      "capturedAt": "2026-02-24T14:26:59.160Z",
+      "processed": false,
+      "convertedTo": null,
+      "tags": [
+        "design"
+      ]
+    },
+    {
+      "id": "bd_demo_4",
+      "content": "Competitor X raised $5M. Check their positioning.",
+      "capturedAt": "2026-02-21T18:26:59.160Z",
+      "processed": true,
+      "convertedTo": "task_demo_3",
+      "tags": [
+        "competitive"
+      ]
+    }
+  ]
+}
