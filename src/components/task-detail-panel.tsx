@@ -3,7 +3,7 @@
 import { useEffect, useCallback, useState, useRef } from "react";
 import {
   X, Trash2, ListChecks, Link2, CheckCircle2, Rocket,
-  Send, Clock, MessageSquare, Activity, Radio,
+  Send, Clock, MessageSquare, Activity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TaskForm, type TaskFormData } from "@/components/task-form";
@@ -20,7 +20,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import type { Task, Project, Goal, AgentRole, TaskComment, FieldTask } from "@/lib/types";
+import type { Task, Project, Goal, AgentRole, TaskComment } from "@/lib/types";
 import { getQuadrant } from "@/lib/types";
 import { useActivityLog, useInbox, useAgents, useDecisions } from "@/hooks/use-data";
 import { getAgentIcon } from "@/lib/agent-icons";
@@ -55,7 +55,6 @@ export function TaskDetailPanel({ task, projects, goals, allTasks, onUpdate, onD
   const [timelineOpen, setTimelineOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [linkedFieldTasks, setLinkedFieldTasks] = useState<FieldTask[]>([]);
   const panelRef = useRef<HTMLElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
@@ -76,27 +75,27 @@ export function TaskDetailPanel({ task, projects, goals, allTasks, onUpdate, onD
     };
   }, [task]);
 
-  // Fetch linked field tasks when the task has fieldTaskIds
-  useEffect(() => {
-    const ids = task.fieldTaskIds;
-    if (!ids || ids.length === 0) {
-      setLinkedFieldTasks([]);
-      return;
-    }
-    async function fetchFieldTasks() {
-      try {
-        const res = await fetch("/api/field-ops/tasks");
-        if (res.ok) {
-          const data = await res.json();
-          const all: FieldTask[] = data.tasks ?? [];
-          setLinkedFieldTasks(all.filter((ft) => ids!.includes(ft.id)));
-        }
-      } catch {
-        // Silently fail
-      }
-    }
-    fetchFieldTasks();
-  }, [task.fieldTaskIds]);
+  // TODO: Re-enable when /api/field-ops/tasks is re-implemented
+  // useEffect(() => {
+  //   const ids = task.fieldTaskIds;
+  //   if (!ids || ids.length === 0) {
+  //     setLinkedFieldTasks([]);
+  //     return;
+  //   }
+  //   async function fetchFieldTasks() {
+  //     try {
+  //       const res = await fetch("/api/field-ops/tasks");
+  //       if (res.ok) {
+  //         const data = await res.json();
+  //         const all: FieldTask[] = data.tasks ?? [];
+  //         setLinkedFieldTasks(all.filter((ft) => ids!.includes(ft.id)));
+  //       }
+  //     } catch {
+  //       // Silently fail
+  //     }
+  //   }
+  //   fetchFieldTasks();
+  // }, [task.fieldTaskIds]);
 
   // Close on Escape key
   useEffect(() => {
@@ -220,7 +219,7 @@ export function TaskDetailPanel({ task, projects, goals, allTasks, onUpdate, onD
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm cursor-pointer" onClick={onClose} />
+      <div className="fixed inset-0 z-40 bg-[var(--background)]/40 backdrop-blur-sm cursor-pointer" onClick={onClose} />
 
       {/* Panel */}
       <aside
@@ -253,13 +252,13 @@ export function TaskDetailPanel({ task, projects, goals, allTasks, onUpdate, onD
               </Badge>
             )}
             {depCount > 0 && (
-              <Badge variant="secondary" className={cn("text-xs gap-1", unmetDepCount > 0 ? "border-blue-500/30 text-blue-500" : "")}>
+              <Badge variant="secondary" className={cn("text-xs gap-1", unmetDepCount > 0 ? "border-[var(--info)]/30 text-[var(--info)]" : "")}>
                 <Link2 className="h-3 w-3" />
                 {unmetDepCount > 0 ? `${unmetDepCount} pending dep${unmetDepCount > 1 ? "s" : ""}` : `${depCount} dep${depCount > 1 ? "s" : ""}`}
               </Badge>
             )}
             {hasAwaitingDecision && (
-              <Badge variant="secondary" className="text-xs gap-1 border-amber-500/30 text-amber-500">
+              <Badge variant="secondary" className="text-xs gap-1 border-[var(--warning)]/30 text-[var(--warning)]">
                 <Clock className="h-3 w-3" />
                 Awaiting Decision
               </Badge>
@@ -268,12 +267,6 @@ export function TaskDetailPanel({ task, projects, goals, allTasks, onUpdate, onD
               <Badge variant="secondary" className="text-xs gap-1">
                 <CheckCircle2 className="h-3 w-3" />
                 {criteriaCount} criteria
-              </Badge>
-            )}
-            {linkedFieldTasks.length > 0 && (
-              <Badge variant="secondary" className="text-xs gap-1 border-indigo-500/30 text-indigo-400">
-                <Radio className="h-3 w-3" />
-                {linkedFieldTasks.length} field task{linkedFieldTasks.length !== 1 ? "s" : ""}
               </Badge>
             )}
           </div>
@@ -358,8 +351,8 @@ export function TaskDetailPanel({ task, projects, goals, allTasks, onUpdate, onD
             submitLabel="Save Changes"
           />
 
-          {/* Linked Field Tasks */}
-          {linkedFieldTasks.length > 0 && (
+          {/* TODO: Re-enable Linked Field Tasks section when /api/field-ops/tasks is re-implemented */}
+          {/* {linkedFieldTasks.length > 0 && (
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Radio className="h-4 w-4" />
@@ -370,13 +363,13 @@ export function TaskDetailPanel({ task, projects, goals, allTasks, onUpdate, onD
               <div className="space-y-1.5">
                 {linkedFieldTasks.map((ft) => {
                   const statusColors: Record<string, string> = {
-                    "draft": "bg-zinc-500/20 text-zinc-400",
-                    "pending-approval": "bg-amber-500/20 text-amber-400",
-                    "approved": "bg-emerald-500/20 text-emerald-400",
-                    "executing": "bg-indigo-500/20 text-indigo-400",
-                    "completed": "bg-green-500/20 text-green-400",
-                    "failed": "bg-red-500/20 text-red-400",
-                    "rejected": "bg-orange-500/20 text-orange-400",
+                    "draft": "bg-[var(--muted-foreground)]/20 text-[var(--muted-foreground)]",
+                    "pending-approval": "bg-[var(--warning)]/20 text-[var(--warning)]",
+                    "approved": "bg-[var(--status-done)]/20 text-[var(--status-done)]",
+                    "executing": "bg-[var(--status-in-progress)]/20 text-[var(--status-in-progress)]",
+                    "completed": "bg-[var(--success)]/20 text-[var(--success)]",
+                    "failed": "bg-[var(--destructive)]/20 text-[var(--destructive)]",
+                    "rejected": "bg-[var(--warning)]/20 text-[var(--warning)]",
                   };
                   return (
                     <a
@@ -393,7 +386,7 @@ export function TaskDetailPanel({ task, projects, goals, allTasks, onUpdate, onD
                 })}
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Comments Thread */}
           <Collapsible open={commentsOpen} onOpenChange={setCommentsOpen}>
