@@ -28,6 +28,7 @@ import { useFastTaskPoll } from "@/hooks/use-fast-task-poll";
 import type { Task, KanbanStatus } from "@/lib/types";
 import { KanbanSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/error-state";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 const columns: ColumnConfig[] = [
   { id: "not-started", label: "Not Started", dotColor: "bg-status-not-started", borderColor: "border-status-not-started/30" },
@@ -126,7 +127,8 @@ export default function KanbanPage() {
         </div>
       </div>
 
-      <BoardDndWrapper activeTask={activeTask} projects={projects} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <ErrorBoundary fallbackMessage="Could not load tasks." onRetry={refetch}>
+        <BoardDndWrapper activeTask={activeTask} projects={projects} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {columns.map((col) => (
             <BoardColumn
@@ -145,6 +147,7 @@ export default function KanbanPage() {
           ))}
         </div>
       </BoardDndWrapper>
+      </ErrorBoundary>
 
       <BulkActionBar
         count={selection.count}
