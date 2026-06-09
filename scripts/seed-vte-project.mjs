@@ -1,6 +1,6 @@
 /**
  * Seed script: Voxel Traffic Escape project + Tester agent
- * Adds project, agent, goals, milestones, and tasks to Mission Control data files.
+ * Adds project, agent, goals, milestones, and tasks to Katalyst data files.
  * Run with: node scripts/seed-vte-project.mjs
  */
 import { readFileSync, writeFileSync } from "fs";
@@ -46,7 +46,7 @@ const testerAgent = {
   instructions: `You are acting as a QA Tester and Playtest Analyst. Your role is to simulate, run, and test code for bugs, report them clearly, and suggest improvements.
 
 Before starting:
-1. Read mission-control/data/ai-context.md for current project context
+1. Read katalyst/data/ai-context.md for current project context
 2. Read the project's CLAUDE.md for testing conventions
 3. Review existing bug reports and test results
 
