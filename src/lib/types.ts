@@ -255,10 +255,7 @@ export type EventType =
   | "brain_dump_triaged"
   | "milestone_completed"
   | "agent_checkin"
-  | "field_task_completed"
-  | "field_task_failed"
-  | "field_task_approved"
-  | "field_task_rejected";
+;
 
 export interface ActivityEvent {
   id: string;
@@ -413,174 +410,9 @@ export function valuesFromQuadrant(quadrant: EisenhowerQuadrant): { importance: 
   }
 }
 
-// ─── Field Ops Types ─────────────────────────────────────────────────────────
-
-export type AutonomyLevel = "approve-all" | "approve-high-risk" | "full-autonomy";
-export type FieldMissionStatus = "active" | "paused" | "completed";
-export type FieldTaskStatus = "draft" | "pending-approval" | "approved" | "executing" | "awaiting-signature" | "completed" | "failed" | "rejected";
-export type FieldTaskType = "social-post" | "email-campaign" | "ad-campaign" | "payment" | "publish" | "design" | "crypto-transfer" | "custom";
-export type ServiceRiskLevel = "high" | "medium" | "low";
 export type ServiceAuthType = "oauth2" | "api-key" | "none";
+export type ServiceRiskLevel = "high" | "medium" | "low";
 export type ServiceStatus = "saved" | "connected" | "disconnected" | "error";
-
-export interface FieldMission {
-  id: string;
-  title: string;
-  description: string;
-  status: FieldMissionStatus;
-  autonomyLevel: AutonomyLevel;
-  linkedProjectId: string | null;
-  tasks: string[];
-  createdAt: string;
-  updatedAt: string;
-  completedAt: string | null;
-}
-
-export interface FieldMissionsFile {
-  missions: FieldMission[];
-}
-
-export interface FieldTaskAttachment {
-  id: string;
-  filename: string;
-  path: string;
-  mimeType: string;
-  size: number;
-}
-
-export interface FieldTask {
-  id: string;
-  missionId: string | null;
-  title: string;
-  description: string;
-  type: FieldTaskType;
-  serviceId: string | null;
-  assignedTo: AgentRole | null;
-  status: FieldTaskStatus;
-  approvalRequired: boolean;
-  payload: Record<string, unknown>;
-  result: Record<string, unknown>;
-  attachments: FieldTaskAttachment[];
-  linkedTaskId: string | null;
-  blockedBy: string[];
-  rejectionFeedback: string | null;
-  approvedBy: string | null;
-  rejectedBy: string | null;
-  scheduledFor?: string | null;
-  createdAt: string;
-  updatedAt: string;
-  executedAt: string | null;
-  completedAt: string | null;
-}
-
-export interface FieldTasksFile {
-  tasks: FieldTask[];
-}
-
-export interface FieldTaskTemplate {
-  id: string;
-  name: string;
-  description: string;
-  type: FieldTaskType;
-  serviceId: string | null;
-  payload: Record<string, unknown>;  // Supports {{variable}} slots
-  tags: string[];
-  createdBy: string;
-  usageCount: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface FieldTaskTemplatesFile {
-  templates: FieldTaskTemplate[];
-}
-
-export interface FieldOpsService {
-  id: string;
-  name: string;
-  mcpPackage: string;
-  status: ServiceStatus;
-  authType: ServiceAuthType;
-  credentialId: string | null;
-  riskLevel: ServiceRiskLevel;
-  capabilities: string[];
-  allowedAgents: string[];
-  config: Record<string, unknown>;
-  catalogId: string | null;
-  installedAt: string;
-  lastUsed: string | null;
-}
-
-export interface FieldOpsServicesFile {
-  services: FieldOpsService[];
-}
-
-export interface FieldOpsCredential {
-  id: string;
-  serviceId: string;
-  encryptedData: string;  // AES-256-GCM ciphertext (hex)
-  iv: string;             // 12-byte IV (hex)
-  authTag: string;        // 16-byte GCM auth tag (hex) — tamper detection
-  createdAt: string;
-  expiresAt: string | null;
-}
-
-export interface FieldOpsCredentialsFile {
-  masterKeyHash: string | null;   // "scrypt:<salt_hex>:<hash_hex>" or legacy SHA-256
-  masterKeySalt: string | null;   // hex 32-byte salt for encryption key derivation
-  credentials: FieldOpsCredential[];
-}
-
-export type FieldOpsEventType =
-  | "field_task_created"
-  | "field_task_approved"
-  | "field_task_rejected"
-  | "field_task_executing"
-  | "field_task_completed"
-  | "field_task_failed"
-  | "service_connected"
-  | "service_disconnected"
-  | "credential_added"
-  | "credential_rotated"
-  | "credential_accessed"
-  | "credential_access_denied"
-  | "vault_migrated"
-  | "autonomy_changed"
-  | "service_saved"
-  | "service_activated"
-  | "field_task_deleted"
-  | "circuit_breaker_tripped"
-  | "mission_created"
-  | "mission_status_changed"
-  | "mission_deleted"
-  | "approval_config_changed";
-
-export interface FieldOpsActivityEvent {
-  id: string;
-  type: FieldOpsEventType;
-  actor: AgentRole | "system";
-  taskId: string | null;
-  serviceId: string | null;
-  missionId: string | null;
-  credentialId: string | null;
-  metadata: Record<string, unknown> | null;
-  summary: string;
-  details: string;
-  timestamp: string;
-}
-
-export interface FieldOpsActivityLogFile {
-  events: FieldOpsActivityEvent[];
-}
-
-export interface ApprovalConfig {
-  mode: AutonomyLevel;
-  overrides: Record<string, AutonomyLevel>;
-}
-
-export interface ApprovalConfigFile {
-  config: ApprovalConfig;
-}
 
 // ─── Safety Limits Types ────────────────────────────────────────────────────
 
@@ -671,5 +503,25 @@ export interface ServiceCatalogFile {
   services: CatalogService[];
 }
 
-// Re-export financial types from adapter layer for convenience
-export type { FinancialMetric, FinancialSnapshot } from "@/lib/adapters/types";
+// ─── Goal Tree ────────────────────────────────────────────────────────────────
+
+export interface GoalTreeNode {
+  id: string;
+  title: string;
+  description?: string;
+  children: GoalTreeNode[];
+}
+
+export interface GoalTreeRecord {
+  goalId: string;
+  goalTitle: string;
+  taskIds: string[];
+  rootNode: GoalTreeNode;
+  pipelineData?: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GoalTreeFile {
+  trees: GoalTreeRecord[];
+}
