@@ -54,7 +54,7 @@ function handleStatus(): void {
   if (pid && isProcessRunning(pid)) {
     try {
       const status = JSON.parse(readFileSync(STATUS_FILE, "utf-8"));
-      console.log("\n=== Mission Control Agent Daemon ===");
+      console.log("\n=== Katalyst Agent Daemon ===");
       console.log(`Status:  \x1b[32mRunning\x1b[0m`);
       console.log(`PID:     ${pid}`);
       console.log(`Started: ${status.startedAt || "unknown"}`);
@@ -68,7 +68,7 @@ function handleStatus(): void {
     }
   } else {
     if (pid) removePidFile(); // Clean stale PID file
-    console.log("\n=== Mission Control Agent Daemon ===");
+    console.log("\n=== Katalyst Agent Daemon ===");
     console.log(`Status:  \x1b[31mStopped\x1b[0m`);
     console.log("");
   }
@@ -107,7 +107,7 @@ async function handleStart(): Promise<void> {
   // Clean stale PID file
   if (existingPid) removePidFile();
 
-  console.log("\n=== Mission Control Agent Daemon ===\n");
+  console.log("\n=== Katalyst Agent Daemon ===\n");
 
   // Load configuration
   const config = loadConfig();
