@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { apiFetch } from "@/lib/api-client";
 import { showSuccess, showError } from "@/lib/toast";
 import { cn } from "@/lib/utils";
@@ -84,7 +83,7 @@ export function SidebarFooter({ collapsed }: SidebarFooterProps) {
               <Circle
                 className={cn(
                   "h-2.5 w-2.5 fill-current",
-                  isPm2 ? "text-green-500 animate-pulse" : "text-zinc-500"
+                  isPm2 ? "text-[var(--success)] animate-pulse" : "text-[var(--muted-foreground)]"
                 )}
               />
             </button>
@@ -101,8 +100,8 @@ export function SidebarFooter({ collapsed }: SidebarFooterProps) {
             <Badge
               className={cn(
                 isPm2
-                  ? "bg-green-500/15 text-green-500 border-green-500/25"
-                  : "bg-zinc-500/15 text-zinc-400 border-zinc-500/25"
+                  ? "bg-[var(--success)]/15 text-[var(--success)] border-[var(--success)]/25"
+                  : "bg-[var(--muted-foreground)]/15 text-[var(--muted-foreground)] border-[var(--muted-foreground)]/25"
               )}
             >
               {isPm2 ? "Always-on (PM2)" : "Terminal"}
@@ -145,7 +144,7 @@ export function SidebarFooter({ collapsed }: SidebarFooterProps) {
                 Stop PM2 server
               </p>
               <code className="block text-xs bg-muted px-2 py-1 rounded font-mono">
-                pm2 stop mission-control
+                pm2 stop katalyst
               </code>
             </div>
           </div>
@@ -158,7 +157,7 @@ export function SidebarFooter({ collapsed }: SidebarFooterProps) {
     <Tooltip>
       <TooltipTrigger asChild>
         <button
-          className="flex items-center justify-center h-8 w-8 rounded-md text-red-500/60 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+          className="flex items-center justify-center h-8 w-8 rounded-md text-[var(--destructive)]/60 hover:text-[var(--destructive)] hover:bg-[var(--destructive)]/10 transition-colors"
           onClick={() => setKillDialogOpen(true)}
           aria-label="Emergency Stop"
         >
@@ -177,16 +176,14 @@ export function SidebarFooter({ collapsed }: SidebarFooterProps) {
         <div className="border-t p-2 flex flex-col items-center gap-1">
           {statusDotButton}
           {killSwitchButton}
-          <ThemeToggle />
         </div>
       ) : (
         <div className="border-t p-3 flex items-center gap-2">
           <p className="text-xs text-sidebar-foreground/40 flex-1">
-            Mission Control v0.10
+            Katalyst v0.10
           </p>
           {statusDotButton}
           {killSwitchButton}
-          <ThemeToggle />
         </div>
       )}
 
@@ -194,7 +191,7 @@ export function SidebarFooter({ collapsed }: SidebarFooterProps) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-red-500" />
+              <AlertTriangle className="h-5 w-5 text-[var(--destructive)]" />
               Emergency Stop
             </DialogTitle>
             <DialogDescription>
