@@ -58,7 +58,7 @@ export function ProjectCardLarge({ project, tasks, goals, isRunning, isProjectRu
         "group cursor-pointer transition-all hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5 animate-fade-in-up",
         isRunning && "ring-2 ring-green-500/50 border-green-500/30 shadow-green-500/10 shadow-md"
       )}>
-        <CardHeader className={cn("pb-3", isRunning && "bg-green-500/5 rounded-t-lg")}>
+        <CardHeader className={cn("pb-3", isRunning && "bg-[var(--success)]/5 rounded-t-lg")}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="h-3 w-3 rounded-full" style={{ backgroundColor: project.color }} />
