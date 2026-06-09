@@ -23,16 +23,16 @@ import { cn } from "@/lib/utils";
 import type { Task } from "@/lib/types";
 
 const QUADRANT_LABELS: Record<string, { label: string; className: string }> = {
-  do: { label: "DO", className: "bg-red-500/20 text-red-400" },
-  schedule: { label: "SCHEDULE", className: "bg-blue-500/20 text-blue-400" },
-  delegate: { label: "DELEGATE", className: "bg-amber-500/20 text-amber-400" },
-  eliminate: { label: "ELIMINATE", className: "bg-zinc-500/20 text-zinc-400" },
+  do: { label: "DO", className: "bg-[var(--quadrant-do)]/20 text-[var(--quadrant-do)]" },
+  schedule: { label: "SCHEDULE", className: "bg-[var(--quadrant-schedule)]/20 text-[var(--quadrant-schedule)]" },
+  delegate: { label: "DELEGATE", className: "bg-[var(--quadrant-delegate)]/20 text-[var(--quadrant-delegate)]" },
+  eliminate: { label: "ELIMINATE", className: "bg-[var(--quadrant-eliminate)]/20 text-[var(--quadrant-eliminate)]" },
 };
 
 const KANBAN_LABELS: Record<string, { label: string; className: string }> = {
-  "not-started": { label: "Todo", className: "bg-zinc-500/20 text-zinc-400" },
-  "in-progress": { label: "Active", className: "bg-blue-500/20 text-blue-400" },
-  "done": { label: "Done", className: "bg-emerald-500/20 text-emerald-400" },
+  "not-started": { label: "Todo", className: "bg-[var(--status-not-started)]/20 text-[var(--status-not-started)]" },
+  "in-progress": { label: "Active", className: "bg-[var(--status-in-progress)]/20 text-[var(--status-in-progress)]" },
+  "done": { label: "Done", className: "bg-[var(--status-done)]/20 text-[var(--status-done)]" },
 };
 
 function getQuadrantKey(task: Task): string {
@@ -161,10 +161,10 @@ export function SearchDialog() {
                 <span className="flex-1 truncate">{project.name}</span>
                 <span className={cn(
                   "rounded px-1.5 py-0.5 text-[10px] font-medium",
-                  project.status === "active" ? "bg-emerald-500/20 text-emerald-400" :
-                  project.status === "paused" ? "bg-amber-500/20 text-amber-400" :
-                  project.status === "completed" ? "bg-blue-500/20 text-blue-400" :
-                  "bg-zinc-500/20 text-zinc-400"
+                  project.status === "active" ? "bg-[var(--status-done)]/20 text-[var(--status-done)]" :
+                  project.status === "paused" ? "bg-[var(--quadrant-delegate)]/20 text-[var(--quadrant-delegate)]" :
+                  project.status === "completed" ? "bg-[var(--status-in-progress)]/20 text-[var(--status-in-progress)]" :
+                  "bg-[var(--muted-foreground)]/20 text-[var(--muted-foreground)]"
                 )}>
                   {project.status}
                 </span>
@@ -190,15 +190,15 @@ export function SearchDialog() {
                 <span className="flex-1 truncate">{goal.title}</span>
                 <span className={cn(
                   "rounded px-1.5 py-0.5 text-[10px] font-medium",
-                  goal.type === "long-term" ? "bg-purple-500/20 text-purple-400" : "bg-cyan-500/20 text-cyan-400"
+                  goal.type === "long-term" ? "bg-purple-500/20 text-purple-400" : "bg-[var(--muted-foreground)]/20 text-[var(--muted-foreground)]"
                 )}>
                   {goal.type === "long-term" ? "Long-term" : "Milestone"}
                 </span>
                 <span className={cn(
                   "rounded px-1.5 py-0.5 text-[10px] font-medium",
-                  goal.status === "completed" ? "bg-emerald-500/20 text-emerald-400" :
-                  goal.status === "in-progress" ? "bg-blue-500/20 text-blue-400" :
-                  "bg-zinc-500/20 text-zinc-400"
+                  goal.status === "completed" ? "bg-[var(--status-done)]/20 text-[var(--status-done)]" :
+                  goal.status === "in-progress" ? "bg-[var(--status-in-progress)]/20 text-[var(--status-in-progress)]" :
+                  "bg-[var(--muted-foreground)]/20 text-[var(--muted-foreground)]"
                 )}>
                   {goal.status}
                 </span>
@@ -222,7 +222,7 @@ export function SearchDialog() {
               >
                 <Lightbulb className="h-4 w-4 shrink-0 text-muted-foreground" />
                 <span className="flex-1 truncate">{entry.content}</span>
-                <span className="rounded px-1.5 py-0.5 text-[10px] font-medium bg-amber-500/20 text-amber-400">
+                <span className="rounded px-1.5 py-0.5 text-[10px] font-medium bg-[var(--quadrant-delegate)]/20 text-[var(--quadrant-delegate)]">
                   unprocessed
                 </span>
                 <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/50" />
