@@ -284,7 +284,6 @@ export async function POST(request: Request) {
       estimatedMinutes: body.estimatedMinutes,
       actualMinutes: body.actualMinutes,
       acceptanceCriteria: body.acceptanceCriteria,
-      fieldTaskIds: body.fieldTaskIds,
       comments: body.comments,
       tags: body.tags,
       notes: body.notes,
