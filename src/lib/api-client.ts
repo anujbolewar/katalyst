@@ -1,5 +1,5 @@
 /**
- * Authenticated API client for Mission Control.
+ * Authenticated API client for Katalyst.
  *
  * Wraps fetch() with:
  * - Automatic Bearer token injection (NEXT_PUBLIC_MC_API_TOKEN)
