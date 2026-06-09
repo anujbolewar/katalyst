@@ -14,7 +14,7 @@ export default function GlobalError({
   const [countdown, setCountdown] = useState(Math.ceil(AUTO_RELOAD_DELAY / 1000));
 
   useEffect(() => {
-    console.error("[Mission Control Global Error]", error);
+    console.error("[Katalyst Global Error]", error);
   }, [error]);
 
   // Auto-reload after countdown
@@ -35,10 +35,10 @@ export default function GlobalError({
 
   return (
     <html lang="en">
-      <body style={{ margin: 0, fontFamily: "system-ui, -apple-system, sans-serif", backgroundColor: "#0a0a0a", color: "#fafafa" }}>
+      <body style={{ margin: 0, fontFamily: "system-ui, -apple-system, sans-serif", backgroundColor: "var(--background)", color: "var(--foreground)" }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "2rem", textAlign: "center" }}>
-          <div style={{ width: "48px", height: "48px", borderRadius: "50%", backgroundColor: "rgba(239, 68, 68, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1rem" }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div style={{ width: "48px", height: "48px", borderRadius: "50%", backgroundColor: "color-mix(in srgb, var(--destructive) 10%, transparent)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1rem" }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
               <path d="M12 9v4" />
               <path d="M12 17h.01" />
@@ -47,11 +47,11 @@ export default function GlobalError({
           <h2 style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "0.5rem" }}>
             Something went wrong
           </h2>
-          <p style={{ color: "#888", marginBottom: "0.5rem", maxWidth: "360px", fontSize: "0.875rem" }}>
+          <p style={{ color: "var(--muted-foreground)", marginBottom: "0.5rem", maxWidth: "360px", fontSize: "0.875rem" }}>
             {error.message || "A critical error occurred. The page will reload automatically."}
           </p>
           {countdown > 0 && (
-            <p style={{ color: "#666", fontSize: "0.75rem", marginBottom: "1rem" }}>
+            <p style={{ color: "var(--muted-foreground)", fontSize: "0.75rem", marginBottom: "1rem" }}>
               Reloading in {countdown}s...
             </p>
           )}
@@ -61,7 +61,7 @@ export default function GlobalError({
               style={{
                 padding: "0.5rem 1rem",
                 borderRadius: "0.375rem",
-                border: "1px solid #333",
+                border: "1px solid var(--border)",
                 background: "transparent",
                 color: "inherit",
                 cursor: "pointer",
@@ -75,9 +75,9 @@ export default function GlobalError({
               style={{
                 padding: "0.5rem 1rem",
                 borderRadius: "0.375rem",
-                border: "1px solid #333",
+                border: "1px solid var(--border)",
                 background: "transparent",
-                color: "#888",
+                color: "var(--muted-foreground)",
                 cursor: "pointer",
                 fontSize: "0.875rem",
               }}
