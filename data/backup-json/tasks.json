@@ -1,0 +1,1003 @@
+{
+  "tasks": [
+    {
+      "id": "task_demo_1",
+      "title": "Design hero section for landing page",
+      "description": "Create a compelling hero section with headline, subheadline, CTA button, and product screenshot.",
+      "importance": "important",
+      "urgency": "urgent",
+      "kanban": "in-progress",
+      "projectId": "proj_demo_1",
+      "milestoneId": "mile_demo_1",
+      "assignedTo": "developer",
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_1",
+          "title": "Write headline copy",
+          "done": true
+        },
+        {
+          "id": "sub_2",
+          "title": "Design layout",
+          "done": true
+        },
+        {
+          "id": "sub_3",
+          "title": "Implement responsive HTML/CSS",
+          "done": false
+        },
+        {
+          "id": "sub_4",
+          "title": "Add animations",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": 180,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "Hero loads in under 2 seconds",
+        "CTA above the fold on mobile"
+      ],
+      "comments": [
+        {
+          "id": "cmt_demo_1",
+          "author": "me",
+          "content": "Focus on 'save time' messaging.",
+          "createdAt": "2026-02-21T18:26:59.160Z"
+        },
+        {
+          "id": "cmt_demo_2",
+          "author": "developer",
+          "content": "Copy done. Moving to responsive implementation.",
+          "createdAt": "2026-02-23T18:26:59.160Z"
+        }
+      ],
+      "tags": [
+        "design",
+        "frontend"
+      ],
+      "notes": "",
+      "createdAt": "2026-02-17T18:26:59.160Z",
+      "updatedAt": "2026-02-24T12:26:59.160Z",
+      "dueDate": null,
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_demo_2",
+      "title": "Set up email signup form with validation",
+      "description": "Add an email capture form to the landing page with validation and duplicate detection.",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": "proj_demo_1",
+      "milestoneId": "mile_demo_1",
+      "assignedTo": "developer",
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [],
+      "blockedBy": [
+        "task_demo_1"
+      ],
+      "estimatedMinutes": 120,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "Email validation on client and server",
+        "Duplicate detection"
+      ],
+      "comments": [],
+      "tags": [
+        "backend",
+        "forms"
+      ],
+      "notes": "Consider a third-party form service.",
+      "createdAt": "2026-02-17T18:26:59.160Z",
+      "updatedAt": "2026-02-17T18:26:59.160Z",
+      "dueDate": null,
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_demo_3",
+      "title": "Research competitor API pricing models",
+      "description": "Analyze how competitors price their API access. Look at rate limits, tiers, and developer experience.",
+      "importance": "not-important",
+      "urgency": "urgent",
+      "kanban": "in-progress",
+      "projectId": "proj_demo_2",
+      "milestoneId": "mile_demo_2",
+      "assignedTo": "researcher",
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_5",
+          "title": "Identify top 5 competitors",
+          "done": true
+        },
+        {
+          "id": "sub_6",
+          "title": "Document pricing tiers",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": 90,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "Comparison table with 5+ competitors"
+      ],
+      "comments": [
+        {
+          "id": "cmt_demo_3",
+          "author": "researcher",
+          "content": "Found 7 competitors. Full analysis coming tomorrow.",
+          "createdAt": "2026-02-24T10:26:59.160Z"
+        }
+      ],
+      "tags": [
+        "research",
+        "pricing"
+      ],
+      "notes": "",
+      "createdAt": "2026-02-19T18:26:59.160Z",
+      "updatedAt": "2026-02-24T10:26:59.160Z",
+      "dueDate": null,
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_demo_4",
+      "title": "Design API authentication flow",
+      "description": "Design the OAuth2 authentication flow for the API.",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": "proj_demo_2",
+      "milestoneId": "mile_demo_2",
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [],
+      "blockedBy": [
+        "task_demo_3"
+      ],
+      "estimatedMinutes": 240,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "OAuth2 flow diagram",
+        "Token rotation strategy"
+      ],
+      "comments": [],
+      "tags": [
+        "security",
+        "architecture"
+      ],
+      "notes": "Depends on competitor research.",
+      "createdAt": "2026-02-19T18:26:59.160Z",
+      "updatedAt": "2026-02-19T18:26:59.160Z",
+      "dueDate": null,
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_demo_5",
+      "title": "Write launch announcement blog post",
+      "description": "Write a blog post announcing the product launch with screenshots and signup link.",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": "proj_demo_1",
+      "milestoneId": null,
+      "assignedTo": "marketer",
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [],
+      "blockedBy": [
+        "task_demo_1"
+      ],
+      "estimatedMinutes": 120,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "1000-1500 words",
+        "3+ screenshots",
+        "SEO optimized"
+      ],
+      "comments": [],
+      "tags": [
+        "content",
+        "launch"
+      ],
+      "notes": "",
+      "createdAt": "2026-02-21T18:26:59.160Z",
+      "updatedAt": "2026-02-21T18:26:59.160Z",
+      "dueDate": null,
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_demo_6",
+      "title": "Analyze content marketing strategy options",
+      "description": "Research and recommend a content strategy with effort estimates and expected ROI.",
+      "importance": "not-important",
+      "urgency": "not-urgent",
+      "kanban": "done",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": "business-analyst",
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_8",
+          "title": "Research channel options",
+          "done": true
+        },
+        {
+          "id": "sub_9",
+          "title": "Estimate effort",
+          "done": true
+        },
+        {
+          "id": "sub_10",
+          "title": "Create recommendation",
+          "done": true
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": 90,
+      "actualMinutes": 75,
+      "acceptanceCriteria": [
+        "4+ channels compared",
+        "ROI estimates"
+      ],
+      "comments": [
+        {
+          "id": "cmt_demo_4",
+          "author": "business-analyst",
+          "content": "Recommending blog + Twitter combo. Newsletter after 500 subs.",
+          "createdAt": "2026-02-22T18:26:59.160Z"
+        }
+      ],
+      "tags": [
+        "strategy",
+        "content"
+      ],
+      "notes": "Start with weekly blog posts + Twitter thread repurposing.",
+      "createdAt": "2026-02-14T18:26:59.160Z",
+      "updatedAt": "2026-02-22T18:26:59.160Z",
+      "dueDate": null,
+      "completedAt": "2026-02-22T18:26:59.160Z",
+      "deletedAt": null
+    },
+    {
+      "id": "task_demo_7",
+      "title": "Review and approve landing page design",
+      "description": "Review the developer's landing page implementation and provide feedback.",
+      "importance": "important",
+      "urgency": "urgent",
+      "kanban": "not-started",
+      "projectId": "proj_demo_1",
+      "milestoneId": "mile_demo_1",
+      "assignedTo": "me",
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [],
+      "blockedBy": [
+        "task_demo_1"
+      ],
+      "estimatedMinutes": 30,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "Design reviewed",
+        "Mobile verified",
+        "CTA approved"
+      ],
+      "comments": [],
+      "tags": [
+        "review"
+      ],
+      "notes": "",
+      "createdAt": "2026-02-19T18:26:59.160Z",
+      "updatedAt": "2026-02-19T18:26:59.160Z",
+      "dueDate": null,
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_SBXJaGrHlFtM",
+      "title": "Validate & Scope the API Product",
+      "description": "Decomposed from goal: Build a SaaS — API-first B2C Developer Tool MVP",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_tKiRVLmaF_xi",
+          "title": "Identify a high-frequency B2C API need (e.g., AI image gen, personal automation, data enrichment)",
+          "done": false
+        },
+        {
+          "id": "sub_NfFIV7aFTgvD",
+          "title": "Interview 10–15 potential consumers in target communities (Reddit, Discord, Twitter)",
+          "done": false
+        },
+        {
+          "id": "sub_ozJBdZKXpGg_",
+          "title": "Define 3 core API endpoints that solve the validated pain point end-to-end",
+          "done": false
+        },
+        {
+          "id": "sub_1HRhunHPaiBZ",
+          "title": "Set pricing tiers: free tier (rate-limited) + 1 paid tier under $10/mo",
+          "done": false
+        },
+        {
+          "id": "sub_7IcY_eRcYCVO",
+          "title": "Write a one-page product spec with input/output schemas and rate limits",
+          "done": false
+        },
+        {
+          "id": "sub_10sgQrRgWLJI",
+          "title": "Spike the riskiest technical dependency and confirm it works within constraints",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a SaaS — API-first B2C Developer Tool MVP",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:50:39.364Z",
+      "updatedAt": "2026-06-09T20:50:39.364Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_n-R9v4f9e2cr",
+      "title": "Build the Core API Backend",
+      "description": "Decomposed from goal: Build a SaaS — API-first B2C Developer Tool MVP",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_0thZ3jbiJamU",
+          "title": "Scaffold project with FastAPI/Express + PostgreSQL + Redis stack",
+          "done": false
+        },
+        {
+          "id": "sub_QVGqk_c-aKQ6",
+          "title": "Implement API key generation, hashing, and storage",
+          "done": false
+        },
+        {
+          "id": "sub_E3FNaSdzbXtM",
+          "title": "Build authentication middleware that validates API keys per request",
+          "done": false
+        },
+        {
+          "id": "sub_6-NF7P83ObBR",
+          "title": "Develop the 3 core endpoints with input validation and error handling",
+          "done": false
+        },
+        {
+          "id": "sub_bmk1_6advRTS",
+          "title": "Add per-key rate limiting and usage tracking with Redis counters",
+          "done": false
+        },
+        {
+          "id": "sub_2xUv5JaFC3Or",
+          "title": "Create async background job pipeline for heavy endpoint processing",
+          "done": false
+        },
+        {
+          "id": "sub_f75ee9DoHkFt",
+          "title": "Write integration tests covering auth, rate limiting, and all endpoints",
+          "done": false
+        },
+        {
+          "id": "sub_hl3uTZVWNkAv",
+          "title": "Containerize with Docker and deploy to a $20–30/mo cloud VM",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a SaaS — API-first B2C Developer Tool MVP",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:50:39.364Z",
+      "updatedAt": "2026-06-09T20:50:39.364Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_14gvCNkdq0UR",
+      "title": "Ship Developer-Facing Surfaces",
+      "description": "Decomposed from goal: Build a SaaS — API-first B2C Developer Tool MVP",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_3Pdff46DUoc2",
+          "title": "Build a clean API reference docs page with code snippets in 3 languages (curl, Python, JS)",
+          "done": false
+        },
+        {
+          "id": "sub_xbDIDEpafgqj",
+          "title": "Create a signup/login dashboard for consumers to get API keys and manage billing",
+          "done": false
+        },
+        {
+          "id": "sub_HF96GMKCAh2E",
+          "title": "Implement Stripe checkout for the paid tier and auto-upgrade on payment",
+          "done": false
+        },
+        {
+          "id": "sub_2VaBjAeTypex",
+          "title": "Add webhook receiver to Stripe to suspend/reactivate API keys on subscription changes",
+          "done": false
+        },
+        {
+          "id": "sub_gXYCa3_73wrA",
+          "title": "Write a Quickstart guide that gets a user from signup to first API call in under 5 minutes",
+          "done": false
+        },
+        {
+          "id": "sub_Z9K1NbIhZV_d",
+          "title": "Set up a public status page (e.g., BetterStack) for uptime transparency",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a SaaS — API-first B2C Developer Tool MVP",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:50:39.364Z",
+      "updatedAt": "2026-06-09T20:50:39.364Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_5N0Q6jymKw1J",
+      "title": "Acquire First 100+ Users",
+      "description": "Decomposed from goal: Build a SaaS — API-first B2C Developer Tool MVP",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_-mXKs7-bL4Ld",
+          "title": "Launch on Product Hunt with a compelling demo video and founder story",
+          "done": false
+        },
+        {
+          "id": "sub_E-g9zd2jhyra",
+          "title": "Post the API with open-source wrapper examples on GitHub and pin to profile",
+          "done": false
+        },
+        {
+          "id": "sub_2ElhKYHx_XkK",
+          "title": "Write 3 blog posts: tutorial, comparison vs DIY, and a creative consumer use case",
+          "done": false
+        },
+        {
+          "id": "sub_Ttni2a063UTy",
+          "title": "Share in relevant subreddits and Hacker News (Show HN) during week 4–5",
+          "done": false
+        },
+        {
+          "id": "sub_TLYjKFjcQQeY",
+          "title": "Create 2–3 short-form demo videos and post on Twitter, TikTok, and YouTube Shorts",
+          "done": false
+        },
+        {
+          "id": "sub_VFkT76lWmTuE",
+          "title": "Set up referral system: free users get bonus credits for each referred paid signup",
+          "done": false
+        },
+        {
+          "id": "sub_f954SiAp4svE",
+          "title": "Monitor churn and collect NPS feedback weekly; patch top-3 friction points within 48 hours",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a SaaS — API-first B2C Developer Tool MVP",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:50:39.364Z",
+      "updatedAt": "2026-06-09T20:50:39.364Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_L9ULlmePD1Lk",
+      "title": "Operate & Iterate Post-Launch",
+      "description": "Decomposed from goal: Build a SaaS — API-first B2C Developer Tool MVP",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_RpVSzn8-LILC",
+          "title": "Set up error alerting (Sentry) and latency monitoring dashboards for all endpoints",
+          "done": false
+        },
+        {
+          "id": "sub_i1WHuDSX_C4S",
+          "title": "Add automated daily usage email digests to keep users engaged",
+          "done": false
+        },
+        {
+          "id": "sub_3Uj4tIs0_TXw",
+          "title": "Triage feature requests in a public Canny/feedback board and ship top-voted item bi-weekly",
+          "done": false
+        },
+        {
+          "id": "sub_sEkj-Zxe-61J",
+          "title": "Benchmark API latency vs closest competitor and optimize to win on speed by week 6",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a SaaS — API-first B2C Developer Tool MVP",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:50:39.364Z",
+      "updatedAt": "2026-06-09T20:50:39.364Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_lqdEU380JpRE",
+      "title": "Market Validation & Product Definition",
+      "description": "Decomposed from goal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_7onmtL_aOJ7n",
+          "title": "Conduct 15+ customer discovery interviews with target enterprise teams",
+          "done": false
+        },
+        {
+          "id": "sub_5cGZR9CmLOj1",
+          "title": "Define MVP feature set and prioritization based on interview insights",
+          "done": false
+        },
+        {
+          "id": "sub_CampvYqaE9CO",
+          "title": "Map top 3-5 enterprise integration requirements (SSO, APIs, directories)",
+          "done": false
+        },
+        {
+          "id": "sub_Z0mdQDxCZ59b",
+          "title": "Document core user personas, use cases, and success metrics",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:59:53.558Z",
+      "updatedAt": "2026-06-09T20:59:53.558Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_luH2duViuTZU",
+      "title": "Core Platform Architecture & Infrastructure",
+      "description": "Decomposed from goal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_Qk06GIE_FpJf",
+          "title": "Set up cloud infrastructure with multi-tenant data isolation",
+          "done": false
+        },
+        {
+          "id": "sub_GIqwnjAHtP-I",
+          "title": "Implement authentication system with SAML/OIDC SSO support",
+          "done": false
+        },
+        {
+          "id": "sub_UCjLlG3rt2Qx",
+          "title": "Build role-based access control (RBAC) and team management",
+          "done": false
+        },
+        {
+          "id": "sub_HJOrsw5ZwEWa",
+          "title": "Design and implement REST and webhook API layer",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:59:53.558Z",
+      "updatedAt": "2026-06-09T20:59:53.558Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_SseHJyuiRI19",
+      "title": "Workflow Automation Engine",
+      "description": "Decomposed from goal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_xyM8HVXyXj2b",
+          "title": "Build visual workflow builder with drag-and-drop interface",
+          "done": false
+        },
+        {
+          "id": "sub_ZvYTd_FhC-vu",
+          "title": "Implement trigger system (scheduled, webhook, event-driven)",
+          "done": false
+        },
+        {
+          "id": "sub_zJCMYbxIw2e7",
+          "title": "Develop action library with pre-built integrations and custom scripting",
+          "done": false
+        },
+        {
+          "id": "sub_5NDQ-VLHqdA2",
+          "title": "Create workflow execution engine with logging and error handling",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:59:53.558Z",
+      "updatedAt": "2026-06-09T20:59:53.558Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_4FljW1thZa9R",
+      "title": "Productivity Tooling Features",
+      "description": "Decomposed from goal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_Gpgv0ZKxEHLh",
+          "title": "Build task and project management dashboard",
+          "done": false
+        },
+        {
+          "id": "sub_HkZCDtfjoGS2",
+          "title": "Implement team collaboration tools (comments, assignments, notifications)",
+          "done": false
+        },
+        {
+          "id": "sub_GNZjoqECoy2a",
+          "title": "Create reporting and analytics module with exportable insights",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:59:53.558Z",
+      "updatedAt": "2026-06-09T20:59:53.558Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_Yfe32rrgOUBV",
+      "title": "Enterprise Integrations",
+      "description": "Decomposed from goal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_Hmh1BXWh8x_g",
+          "title": "Integrate with major SSO providers (Okta, Azure AD, Google Workspace)",
+          "done": false
+        },
+        {
+          "id": "sub_tiLhsQXsjNMA",
+          "title": "Build native connectors for top 5 enterprise tools (Slack, Jira, Salesforce, etc.)",
+          "done": false
+        },
+        {
+          "id": "sub_QdWJaGjf4fB5",
+          "title": "Implement SCIM for automated user provisioning and deprovisioning",
+          "done": false
+        },
+        {
+          "id": "sub_ttLpfCw4q4V3",
+          "title": "Set up API gateway with rate limiting and usage auditing",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:59:53.558Z",
+      "updatedAt": "2026-06-09T20:59:53.558Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_U7isv38oRRq9",
+      "title": "Billing, Pricing & Revenue Operations",
+      "description": "Decomposed from goal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_3siM6kji5jbI",
+          "title": "Integrate subscription billing platform (Stripe Billing or similar)",
+          "done": false
+        },
+        {
+          "id": "sub_UfP1tXhgqyyE",
+          "title": "Define tiered pricing model with self-serve and sales-led options",
+          "done": false
+        },
+        {
+          "id": "sub_BZ28qj_9LFLv",
+          "title": "Build usage tracking and metering for pay-as-you-go components",
+          "done": false
+        },
+        {
+          "id": "sub_wTDqOLVXXMs2",
+          "title": "Create customer onboarding checkout and contract flow for enterprises",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:59:53.558Z",
+      "updatedAt": "2026-06-09T20:59:53.558Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_RFC3j4FZy13s",
+      "title": "Security, Compliance & Trust",
+      "description": "Decomposed from goal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_FLcEmAEkEVkn",
+          "title": "Implement SOC 2 Type II controls and documentation framework",
+          "done": false
+        },
+        {
+          "id": "sub_MWxwEsTCoWPO",
+          "title": "Set up encryption at rest and in transit with key management",
+          "done": false
+        },
+        {
+          "id": "sub_uSzPXOrJ4zQd",
+          "title": "Conduct penetration test and remediate findings",
+          "done": false
+        },
+        {
+          "id": "sub_UlJoqMo75wM_",
+          "title": "Create security whitepaper and compliance documentation for buyers",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:59:53.558Z",
+      "updatedAt": "2026-06-09T20:59:53.558Z",
+      "completedAt": null,
+      "deletedAt": null
+    },
+    {
+      "id": "task_AR4fayKujfEH",
+      "title": "Go-to-Market & Early Revenue",
+      "description": "Decomposed from goal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_pDfjpLwbqpXP",
+          "title": "Launch private beta with 5-10 design partner companies",
+          "done": false
+        },
+        {
+          "id": "sub_uyDhbhWekZWT",
+          "title": "Build sales collateral (decks, demo scripts, ROI calculator)",
+          "done": false
+        },
+        {
+          "id": "sub_5GoYhy21eITY",
+          "title": "Run outbound sales campaign targeting 200 ideal customer profiles",
+          "done": false
+        },
+        {
+          "id": "sub_RX2tMOIGUlC9",
+          "title": "Publish on enterprise marketplaces (Slack App Directory, Atlassian, etc.)",
+          "done": false
+        },
+        {
+          "id": "sub_yXZEuRTvArK7",
+          "title": "Close first 3-5 paid customers with annual contracts",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": null,
+      "actualMinutes": null,
+      "acceptanceCriteria": [],
+      "comments": [],
+      "tags": [
+        "goal-decomposition"
+      ],
+      "notes": "Auto-generated from goal decomposition.\nGoal: Build a B2B Enterprise Workflow Automation SaaS Product",
+      "dueDate": null,
+      "createdAt": "2026-06-09T20:59:53.558Z",
+      "updatedAt": "2026-06-09T20:59:53.558Z",
+      "completedAt": null,
+      "deletedAt": null
+    }
+  ]
+}
