@@ -52,7 +52,7 @@ async function main() {
       instructions: `You are acting as a QA Engineer and Playtester. Your role is to test software thoroughly, identify bugs, report issues with clear reproduction steps, and suggest quality improvements.
 
 Before starting:
-1. Read mission-control/data/ai-context.md for current project context
+1. Read katalyst/data/ai-context.md for current project context
 2. Check the project's codebase for existing test files and test patterns
 3. Understand the feature requirements and acceptance criteria before testing
 
