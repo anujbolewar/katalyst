@@ -83,24 +83,26 @@ export function TaskCard({ task, project, agents = [], className, isDragging, on
   return (
     <Card
       className={cn(
-        "cursor-grab select-none transition-all hover:shadow-md hover:border-primary/20 animate-fade-in-up",
+        "cursor-grab select-none transition-all hover:shadow-md hover:border-primary/20",
+        task.kanban === "done" && "animate-task-done",
+        task.kanban !== "done" && "animate-fade-in-up",
         isDragging && "opacity-50 shadow-lg rotate-1",
         onClick && "cursor-pointer",
-        isBlocked && "opacity-60 border-red-500/30",
-        !isBlocked && hasDependencies && "opacity-75 border-blue-500/30",
-        !isBlocked && hasAwaitingDecision && "opacity-75 border-amber-500/30",
-        isOverdue && "border-red-500/30",
-        isRunning && "ring-2 ring-green-500/50 border-green-500/30 shadow-green-500/10 shadow-md",
+        isBlocked && "opacity-60 border-[var(--destructive)]/30",
+        !isBlocked && hasDependencies && "opacity-75 border-[var(--info)]/30",
+        !isBlocked && hasAwaitingDecision && "opacity-75 border-[var(--warning)]/30",
+        isOverdue && "border-[var(--destructive)]/30",
+        isRunning && "animate-pulse-ring ring-2 ring-[var(--success)]/50 border-[var(--success)]/30",
         className
       )}
       onClick={onClick}
     >
-      <CardHeader className={cn("p-3 pb-1", isRunning && "bg-green-500/5 rounded-t-lg")}>
+      <CardHeader className={cn("p-3 pb-1", isRunning && "bg-[var(--success)]/5 rounded-t-lg")}>
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-sm font-semibold leading-tight flex-1">
-            {isBlocked && <Ban className="h-3 w-3 inline mr-1 text-red-500" />}
-            {!isBlocked && hasDependencies && <Link2 className="h-3 w-3 inline mr-1 text-blue-500" />}
-            {!isBlocked && !hasDependencies && hasAwaitingDecision && <Clock className="h-3 w-3 inline mr-1 text-amber-500" />}
+            {isBlocked && <Ban className="h-3 w-3 inline mr-1 text-[var(--destructive)]" />}
+            {!isBlocked && hasDependencies && <Link2 className="h-3 w-3 inline mr-1 text-[var(--info)]" />}
+            {!isBlocked && !hasDependencies && hasAwaitingDecision && <Clock className="h-3 w-3 inline mr-1 text-[var(--warning)]" />}
             {task.title}
           </CardTitle>
           <div className="flex items-center gap-1 shrink-0">
@@ -129,17 +131,17 @@ export function TaskCard({ task, project, agents = [], className, isDragging, on
         {/* Subtask progress */}
         {subtaskCount > 0 && (
           <div className="flex items-center gap-2">
-            <ListChecks className={`h-3 w-3 shrink-0 ${isRunning && subtaskDone < subtaskCount ? "text-green-500" : "text-muted-foreground"}`} />
+            <ListChecks className={`h-3 w-3 shrink-0 ${isRunning && subtaskDone < subtaskCount ? "text-[var(--success)]" : "text-muted-foreground"}`} />
             <div className="relative flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-700 ${isRunning && subtaskDone < subtaskCount ? "bg-green-500/70" : "bg-primary/60"}`}
+                className={`h-full rounded-full transition-all duration-700 ${isRunning && subtaskDone < subtaskCount ? "bg-[var(--success)]/70" : "bg-primary/60"}`}
                 style={{ width: `${subtaskPercent}%` }}
               />
               {isRunning && subtaskDone < subtaskCount && (
-                <div className="absolute inset-0 animate-shimmer rounded-full bg-gradient-to-r from-transparent via-green-500/20 to-transparent" />
+                <div className="absolute inset-0 animate-shimmer rounded-full bg-gradient-to-r from-transparent via-[var(--success)]/20 to-transparent" />
               )}
             </div>
-            <span className={`text-xs tabular-nums ${isRunning && subtaskDone < subtaskCount ? "text-green-500 font-medium" : "text-muted-foreground"}`}>
+            <span className={`text-xs tabular-nums ${isRunning && subtaskDone < subtaskCount ? "text-[var(--success)] font-medium" : "text-muted-foreground"}`}>
               {subtaskDone}/{subtaskCount}
             </span>
           </div>
@@ -188,17 +190,17 @@ export function TaskCard({ task, project, agents = [], className, isDragging, on
           )}
           {/* Blocking state indicators */}
           {isBlocked && (
-            <Badge variant="outline" className="text-xs px-1.5 py-0 border-red-500/50 text-red-500">
+            <Badge variant="outline" className="text-xs px-1.5 py-0 border-[var(--destructive)]/50 text-[var(--destructive)]">
               Blocked
             </Badge>
           )}
           {!isBlocked && hasDependencies && (
-            <Badge variant="outline" className="text-xs px-1.5 py-0 border-blue-500/50 text-blue-500">
+            <Badge variant="outline" className="text-xs px-1.5 py-0 border-[var(--info)]/50 text-[var(--info)]">
               Dependencies
             </Badge>
           )}
           {!isBlocked && hasAwaitingDecision && (
-            <Badge variant="outline" className="text-xs px-1.5 py-0 border-amber-500/50 text-amber-500">
+            <Badge variant="outline" className="text-xs px-1.5 py-0 border-[var(--warning)]/50 text-[var(--warning)]">
               Awaiting Decision
             </Badge>
           )}
@@ -224,11 +226,11 @@ export function TaskCard({ task, project, agents = [], className, isDragging, on
               className={cn(
                 "text-xs px-1.5 py-0 gap-1",
                 isOverdue
-                  ? "text-red-500 border-red-500/50"
+                  ? "text-[var(--destructive)] border-[var(--destructive)]/50"
                   : isDueToday
-                    ? "text-orange-500 border-orange-500/50"
+                    ? "text-[var(--warning)] border-[var(--warning)]/50"
                     : isDueSoon
-                      ? "text-yellow-500 border-yellow-500/50"
+                      ? "text-[var(--warning)] border-[var(--warning)]/50"
                       : "text-muted-foreground"
               )}
             >
