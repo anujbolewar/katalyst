@@ -40,10 +40,6 @@ const eventTypeLabels: Record<EventType, string> = {
   brain_dump_triaged: "Brain Dump Processed",
   milestone_completed: "Milestone Completed",
   agent_checkin: "Agent Check-in",
-  field_task_completed: "Field Task Completed",
-  field_task_failed: "Field Task Failed",
-  field_task_approved: "Field Task Approved",
-  field_task_rejected: "Field Task Rejected",
 };
 
 const eventTypeColors: Record<EventType, string> = {
@@ -58,10 +54,6 @@ const eventTypeColors: Record<EventType, string> = {
   brain_dump_triaged: "bg-pink-500/20 text-pink-400",
   milestone_completed: "bg-green-500/20 text-green-400",
   agent_checkin: "bg-indigo-500/20 text-indigo-400",
-  field_task_completed: "bg-green-500/20 text-green-400",
-  field_task_failed: "bg-red-500/20 text-red-400",
-  field_task_approved: "bg-emerald-500/20 text-emerald-400",
-  field_task_rejected: "bg-orange-500/20 text-orange-400",
 };
 
 function groupByDate(events: ActivityEvent[]): Map<string, ActivityEvent[]> {
