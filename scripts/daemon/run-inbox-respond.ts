@@ -233,7 +233,7 @@ function buildRespondPrompt(agent: AgentDef, message: InboxMessage, continuation
   lines.push("Read the message above carefully.");
   lines.push("");
   lines.push("**If the message asks you to take action** (create tasks, do research, update data, write code, etc.):");
-  lines.push("1. Perform the requested work first — read files, create/update data in `mission-control/data/`, etc.");
+  lines.push("1. Perform the requested work first — read files, create/update data in `katalyst/data/`, etc.");
   lines.push("2. Then compose a reply summarizing what you did and any results");
   lines.push("");
   lines.push("**If the message is informational or a question:**");
@@ -242,7 +242,7 @@ function buildRespondPrompt(agent: AgentDef, message: InboxMessage, continuation
   lines.push("");
   lines.push("Keep your reply concise but thorough.");
   lines.push("");
-  lines.push("After composing your reply, write it to the inbox by modifying `mission-control/data/inbox.json`.");
+  lines.push("After composing your reply, write it to the inbox by modifying `katalyst/data/inbox.json`.");
   lines.push("Add a new message entry with these fields:");
   lines.push(`- id: "msg_${Date.now() + 1000}" (or use Date.now() in your code)`);
   lines.push(`- from: "${agent.id}"`);
