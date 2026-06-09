@@ -8,7 +8,6 @@ import {
   Target,
   Lightbulb,
   Bot,
-  Radio,
   Shield,
   Database,
   Keyboard,
@@ -23,11 +22,11 @@ const sections = [
   { id: "projects", label: "Projects & Goals", icon: Target },
   { id: "brain-dump", label: "Brain Dump", icon: Lightbulb },
   { id: "agents", label: "AI Agents", icon: Bot },
-  { id: "field-ops", label: "Field Ops", icon: Radio },
+
   { id: "vault-security", label: "Vault Security", icon: Shield },
   { id: "data-management", label: "Data Management", icon: Database },
   { id: "shortcuts", label: "Keyboard Shortcuts", icon: Keyboard },
-  { id: "cloud", label: "Mission Control Cloud", icon: Cloud },
+  { id: "cloud", label: "Katalyst Cloud", icon: Cloud },
 ] as const;
 
 export default function GuidePage() {
@@ -38,7 +37,7 @@ export default function GuidePage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Guide</h1>
         <p className="text-muted-foreground mt-1">
-          Everything you need to know about Mission Control.
+          Everything you need to know about Katalyst.
         </p>
       </div>
 
@@ -208,48 +207,6 @@ export default function GuidePage() {
         </CardContent>
       </Card>
 
-      {/* Field Ops */}
-      <Card id="field-ops">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Radio className="h-5 w-5 text-primary" />
-            Field Ops
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 text-sm">
-          <div>
-            <h3 className="font-semibold mb-1.5">Autonomy Levels</h3>
-            <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
-              <li><strong className="text-foreground">Manual Approval</strong> -- every action requires your explicit approval before execution</li>
-              <li><strong className="text-foreground">Supervised</strong> -- agents execute within guardrails, flagging edge cases for review</li>
-              <li><strong className="text-foreground">Full Autonomy</strong> -- agents execute freely within configured limits</li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-1.5">Missions</h3>
-            <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
-              <li>Grouped containers for related field tasks</li>
-              <li>Track overall mission progress, budget, and status</li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-1.5">Field Task Lifecycle</h3>
-            <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
-              <li><strong className="text-foreground">Draft</strong> &rarr; <strong className="text-foreground">Pending Approval</strong> &rarr; <strong className="text-foreground">Approved</strong> &rarr; <strong className="text-foreground">Executing</strong> &rarr; <strong className="text-foreground">Completed</strong> / <strong className="text-foreground">Failed</strong></li>
-              <li>Each transition can require approval depending on the autonomy level</li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-1.5">Services & Approvals</h3>
-            <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
-              <li><strong className="text-foreground">Services catalog</strong> -- connect external platforms (APIs, tools, services)</li>
-              <li><strong className="text-foreground">Approval queue</strong> -- review and approve/reject pending field tasks</li>
-              <li><strong className="text-foreground">Financial overview</strong> -- track balances, spend per mission, and budget limits</li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Vault Security */}
       <Card id="vault-security">
         <CardHeader>
@@ -330,12 +287,12 @@ export default function GuidePage() {
         </CardContent>
       </Card>
 
-      {/* Mission Control Cloud */}
+      {/* Katalyst Cloud */}
       <Card id="cloud">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Cloud className="h-5 w-5 text-primary" />
-            Mission Control Cloud
+            Katalyst Cloud
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-sm">
@@ -353,7 +310,7 @@ export default function GuidePage() {
           </div>
           <div className="rounded-lg border border-primary/30 bg-primary/5 p-4">
             <p className="text-sm font-medium text-primary">
-              Star the repo to stay updated &mdash; Mission Control Cloud is coming soon.
+              Star the repo to stay updated &mdash; Katalyst Cloud is coming soon.
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               The self-hosted version will always remain free and open source.
