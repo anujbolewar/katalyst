@@ -137,7 +137,7 @@ function buildTriagePrompt(entries: BrainDumpEntry[]): string {
   lines.push("   - importance: `\"important\"` or `\"not-important\"`");
   lines.push("   - urgency: `\"urgent\"` or `\"not-urgent\"`");
   lines.push("");
-  lines.push("2. **Create a task** by reading `mission-control/data/tasks.json`, adding a new task object to the `tasks` array, and writing it back. Task fields:");
+  lines.push("2. **Create a task** by reading `katalyst/data/tasks.json`, adding a new task object to the `tasks` array, and writing it back. Task fields:");
   lines.push("   - `id`: `\"task_{timestamp}\"` (use Date.now())");
   lines.push("   - `title`: A clear, action-oriented title derived from the brain dump content");
   lines.push("   - `description`: Expand on the idea with context");
@@ -157,7 +157,7 @@ function buildTriagePrompt(entries: BrainDumpEntry[]): string {
   lines.push("   - `createdAt` and `updatedAt`: Current ISO timestamp");
   lines.push("   - `completedAt`: `null`");
   lines.push("");
-  lines.push("3. **Mark the brain dump entry as processed** by reading `mission-control/data/brain-dump.json`, finding the entry by ID, setting `processed` to `true` and `convertedTo` to the task ID you created, and writing the file back.");
+  lines.push("3. **Mark the brain dump entry as processed** by reading `katalyst/data/brain-dump.json`, finding the entry by ID, setting `processed` to `true` and `convertedTo` to the task ID you created, and writing the file back.");
   lines.push("");
   lines.push("## Important");
   lines.push("");
