@@ -3,7 +3,7 @@ import path from "path";
 import { getAgents, getSkillsLibrary } from "./data";
 import type { AgentDefinition, SkillDefinition } from "./types";
 
-// Workspace root is two levels up from mission-control/src/lib/
+// Workspace root is two levels up from katalyst/src/lib/
 const WORKSPACE_ROOT = path.resolve(process.cwd(), "..");
 const COMMANDS_DIR = path.join(WORKSPACE_ROOT, ".claude", "commands");
 const SKILLS_DIR = path.join(WORKSPACE_ROOT, "skills");
@@ -44,7 +44,7 @@ export function generateAgentCommandMarkdown(
   }
 
   lines.push("## Standard Operating Procedures");
-  lines.push("1. Read `mission-control/data/ai-context.md` for current state");
+  lines.push("1. Read `katalyst/data/ai-context.md` for current state");
   lines.push(`2. Check inbox for messages addressed to you: filter \`to: "${agent.id}"\``);
   lines.push(`3. Work on assigned tasks (check \`assignedTo: "${agent.id}"\`)`);
   lines.push("4. Post completion reports to inbox when done");
