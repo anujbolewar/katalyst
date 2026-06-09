@@ -2,11 +2,11 @@
 
 import { useEffect } from "react";
 
-const FAST_POLL_INTERVAL = 5_000; // 5 seconds when tasks are running
+const FAST_POLL_INTERVAL = 3_000; // 3 seconds when tasks are running
 
 /**
  * Polls task data more frequently while any tasks are actively running.
- * Normal task polling is 15s; this brings it to 5s during execution
+ * Normal task polling is 15s; this brings it to 3s during execution
  * so subtask progress appears more responsive on the UI.
  */
 export function useFastTaskPoll(
