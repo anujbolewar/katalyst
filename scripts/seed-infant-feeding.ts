@@ -1,6 +1,6 @@
 /**
  * Seed script: Infant Feeding App — Parenting Companion
- * Adds project, goals, milestones, and 18 tasks to Mission Control.
+ * Adds project, goals, milestones, and 18 tasks to Katalyst.
  * Updates brain dump entry bd_dNSQo28mjIhm as processed.
  *
  * Usage: npx tsx scripts/seed-infant-feeding.ts
