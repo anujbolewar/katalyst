@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Creates the Mission Control Open-Source Launch project with all tasks
+// Creates the Katalyst Open-Source Launch project with all tasks
 const fs = require('fs');
 const path = require('path');
 
@@ -31,13 +31,13 @@ if (projects.projects.find(p => p.id === projectId)) {
 // === PROJECT ===
 projects.projects.push({
   id: projectId,
-  name: 'Mission Control \u2014 Open-Source Launch',
-  description: 'Launch Mission Control v0.9 as open-source. Multi-channel launch across Reddit, Twitter/X, Hacker News, Dev.to, and Product Hunt. All launch content in research/Launch/. Strategy docs in research/mission-control-*.md.',
+  name: 'Katalyst \u2014 Open-Source Launch',
+  description: 'Launch Katalyst v0.9 as open-source. Multi-channel launch across Reddit, Twitter/X, Hacker News, Dev.to, and Product Hunt. All launch content in research/Launch/. Strategy docs in research/katalyst-*.md.',
   status: 'active',
   color: '#2563EB',
   teamMembers: ['me', 'marketer', 'developer'],
   createdAt: now,
-  tags: ['launch', 'open-source', 'marketing', 'mission-control', 'community'],
+  tags: ['launch', 'open-source', 'marketing', 'katalyst', 'community'],
   deletedAt: null
 });
 
@@ -48,7 +48,7 @@ const milestoneTaskMap = {};
 
 goals.goals.push({
   id: goalMainId,
-  title: 'Successfully launch Mission Control open-source and build community traction (100+ stars, 5+ contributors)',
+  title: 'Successfully launch Katalyst open-source and build community traction (100+ stars, 5+ contributors)',
   type: 'long-term',
   timeframe: 'Q1 2026',
   parentGoalId: null,
@@ -150,7 +150,7 @@ function T(id, title, desc, imp, urg, mId, agent, due, estMin, subs, blocked, co
     actualMinutes: null,
     acceptanceCriteria: [],
     comments: [],
-    tags: ['launch', 'mission-control'].concat(tags2 || []),
+    tags: ['launch', 'katalyst'].concat(tags2 || []),
     notes: notes2 || '',
     createdAt: now,
     updatedAt: now,
@@ -169,7 +169,7 @@ function T(id, title, desc, imp, urg, mId, agent, due, estMin, subs, blocked, co
 
 T('task_MCL_01',
   'Set up Discord server with launch channels',
-  'Create the Mission Control community Discord server. Channels: #general, #feedback, #show-off (people sharing setups), #contributing, #bugs. Roles: Early Adopter (first 100 members), Contributor (PR authors). Add the Discord invite link to the GitHub README. See research/Launch/LAUNCH-CHECKLIST.md Phase 0 > Community Setup.',
+  'Create the Katalyst community Discord server. Channels: #general, #feedback, #show-off (people sharing setups), #contributing, #bugs. Roles: Early Adopter (first 100 members), Contributor (PR authors). Add the Discord invite link to the GitHub README. See research/Launch/LAUNCH-CHECKLIST.md Phase 0 > Community Setup.',
   'important', 'urgent', m1Id, 'me', '2026-02-24', 30,
   [
     { id: 'sub_01a', title: 'Create Discord server', done: false },
@@ -194,7 +194,7 @@ T('task_MCL_02',
 
 T('task_MCL_03',
   'Add GitHub topics, enable Discussions, finalize repo settings',
-  'Configure GitHub repo for discoverability. Add topics: ai-agents, task-management, claude-code, open-source, nextjs, typescript, solo-entrepreneur, eisenhower-matrix. Enable GitHub Discussions with categories: Q&A, Ideas, Show & Tell, Agent Recipes. Verify social preview image is set (1280x640). Tag v0.9.0 release with comprehensive release notes (template in research/mission-control-launch-plan.md Appendix B).',
+  'Configure GitHub repo for discoverability. Add topics: ai-agents, task-management, claude-code, open-source, nextjs, typescript, solo-entrepreneur, eisenhower-matrix. Enable GitHub Discussions with categories: Q&A, Ideas, Show & Tell, Agent Recipes. Verify social preview image is set (1280x640). Tag v0.9.0 release with comprehensive release notes (template in research/katalyst-launch-plan.md Appendix B).',
   'important', 'urgent', m1Id, 'me', '2026-02-24', 20,
   [
     { id: 'sub_03a', title: 'Add 8 GitHub topics', done: false },
@@ -290,7 +290,7 @@ T('task_MCL_10',
 
 T('task_MCL_11',
   'Post to r/opensource (open-source community angle)',
-  'Post to r/opensource.\n\nSuggested title: "Just open-sourced Mission Control v0.9 (MIT) \u2014 AI agent task management with autonomous daemon and 193 tests"\n\nFocus: MIT license, 193 automated tests, CI pipeline (typecheck + lint + build + test), CONTRIBUTING.md, 12 good-first-issue/help-wanted labels. This community values well-maintained, well-tested projects with clear contribution paths.',
+  'Post to r/opensource.\n\nSuggested title: "Just open-sourced Katalyst v0.9 (MIT) \u2014 AI agent task management with autonomous daemon and 193 tests"\n\nFocus: MIT license, 193 automated tests, CI pipeline (typecheck + lint + build + test), CONTRIBUTING.md, 12 good-first-issue/help-wanted labels. This community values well-maintained, well-tested projects with clear contribution paths.',
   'not-important', 'not-urgent', m2Id, 'me', '2026-02-28', 15,
   [], null, null, ['reddit', 'open-source']);
 
@@ -313,7 +313,7 @@ T('task_MCL_12',
 
 T('task_MCL_13',
   'Post Show HN (when HN account restored)',
-  'Submit the Show HN post when HN account is restored. Use content from research/Launch/show-hn-post.md.\n\nTitle: "Show HN: Mission Control \u2013 Open-source task management for AI agents"\n\nTiming: 6-8 AM EST on a Tuesday, Wednesday, or Thursday. Post the introductory comment within 60 seconds. Be in comments answering questions for 4-6 hours. Lead with technical depth when answering. If a bug is reported, fix it live and respond "Fixed in [commit hash]. Thanks for catching this."\n\nSee research/mission-control-launch-plan.md Section 4.1 for the full HN playbook. Section 8 has prepared responses to 10 common objections (why not Linear, JSON scaling, concurrent writes, glorified todo list, business model, agent reliability, 193 tests overkill, why Next.js, difference from CrewAI).',
+  'Submit the Show HN post when HN account is restored. Use content from research/Launch/show-hn-post.md.\n\nTitle: "Show HN: Katalyst \u2013 Open-source task management for AI agents"\n\nTiming: 6-8 AM EST on a Tuesday, Wednesday, or Thursday. Post the introductory comment within 60 seconds. Be in comments answering questions for 4-6 hours. Lead with technical depth when answering. If a bug is reported, fix it live and respond "Fixed in [commit hash]. Thanks for catching this."\n\nSee research/katalyst-launch-plan.md Section 4.1 for the full HN playbook. Section 8 has prepared responses to 10 common objections (why not Linear, JSON scaling, concurrent writes, glorified todo list, business model, agent reliability, 193 tests overkill, why Next.js, difference from CrewAI).',
   'important', 'urgent', m3Id, 'me', '2026-03-03', 360,
   [
     { id: 'sub_13a', title: 'Verify HN account is active', done: false },
@@ -323,7 +323,7 @@ T('task_MCL_13',
     { id: 'sub_13e', title: 'Continue engagement every 30 min for next 4 hours', done: false },
   ],
   ['task_MCL_05'], null, ['hacker-news'],
-  'Post: research/Launch/show-hn-post.md\nObjections: research/mission-control-launch-plan.md Section 8\nFull HN playbook: research/mission-control-launch-plan.md Section 4.1');
+  'Post: research/Launch/show-hn-post.md\nObjections: research/katalyst-launch-plan.md Section 8\nFull HN playbook: research/katalyst-launch-plan.md Section 4.1');
 
 T('task_MCL_14',
   'Fix any bugs reported during launch week (fast turnaround)',
@@ -342,7 +342,7 @@ T('task_MCL_14',
 
 T('task_MCL_15',
   'Prepare Product Hunt listing',
-  'Create the complete Product Hunt listing. Only launch if 100+ GitHub stars by this point.\n\nTagline (60 chars): "AI-native task management for solo entrepreneurs"\nTopics: Developer Tools, Open Source, Productivity, Task Management, Artificial Intelligence\n\nGallery (6-8 images):\n1. Dashboard overview (hero)\n2. Eisenhower matrix with agent assignments\n3. Kanban board with project filter\n4. Agent inbox showing delegation + completion report\n5. Daemon dashboard showing status, active sessions, cron schedule\n6. Crew/agent management page\n7. Brain Dump triage workflow\n8. Goals/milestones hierarchy\n\nDraft the maker first comment (template in research/mission-control-launch-plan.md Section 4.4). Schedule for Saturday 12:01 AM PT.',
+  'Create the complete Product Hunt listing. Only launch if 100+ GitHub stars by this point.\n\nTagline (60 chars): "AI-native task management for solo entrepreneurs"\nTopics: Developer Tools, Open Source, Productivity, Task Management, Artificial Intelligence\n\nGallery (6-8 images):\n1. Dashboard overview (hero)\n2. Eisenhower matrix with agent assignments\n3. Kanban board with project filter\n4. Agent inbox showing delegation + completion report\n5. Daemon dashboard showing status, active sessions, cron schedule\n6. Crew/agent management page\n7. Brain Dump triage workflow\n8. Goals/milestones hierarchy\n\nDraft the maker first comment (template in research/katalyst-launch-plan.md Section 4.4). Schedule for Saturday 12:01 AM PT.',
   'important', 'not-urgent', m4Id, 'marketer', '2026-03-04', 60,
   [
     { id: 'sub_15a', title: 'Create Product Hunt maker profile', done: false },
@@ -352,7 +352,7 @@ T('task_MCL_15',
     { id: 'sub_15e', title: 'Schedule for Saturday 12:01 AM PT', done: false },
   ],
   null, null, ['product-hunt'],
-  'PH playbook: research/mission-control-launch-plan.md Section 4.4\nMarketing plan: research/mission-control-marketing-plan.md Section 3 > Product Hunt');
+  'PH playbook: research/katalyst-launch-plan.md Section 4.4\nMarketing plan: research/katalyst-marketing-plan.md Section 3 > Product Hunt');
 
 T('task_MCL_16',
   'Launch on Product Hunt (Saturday 12:01 AM PT)',
@@ -378,7 +378,7 @@ T('task_MCL_17',
 
 T('task_MCL_18',
   'Write Dev.to Article #2: Week 1 retrospective with metrics',
-  'Write and publish: "One Week of Open-Sourcing an AI-Native Task Manager: Numbers, Surprises, and Lessons".\n\nInclude full metrics dashboard, top feedback, community reactions, which channels drove the most GitHub stars, what worked, what did not, and plans for Month 2. Transparent retrospectives perform extremely well on Dev.to and get long-tail SEO traffic.\n\nSee research/mission-control-launch-plan.md Section 4.5 for article template.',
+  'Write and publish: "One Week of Open-Sourcing an AI-Native Task Manager: Numbers, Surprises, and Lessons".\n\nInclude full metrics dashboard, top feedback, community reactions, which channels drove the most GitHub stars, what worked, what did not, and plans for Month 2. Transparent retrospectives perform extremely well on Dev.to and get long-tail SEO traffic.\n\nSee research/katalyst-launch-plan.md Section 4.5 for article template.',
   'important', 'not-urgent', m5Id, 'marketer', '2026-03-07', 120,
   [
     { id: 'sub_18a', title: 'Compile all metrics from launch week', done: false },
@@ -420,7 +420,7 @@ T('task_MCL_21',
 
 T('task_MCL_22',
   'Submit to curated awesome-lists and directories',
-  'Submit Mission Control to relevant curated lists for ongoing discoverability:\n\n1. awesome-nextjs (GitHub)\n2. awesome-self-hosted (GitHub)\n3. awesome-react (GitHub)\n4. Console.dev (OSS discovery newsletter \u2014 submit for featured tool review)\n\nEach submission: follow the list contributing guidelines, write a short description matching the list tone. These provide long-tail discoverability that compounds over months.',
+  'Submit Katalyst to relevant curated lists for ongoing discoverability:\n\n1. awesome-nextjs (GitHub)\n2. awesome-self-hosted (GitHub)\n3. awesome-react (GitHub)\n4. Console.dev (OSS discovery newsletter \u2014 submit for featured tool review)\n\nEach submission: follow the list contributing guidelines, write a short description matching the list tone. These provide long-tail discoverability that compounds over months.',
   'not-important', 'not-urgent', m5Id, 'marketer', '2026-03-14', 45,
   [
     { id: 'sub_22a', title: 'Submit to awesome-nextjs', done: false },
@@ -444,7 +444,7 @@ T('task_MCL_23',
 
 T('task_MCL_24',
   'Begin planning cloud sync feature (first revenue feature)',
-  'Start technical planning for cloud sync \u2014 the first feature that enables the Pro tier ($15/mo). Evaluate backend options: Supabase, Turso (SQLite edge), PlanetScale, or self-hosted PostgreSQL. Design the migration path from local JSON to database. Plan the hosted daemon (always-on agent execution without local process).\n\nThis is the bridge from free open-source to paid product. Revenue model details in research/mission-control-viability-and-launch.md Sections 2-3.',
+  'Start technical planning for cloud sync \u2014 the first feature that enables the Pro tier ($15/mo). Evaluate backend options: Supabase, Turso (SQLite edge), PlanetScale, or self-hosted PostgreSQL. Design the migration path from local JSON to database. Plan the hosted daemon (always-on agent execution without local process).\n\nThis is the bridge from free open-source to paid product. Revenue model details in research/katalyst-viability-and-launch.md Sections 2-3.',
   'important', 'not-urgent', m5Id, 'developer', '2026-03-17', 120,
   [
     { id: 'sub_24a', title: 'Evaluate database options (Supabase, Turso, PlanetScale)', done: false },
@@ -453,11 +453,11 @@ T('task_MCL_24',
     { id: 'sub_24d', title: 'Estimate effort and timeline', done: false },
   ],
   null, ['business-analyst'], ['cloud-sync', 'revenue', 'planning'],
-  'Revenue model: research/mission-control-viability-and-launch.md Sections 2-3');
+  'Revenue model: research/katalyst-viability-and-launch.md Sections 2-3');
 
 T('task_MCL_25',
   'Write 30-day launch retrospective with full metrics',
-  'Write a comprehensive 30-day retrospective covering all launch metrics vs targets. Publish on Dev.to and as a Twitter thread.\n\nMetrics to compare against targets:\n- GitHub: stars, forks, clones, issues, PRs, contributors\n- Social: HN points, Reddit upvotes (per sub), PH upvotes, Twitter impressions/followers\n- Content: Dev.to article views, Discord members\n\nTargets are in research/mission-control-marketing-plan.md Section 8. Success tiers in research/mission-control-launch-plan.md Section 7.4.\n\nIdentify which channels drove the most impact. Plan Month 2 strategy based on learnings.',
+  'Write a comprehensive 30-day retrospective covering all launch metrics vs targets. Publish on Dev.to and as a Twitter thread.\n\nMetrics to compare against targets:\n- GitHub: stars, forks, clones, issues, PRs, contributors\n- Social: HN points, Reddit upvotes (per sub), PH upvotes, Twitter impressions/followers\n- Content: Dev.to article views, Discord members\n\nTargets are in research/katalyst-marketing-plan.md Section 8. Success tiers in research/katalyst-launch-plan.md Section 7.4.\n\nIdentify which channels drove the most impact. Plan Month 2 strategy based on learnings.',
   'important', 'not-urgent', m5Id, 'marketer', '2026-03-24', 120,
   [
     { id: 'sub_25a', title: 'Compile all 30-day metrics', done: false },
@@ -467,7 +467,7 @@ T('task_MCL_25',
     { id: 'sub_25e', title: 'Post summary Twitter thread', done: false },
   ],
   null, null, ['retrospective', 'content-marketing', 'metrics'],
-  'Targets: research/mission-control-marketing-plan.md Section 8\nSuccess tiers: research/mission-control-launch-plan.md Section 7.4');
+  'Targets: research/katalyst-marketing-plan.md Section 8\nSuccess tiers: research/katalyst-launch-plan.md Section 7.4');
 
 // === LINK TASKS TO GOALS ===
 const mainGoal = goals.goals.find(g => g.id === goalMainId);
@@ -483,7 +483,7 @@ activity.events.push({
   type: 'task_created',
   actor: 'system',
   taskId: null,
-  summary: 'Created project: Mission Control \u2014 Open-Source Launch (25 tasks, 5 milestones)',
+  summary: 'Created project: Katalyst \u2014 Open-Source Launch (25 tasks, 5 milestones)',
   details: 'Full launch sequence: pre-launch prep (Feb 24-25), Reddit/Twitter wave (Feb 25-28), HN/Dev.to (Feb 27 - Mar 3), Product Hunt (Mar 4-7), 30-day momentum (Mar 4-24). Agent assignments: me (16 tasks), developer (5), marketer (4).',
   timestamp: now,
 });
@@ -495,8 +495,8 @@ inbox.messages.push({
   to: 'developer',
   type: 'delegation',
   taskId: null,
-  subject: 'Mission Control Launch: 5 tasks assigned to you',
-  body: 'You have been assigned 5 tasks for the Mission Control open-source launch project:\n\n1. Create 12 GitHub issues from templates (due Feb 24)\n2. Fix any bugs reported during launch week (ongoing, due Mar 3)\n3. Ship 1-2 quick-win features from community feedback (due Mar 10)\n4. Create public roadmap (due Mar 14)\n5. Begin planning cloud sync feature (due Mar 17)\n\nCheck your task queue for full details and due dates. Priority is on the GitHub issues (today) and launch week bug fixes.',
+  subject: 'Katalyst Launch: 5 tasks assigned to you',
+  body: 'You have been assigned 5 tasks for the Katalyst open-source launch project:\n\n1. Create 12 GitHub issues from templates (due Feb 24)\n2. Fix any bugs reported during launch week (ongoing, due Mar 3)\n3. Ship 1-2 quick-win features from community feedback (due Mar 10)\n4. Create public roadmap (due Mar 14)\n5. Begin planning cloud sync feature (due Mar 17)\n\nCheck your task queue for full details and due dates. Priority is on the GitHub issues (today) and launch week bug fixes.',
   status: 'unread',
   createdAt: now,
   readAt: null,
@@ -508,8 +508,8 @@ inbox.messages.push({
   to: 'marketer',
   type: 'delegation',
   taskId: null,
-  subject: 'Mission Control Launch: 4 tasks assigned to you',
-  body: 'You have been assigned 4 tasks for the Mission Control open-source launch project:\n\n1. Prepare Product Hunt listing (due Mar 4)\n2. Write Dev.to Article #2: Week 1 retrospective (due Mar 7)\n3. Submit to curated awesome-lists and directories (due Mar 14)\n4. Write 30-day launch retrospective with full metrics (due Mar 24)\n\nCheck your task queue for full details and due dates.',
+  subject: 'Katalyst Launch: 4 tasks assigned to you',
+  body: 'You have been assigned 4 tasks for the Katalyst open-source launch project:\n\n1. Prepare Product Hunt listing (due Mar 4)\n2. Write Dev.to Article #2: Week 1 retrospective (due Mar 7)\n3. Submit to curated awesome-lists and directories (due Mar 14)\n4. Write 30-day launch retrospective with full metrics (due Mar 24)\n\nCheck your task queue for full details and due dates.',
   status: 'unread',
   createdAt: now,
   readAt: null,

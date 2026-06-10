@@ -1,5 +1,5 @@
 // ─── Goal Decomposition Prompt ─────────────────────────────────────────────
-// Adapted from: AgentGPT platform/reworkd_platform/web/api/agent/prompts.py
+// Adapted from: reworkd_platform/web/api/agent/prompts.py
 // Based on Plan-and-Solve prompting: https://github.com/AGI-Edgerunners/Plan-and-Solve-Prompting
 
 export const START_GOAL_PROMPT = `You are a task creation AI. 

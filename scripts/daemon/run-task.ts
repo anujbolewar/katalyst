@@ -217,9 +217,9 @@ function handleTaskCompletion(taskId: string, agentId: string, stdout: string): 
 
   // 4. Regenerate ai-context.md
   try {
-    const missionControlDir = path.resolve(__dirname, "../..");
+    const katalystDir = path.resolve(__dirname, "../..");
     execSync("npx tsx scripts/generate-context.ts", {
-      cwd: missionControlDir,
+      cwd: katalystDir,
       timeout: 30_000,
       stdio: "ignore",
     });

@@ -100,7 +100,7 @@ const stripeAdapter: ServiceAdapter = {
         method: "GET",
         headers: {
           Authorization: `Basic ${basicAuth}`,
-          "User-Agent": "MissionControl/1.0",
+          "User-Agent": "Katalyst/1.0",
         },
         signal: controller.signal,
       });

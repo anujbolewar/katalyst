@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Loader2, ArrowLeft, GitGraph, ListTree } from "lucide-react";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { GoalTree, GoalFlow } from "@/features/goal-decomposition";
-import { FlowChat } from "@/components/flow-chat";
+import { FlowChat } from "@/components/goal-flow/flow-chat";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useActiveRunsContext } from "@/providers/active-runs-provider";

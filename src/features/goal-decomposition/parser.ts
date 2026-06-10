@@ -3,7 +3,7 @@ import { TASK_STATUS_STARTED } from "./types";
 import { nanoid } from "nanoid";
 
 // ─── Flat Task List Parser ─────────────────────────────────────────────────
-// Adapted from AgentGPT platform/reworkd_platform/web/api/agent/task_output_parser.py
+// Adapted from reworkd_platform/web/api/agent/task_output_parser.py
 
 const ARRAY_REGEX =
   /\[\s*\]|(\[(?:\s*(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')\s*,?)*\s*\])/;

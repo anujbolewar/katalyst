@@ -120,7 +120,7 @@ async function postTweet(
       headers: {
         Authorization: authHeader,
         "Content-Type": "application/json",
-        "User-Agent": "MissionControl/1.0",
+        "User-Agent": "Katalyst/1.0",
       },
       body: JSON.stringify(requestBody),
     });
@@ -174,7 +174,7 @@ async function deleteTweet(
       method: "DELETE",
       headers: {
         Authorization: authHeader,
-        "User-Agent": "MissionControl/1.0",
+        "User-Agent": "Katalyst/1.0",
       },
     });
 
@@ -291,7 +291,7 @@ const twitterAdapter: ServiceAdapter = {
         method: "GET",
         headers: {
           Authorization: authHeader,
-          "User-Agent": "MissionControl/1.0",
+          "User-Agent": "Katalyst/1.0",
         },
         signal: controller.signal,
       });

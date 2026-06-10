@@ -11,7 +11,7 @@
  *   "clientSecret": "...",
  *   "username": "...",
  *   "password": "...",
- *   "userAgent": "MissionControl:fieldops:1.0 (by /u/username)"
+ *   "userAgent": "Katalyst:fieldops:1.0 (by /u/username)"
  * }
  *
  * Supported operations:

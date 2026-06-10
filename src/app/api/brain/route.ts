@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { getTasks, getGoals, getProjects, getGoalTrees } from "@/lib/storage";
+import { getBrainDump } from "@/lib/data";
 
 interface GraphNode {
   id: string;
   label: string;
-  type: "project" | "goal" | "task";
+  type: "project" | "goal" | "task" | "brain_dump";
   group: number;
   size: number;
   status: string;
@@ -15,24 +16,24 @@ interface GraphNode {
 interface GraphEdge {
   source: string;
   target: string;
-  type: "task_link" | "parent_child" | "blocked_by";
+  type: "task_link" | "parent_child" | "blocked_by" | "converted_from";
   label?: string;
 }
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const [tasksData, goalsData, projectsData, treesData] = await Promise.all([
+  const [tasksData, goalsData, projectsData, treesData, brainDumpData] = await Promise.all([
     getTasks(),
     getGoals(),
     getProjects(),
     getGoalTrees(),
+    getBrainDump(),
   ]);
 
   const nodes: GraphNode[] = [];
   const edges: GraphEdge[] = [];
 
-  // ─── Projects ──────────────────────────────────────────────────────────────
   for (const p of projectsData.projects) {
     if (p.deletedAt) continue;
     nodes.push({
@@ -46,7 +47,6 @@ export async function GET() {
     });
   }
 
-  // ─── Goals ─────────────────────────────────────────────────────────────────
   const goalMap = new Map<string, typeof goalsData.goals[0]>();
   for (const g of goalsData.goals) {
     if (g.deletedAt) continue;
@@ -67,25 +67,21 @@ export async function GET() {
       url: `/objectives/${g.id}`,
     });
 
-    // Goal ↔ Tasks
     for (const tid of g.tasks ?? []) {
       if (tasksData.tasks.some((t) => t.id === tid && !t.deletedAt)) {
         edges.push({ source: g.id, target: tid, type: "task_link" });
       }
     }
 
-    // Goal parent → child
     if (g.parentGoalId && goalMap.has(g.parentGoalId)) {
       edges.push({ source: g.parentGoalId, target: g.id, type: "parent_child" });
     }
 
-    // Goal ↔ Project
     if (g.projectId) {
       edges.push({ source: g.projectId, target: g.id, type: "task_link", label: "belongs to" });
     }
   }
 
-  // ─── Tasks ─────────────────────────────────────────────────────────────────
   for (const t of tasksData.tasks) {
     if (t.deletedAt) continue;
     const subDone = t.subtasks?.filter((s) => s.done).length ?? 0;
@@ -99,24 +95,41 @@ export async function GET() {
       size: 6 + Math.min(pct / 10, 8),
       status: t.kanban ?? "not-started",
       progress: pct,
-      url: "", // tasks don't have detail pages
+      url: "",
     });
 
-    // Task blocked_by
     for (const bid of t.blockedBy ?? []) {
       edges.push({ source: bid, target: t.id, type: "blocked_by" });
     }
 
-    // Task ↔ Project
     if (t.projectId) {
       edges.push({ source: t.projectId, target: t.id, type: "task_link" });
     }
   }
 
-  // ─── Goal metadata from trees ─────────────────────────────────────────────
-  const treeMap = new Map(treesData.trees.map((t) => [t.goalId, t]));
+  // ─── Brain Dump entries ─────────────────────────────────────────────────
+  for (const bd of brainDumpData.entries) {
+    nodes.push({
+      id: bd.id,
+      label: bd.content.length > 50 ? bd.content.slice(0, 47) + "..." : bd.content,
+      type: "brain_dump",
+      group: 3,
+      size: 5,
+      status: bd.processed ? "processed" : "unprocessed",
+      url: "/brain-dump",
+    });
 
-  // Add pipeline metadata to goal nodes
+    if (bd.convertedTo) {
+      edges.push({
+        source: bd.id,
+        target: bd.convertedTo,
+        type: "converted_from",
+        label: "converted to",
+      });
+    }
+  }
+
+  const treeMap = new Map(treesData.trees.map((t) => [t.goalId, t]));
   for (const n of nodes) {
     if (n.type === "goal") {
       const tree = treeMap.get(n.id);
