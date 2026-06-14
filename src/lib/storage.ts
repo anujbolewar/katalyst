@@ -1,11 +1,16 @@
 /**
  * Storage abstraction: SQLite with JSON file fallback.
  *
- * When data/katalyst.db exists → uses SQLite (WAL mode).
- * When it doesn't exist → falls back to data/*.json files.
+ * When data/katalyst.db exists → uses SQLite (WAL mode) AS PRIMARY,
+ * plus dual-writes to data/*.json files so that the daemon
+ * (scripts/daemon/) can read tasks directly from JSON.
+ *
+ * When DB doesn't exist → falls back to data/*.json files only.
  */
 
 import { isDbAvailable, getAll, insert, getDb } from "./db";
+import { writeFileSync, mkdirSync, existsSync } from "fs";
+import path from "path";
 import type {
   Task, TasksFile,
   Goal, GoalsFile,
@@ -16,10 +21,20 @@ import type {
   AgentDefinition, AgentsFile,
   ActiveRun, ActiveRunsFile,
   GoalTreeRecord, GoalTreeFile,
+  BrainDumpEntry, BrainDumpFile,
 } from "./types";
 
 import * as jsonData from "./data";
 import { generateId } from "./utils";
+
+const DATA_DIR = path.resolve(process.cwd(), "data");
+
+/** Write data to a JSON file in data/ (side effect — used for dual-write to keep daemon in sync). */
+function syncJsonFile(filename: string, data: unknown): void {
+  const fp = path.join(DATA_DIR, filename);
+  try { mkdirSync(DATA_DIR, { recursive: true }); } catch { /* ok */ }
+  writeFileSync(fp, JSON.stringify(data, null, 2), "utf-8");
+}
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
@@ -77,6 +92,7 @@ export async function mutateTasks<T>(fn: (data: TasksFile) => Promise<T>): Promi
       insert("tasks", toDbRow(t as unknown as Record<string, unknown>));
     }
   })();
+  syncJsonFile("tasks.json", data);
   return result;
 }
 
@@ -104,6 +120,7 @@ export async function mutateGoals<T>(fn: (data: GoalsFile) => Promise<T>): Promi
       insert("goals", toDbRow(g as unknown as Record<string, unknown>));
     }
   })();
+  syncJsonFile("goals.json", data);
   return result;
 }
 
@@ -143,6 +160,7 @@ export async function mutateInbox<T>(fn: (data: InboxFile) => Promise<T>): Promi
       insert("inbox", toDbRow(m as unknown as Record<string, unknown>));
     }
   })();
+  syncJsonFile("inbox.json", data);
   return result;
 }
 
@@ -165,6 +183,7 @@ export async function mutateActivityLog<T>(fn: (data: ActivityLogFile) => Promis
       insert("activity_log", toDbRow(e as unknown as Record<string, unknown>));
     }
   })();
+  syncJsonFile("activity-log.json", data);
   return result;
 }
 
@@ -200,6 +219,89 @@ export async function getActiveRuns(): Promise<ActiveRunsFile> {
   return { runs: rows as unknown as ActiveRun[] };
 }
 
+// ─── Project Mutations ────────────────────────────────────────────────────
+
+export async function mutateProjects<T>(fn: (data: ProjectsFile) => Promise<T>): Promise<T> {
+  if (!isDbAvailable()) return jsonData.mutateProjects(fn);
+  const data = await getProjects();
+  const result = await fn(data);
+  const db = getDb();
+  db.transaction(() => {
+    db.prepare("DELETE FROM projects").run();
+    for (const p of data.projects) {
+      insert("projects", toDbRow({ ...p, teamMembers: JSON.stringify(p.teamMembers ?? []), tags: JSON.stringify(p.tags ?? []) } as unknown as Record<string, unknown>));
+    }
+  })();
+  syncJsonFile("projects.json", data);
+  return result;
+}
+
+// ─── Decision Mutations ───────────────────────────────────────────────────
+
+export async function mutateDecisions<T>(fn: (data: DecisionsFile) => Promise<T>): Promise<T> {
+  if (!isDbAvailable()) return jsonData.mutateDecisions(fn);
+  const data = await getDecisions();
+  const result = await fn(data);
+  const db = getDb();
+  db.transaction(() => {
+    db.prepare("DELETE FROM decisions").run();
+    for (const d of data.decisions) {
+      insert("decisions", toDbRow({ ...d, options: JSON.stringify(d.options) } as unknown as Record<string, unknown>));
+    }
+  })();
+  syncJsonFile("decisions.json", data);
+  return result;
+}
+
+// ─── Agent Mutations ──────────────────────────────────────────────────────
+
+export async function mutateAgents<T>(fn: (data: AgentsFile) => Promise<T>): Promise<T> {
+  if (!isDbAvailable()) return jsonData.mutateAgents(fn);
+  const data = await getAgents();
+  const result = await fn(data);
+  const db = getDb();
+  db.transaction(() => {
+    db.prepare("DELETE FROM agents").run();
+    for (const a of data.agents) {
+      insert("agents", toDbRow({ ...a, capabilities: JSON.stringify(a.capabilities) } as unknown as Record<string, unknown>));
+    }
+  })();
+  syncJsonFile("agents.json", data);
+  return result;
+}
+
+// ─── Brain Dump Mutations ─────────────────────────────────────────────────
+
+export async function getBrainDump(): Promise<BrainDumpFile> {
+  if (!isDbAvailable()) return jsonData.getBrainDump();
+  const rows = getAll<Record<string, unknown>>("brain_dump").map(toCamel);
+  const entries = rows.map((r) => ({
+    ...r,
+    processed: typeof r.processed === "number" ? r.processed === 1 : Boolean(r.processed),
+    tags: parseJson(r.tags),
+  })) as unknown as BrainDumpEntry[];
+  return { entries };
+}
+
+export async function mutateBrainDump<T>(fn: (data: BrainDumpFile) => Promise<T>): Promise<T> {
+  if (!isDbAvailable()) return jsonData.mutateBrainDump(fn);
+  const data = await getBrainDump();
+  const result = await fn(data);
+  const db = getDb();
+  db.transaction(() => {
+    db.prepare("DELETE FROM brain_dump").run();
+    for (const e of data.entries) {
+      insert("brain_dump", toDbRow({
+        ...e,
+        processed: e.processed ? 1 : 0,
+        tags: JSON.stringify(e.tags ?? []),
+      } as unknown as Record<string, unknown>));
+    }
+  })();
+  syncJsonFile("brain-dump.json", data);
+  return result;
+}
+
 // ─── Goal Trees ────────────────────────────────────────────────────────────
 
 export async function getGoalTrees(): Promise<GoalTreeFile> {
@@ -230,5 +332,6 @@ export async function mutateGoalTrees<T>(fn: (data: GoalTreeFile) => Promise<T>)
       }));
     }
   })();
+  syncJsonFile("goal-trees.json", data);
   return result;
 }

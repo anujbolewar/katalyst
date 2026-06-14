@@ -13,14 +13,34 @@ import type {
   SkillsLibraryFile,
   ActiveRunsFile,
   GoalTreeFile,
+  ReferralsFile,
+
+  FieldMissionsFile,
+  FieldTasksFile,
+  FieldOpsServicesFile,
+  FieldOpsCredentialsFile,
+  FieldOpsActivityLogFile,
+  ApprovalConfigFile,
+  SafetyLimitsFile,
+  ServiceCatalogFile,
+  FieldTaskTemplatesFile,
 } from "./types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
+const FIELD_OPS_DIR = path.join(DATA_DIR, "field-ops");
 const CHECKPOINTS_DIR = path.join(DATA_DIR, "checkpoints");
 function filePath(name: string): string {
   return path.join(DATA_DIR, name);
 }
 
+
+function fieldOpsPath(name: string): string {
+  return path.join(FIELD_OPS_DIR, name);
+}
+
+export async function ensureFieldOpsDir(): Promise<void> {
+  await mkdir(FIELD_OPS_DIR, { recursive: true });
+}
 
 export function getCheckpointsDir(): string {
   return CHECKPOINTS_DIR;
@@ -157,6 +177,14 @@ async function _writeJson(name: string, data: unknown): Promise<void> {
 // ─── Per-file mutexes for concurrent write safety ─────────────────────────────
 
 const fileMutexes = {
+  fieldMissions: new Mutex(),
+  fieldTasks: new Mutex(),
+  fieldServices: new Mutex(),
+  fieldCredentials: new Mutex(),
+  fieldActivityLog: new Mutex(),
+  approvalConfig: new Mutex(),
+  safetyLimits: new Mutex(),
+  fieldTemplates: new Mutex(),
   tasks: new Mutex(),
   tasksArchive: new Mutex(),
   goals: new Mutex(),
@@ -170,6 +198,7 @@ const fileMutexes = {
   activeRuns: new Mutex(),
   daemonConfig: new Mutex(),
   goalTrees: new Mutex(),
+  referrals: new Mutex(),
 };
 
 // ─── Read functions (no locking needed — reads are safe) ──────────────────────
@@ -581,6 +610,38 @@ export async function mutateDaemonConfig<T>(fn: (data: Record<string, unknown>) 
   });
 }
 
+// ─── Referrals ──────────────────────────────────────────────────────────────
+
+export async function getReferrals(): Promise<ReferralsFile> {
+  try {
+    const raw = await readFile(filePath("referrals.json"), "utf-8");
+    return JSON.parse(raw) as ReferralsFile;
+  } catch {
+    return { referrals: [] };
+  }
+}
+
+export async function saveReferrals(data: ReferralsFile): Promise<void> {
+  await fileMutexes.referrals.runExclusive(async () => {
+    await _writeJson("referrals.json", data);
+  });
+}
+
+export async function mutateReferrals<T>(fn: (data: ReferralsFile) => Promise<T>): Promise<T> {
+  return fileMutexes.referrals.runExclusive(async () => {
+    let data: ReferralsFile;
+    try {
+      const raw = await readFile(filePath("referrals.json"), "utf-8");
+      data = JSON.parse(raw) as ReferralsFile;
+    } catch {
+      data = { referrals: [] };
+    }
+    const result = await fn(data);
+    await _writeJson("referrals.json", data);
+    return result;
+  });
+}
+
 // ─── Goal Trees ──────────────────────────────────────────────────────────────
 
 export async function getGoalTrees(): Promise<GoalTreeFile> {
@@ -609,6 +670,254 @@ export async function mutateGoalTrees<T>(fn: (data: GoalTreeFile) => Promise<T>)
     }
     const result = await fn(data);
     await _writeJson("goal-trees.json", data);
+    return result;
+  });
+}
+
+
+// ─── Field Ops Functions Restored ───
+
+export async function getFieldMissions(): Promise<FieldMissionsFile> {
+  try {
+    const raw = await readFile(fieldOpsPath("missions.json"), "utf-8");
+    return JSON.parse(raw) as FieldMissionsFile;
+  } catch {
+    return { missions: [] };
+  }
+}
+
+export async function getFieldTasks(): Promise<FieldTasksFile> {
+  try {
+    const raw = await readFile(fieldOpsPath("tasks.json"), "utf-8");
+    return JSON.parse(raw) as FieldTasksFile;
+  } catch {
+    return { tasks: [] };
+  }
+}
+
+export async function getServiceCatalog(): Promise<ServiceCatalogFile> {
+  try {
+    const raw = await readFile(fieldOpsPath("service-catalog.json"), "utf-8");
+    return JSON.parse(raw) as ServiceCatalogFile;
+  } catch {
+    return { version: "1.0.0", lastUpdated: "", services: [] };
+  }
+}
+
+export async function getFieldServices(): Promise<FieldOpsServicesFile> {
+  try {
+    const raw = await readFile(fieldOpsPath("services.json"), "utf-8");
+    return JSON.parse(raw) as FieldOpsServicesFile;
+  } catch {
+    return { services: [] };
+  }
+}
+
+export async function getFieldCredentials(): Promise<FieldOpsCredentialsFile> {
+  try {
+    const raw = await readFile(fieldOpsPath(".credentials.json"), "utf-8");
+    return JSON.parse(raw) as FieldOpsCredentialsFile;
+  } catch {
+    return { masterKeyHash: null, masterKeySalt: null, credentials: [] };
+  }
+}
+
+export async function getFieldActivityLog(): Promise<FieldOpsActivityLogFile> {
+  try {
+    const raw = await readFile(fieldOpsPath("activity-log.json"), "utf-8");
+    return JSON.parse(raw) as FieldOpsActivityLogFile;
+  } catch {
+    return { events: [] };
+  }
+}
+
+export async function getApprovalConfig(): Promise<ApprovalConfigFile> {
+  try {
+    const raw = await readFile(fieldOpsPath("approval-config.json"), "utf-8");
+    return JSON.parse(raw) as ApprovalConfigFile;
+  } catch {
+    return { config: { mode: "approve-all", overrides: {} } };
+  }
+}
+
+async function _writeFieldOpsJson(filename: string, data: unknown): Promise<void> {
+  await ensureFieldOpsDir();
+  await writeFile(fieldOpsPath(filename), JSON.stringify(data, null, 2), "utf-8");
+}
+
+const DEFAULT_SAFETY_LIMITS: SafetyLimitsFile = {
+  global: { enabled: true, dailyBudgetUsd: 100, weeklyBudgetUsd: 500, monthlyBudgetUsd: 2000, pauseOnBreach: true },
+  services: {},
+  spendLog: [],
+  updatedAt: new Date().toISOString(),
+  updatedBy: "me",
+};
+
+export async function getSafetyLimits(): Promise<SafetyLimitsFile> {
+  try {
+    const raw = await readFile(fieldOpsPath("safety-limits.json"), "utf-8");
+    return JSON.parse(raw) as SafetyLimitsFile;
+  } catch {
+    return { ...DEFAULT_SAFETY_LIMITS };
+  }
+}
+
+export async function mutateSafetyLimits<T>(fn: (data: SafetyLimitsFile) => Promise<T>): Promise<T> {
+  return fileMutexes.safetyLimits.runExclusive(async () => {
+    let data: SafetyLimitsFile;
+    try {
+      const raw = await readFile(fieldOpsPath("safety-limits.json"), "utf-8");
+      data = JSON.parse(raw) as SafetyLimitsFile;
+    } catch {
+      data = { ...DEFAULT_SAFETY_LIMITS };
+    }
+    const result = await fn(data);
+    await _writeFieldOpsJson("safety-limits.json", data);
+    return result;
+  });
+}
+
+// ─── Field Ops: Mutate functions ──────────────────────────────────────────────
+
+export async function mutateFieldMissions<T>(fn: (data: FieldMissionsFile) => Promise<T>): Promise<T> {
+  return fileMutexes.fieldMissions.runExclusive(async () => {
+    let data: FieldMissionsFile;
+    try {
+      const raw = await readFile(fieldOpsPath("missions.json"), "utf-8");
+      data = JSON.parse(raw) as FieldMissionsFile;
+    } catch {
+      data = { missions: [] };
+    }
+    const result = await fn(data);
+    await _writeFieldOpsJson("missions.json", data);
+    return result;
+  });
+}
+
+export async function mutateFieldTasks<T>(fn: (data: FieldTasksFile) => Promise<T>): Promise<T> {
+  return fileMutexes.fieldTasks.runExclusive(async () => {
+    let data: FieldTasksFile;
+    try {
+      const raw = await readFile(fieldOpsPath("tasks.json"), "utf-8");
+      data = JSON.parse(raw) as FieldTasksFile;
+    } catch {
+      data = { tasks: [] };
+    }
+    const result = await fn(data);
+    await _writeFieldOpsJson("tasks.json", data);
+    return result;
+  });
+}
+
+export async function mutateFieldServices<T>(fn: (data: FieldOpsServicesFile) => Promise<T>): Promise<T> {
+  return fileMutexes.fieldServices.runExclusive(async () => {
+    let data: FieldOpsServicesFile;
+    try {
+      const raw = await readFile(fieldOpsPath("services.json"), "utf-8");
+      data = JSON.parse(raw) as FieldOpsServicesFile;
+    } catch {
+      data = { services: [] };
+    }
+    const result = await fn(data);
+    await _writeFieldOpsJson("services.json", data);
+    return result;
+  });
+}
+
+export async function mutateFieldCredentials<T>(fn: (data: FieldOpsCredentialsFile) => Promise<T>): Promise<T> {
+  return fileMutexes.fieldCredentials.runExclusive(async () => {
+    let data: FieldOpsCredentialsFile;
+    try {
+      const raw = await readFile(fieldOpsPath(".credentials.json"), "utf-8");
+      data = JSON.parse(raw) as FieldOpsCredentialsFile;
+    } catch {
+      data = { masterKeyHash: null, masterKeySalt: null, credentials: [] };
+    }
+    const result = await fn(data);
+    await _writeFieldOpsJson(".credentials.json", data);
+    return result;
+  });
+}
+
+const FIELD_ACTIVITY_LOG_MAX = 500;
+
+export async function mutateFieldActivityLog<T>(fn: (data: FieldOpsActivityLogFile) => Promise<T>): Promise<T> {
+  return fileMutexes.fieldActivityLog.runExclusive(async () => {
+    let data: FieldOpsActivityLogFile;
+    try {
+      const raw = await readFile(fieldOpsPath("activity-log.json"), "utf-8");
+      data = JSON.parse(raw) as FieldOpsActivityLogFile;
+    } catch {
+      data = { events: [] };
+    }
+    const result = await fn(data);
+
+    // Log rotation: archive overflow events when count exceeds threshold
+    if (data.events.length > FIELD_ACTIVITY_LOG_MAX) {
+      const overflow = data.events.slice(0, data.events.length - FIELD_ACTIVITY_LOG_MAX);
+      data.events = data.events.slice(-FIELD_ACTIVITY_LOG_MAX);
+
+      // Archive to date-stamped file (best-effort)
+      try {
+        const dateStamp = new Date().toISOString().split("T")[0];
+        const archiveName = `activity-log-archive-${dateStamp}.json`;
+        const archivePath = fieldOpsPath(archiveName);
+
+        // Append to existing archive for today, or create new
+        let archive: { archivedAt: string; events: FieldOpsActivityLogFile["events"] };
+        try {
+          const existingRaw = await readFile(archivePath, "utf-8");
+          archive = JSON.parse(existingRaw);
+          archive.events.push(...overflow);
+        } catch {
+          archive = { archivedAt: new Date().toISOString(), events: overflow };
+        }
+        await writeFile(archivePath, JSON.stringify(archive, null, 2), "utf-8");
+      } catch {
+        // Best-effort archival — don't block mutations if archiving fails
+      }
+    }
+
+    await _writeFieldOpsJson("activity-log.json", data);
+    return result;
+  });
+}
+
+export async function mutateApprovalConfig<T>(fn: (data: ApprovalConfigFile) => Promise<T>): Promise<T> {
+  return fileMutexes.approvalConfig.runExclusive(async () => {
+    let data: ApprovalConfigFile;
+    try {
+      const raw = await readFile(fieldOpsPath("approval-config.json"), "utf-8");
+      data = JSON.parse(raw) as ApprovalConfigFile;
+    } catch {
+      data = { config: { mode: "approve-all", overrides: {} } };
+    }
+    const result = await fn(data);
+    await _writeFieldOpsJson("approval-config.json", data);
+    return result;
+  });
+}
+
+export async function getFieldTemplates(): Promise<FieldTaskTemplatesFile> {
+  try {
+    const raw = await readFile(fieldOpsPath("templates.json"), "utf-8");
+    return JSON.parse(raw) as FieldTaskTemplatesFile;
+  } catch {
+    return { templates: [] };
+  }
+}
+
+export async function mutateFieldTemplates<T>(fn: (data: FieldTaskTemplatesFile) => Promise<T>): Promise<T> {
+  return fileMutexes.fieldTemplates.runExclusive(async () => {
+    let data: FieldTaskTemplatesFile;
+    try {
+      const raw = await readFile(fieldOpsPath("templates.json"), "utf-8");
+      data = JSON.parse(raw) as FieldTaskTemplatesFile;
+    } catch {
+      data = { templates: [] };
+    }
+    const result = await fn(data);
+    await _writeFieldOpsJson("templates.json", data);
     return result;
   });
 }

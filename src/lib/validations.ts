@@ -13,6 +13,13 @@ const projectStatusEnum = z.enum(["active", "paused", "completed", "archived"]);
 const agentRoleEnum = z.string().min(1).max(50);
 const actorEnum = z.string().min(1).max(50);
 const messageTypeEnum = z.enum(["delegation", "report", "question", "update", "approval"]);
+export const fieldMissionStatusEnum = z.enum(["active", "paused", "completed"]);
+export const autonomyLevelEnum = z.enum(["approve-all", "approve-high-risk", "full-autonomy"]);
+export const fieldTaskTypeEnum = z.enum(["social-post", "email-campaign", "ad-campaign", "payment", "publish", "design", "crypto-transfer", "custom"]);
+export const fieldTaskStatusEnum = z.enum(["draft", "pending-approval", "approved", "executing", "awaiting-signature", "completed", "failed", "rejected"]);
+export const serviceStatusEnum = z.enum(["saved", "connected", "disconnected", "error"]);
+export const serviceAuthTypeEnum = z.enum(["oauth2", "api-key", "none"]);
+export const serviceRiskLevelEnum = z.enum(["high", "medium", "low"]);
 const messageStatusEnum = z.enum(["unread", "read", "archived"]);
 const decisionStatusEnum = z.enum(["pending", "answered"]);
 const eventTypeEnum = z.enum([
@@ -337,7 +344,13 @@ export const daemonConfigUpdateSchema = z.object({
     allowedTools: z.array(z.string().min(1).max(100)).max(50),
     agentTeams: z.boolean(),
     claudeBinaryPath: z.string().nullable(),
+    agentBinaryPath: z.string().nullable(),
     maxTaskContinuations: z.number().int().min(0).max(5).optional(),
+    engineType: z.enum(["auto", "opencode", "claude", "custom"]).optional(),
+    ollama: z.object({
+      enabled: z.boolean(),
+      model: z.string().nullable(),
+    }).optional(),
   }).optional(),
   inbox: z.object({
     maxContinuations: z.number().int().min(0).max(5),
@@ -345,6 +358,31 @@ export const daemonConfigUpdateSchema = z.object({
     timeoutPerSessionMinutes: z.number().int().min(5).max(60),
   }).optional(),
 }).strict();
+
+// ─── Referral schemas ───────────────────────────────────────────────────────────
+
+const referralStatusEnum = z.enum(["pending", "signed_up", "rewarded", "expired"]);
+
+export const referralCreateSchema = z.object({
+  id: z.string().optional(),
+  referrerCode: z.string().min(1, "Referrer code is required").max(50),
+  referrerName: z.string().min(1, "Referrer name is required").max(LIMITS.TITLE),
+  referredEmail: z.string().email("Valid email is required").max(200),
+  source: z.string().max(100).optional().default("direct"),
+  notes: z.string().max(LIMITS.NOTES).optional().default(""),
+});
+
+export const referralUpdateSchema = z.object({
+  id: z.string().min(1, "Referral ID is required"),
+  status: referralStatusEnum.optional(),
+  referrerName: z.string().min(1).max(LIMITS.TITLE).optional(),
+  referredEmail: z.string().email("Valid email is required").max(200).optional(),
+  signedUpAt: z.string().max(30).nullable().optional(),
+  rewardedAt: z.string().max(30).nullable().optional(),
+  rewardType: z.string().max(200).nullable().optional(),
+  source: z.string().max(100).optional(),
+  notes: z.string().max(LIMITS.NOTES).optional(),
+});
 
 // ─── Validation helper ─────────────────────────────────────────────────────────
 
@@ -386,3 +424,170 @@ export async function validateBody<T>(
 
   return { success: true, data: result.data };
 }
+
+
+// ─── Field Ops Schemas Restored ───
+
+export const fieldMissionCreateSchema = z.object({
+  actor: z.string().max(50).optional(),
+  title: z.string().min(1, "Title is required").max(LIMITS.TITLE),
+  description: z.string().max(LIMITS.DESCRIPTION).optional().default(""),
+  status: fieldMissionStatusEnum.optional().default("active"),
+  autonomyLevel: autonomyLevelEnum.optional().default("approve-all"),
+  linkedProjectId: z.string().nullable().optional().default(null),
+  tasks: z.array(z.string()).max(200).optional().default([]),
+});
+
+export const fieldMissionUpdateSchema = z.object({
+  id: z.string().min(1, "Mission ID is required"),
+  actor: z.string().max(50).optional(),
+  title: z.string().min(1).max(LIMITS.TITLE).optional(),
+  description: z.string().max(LIMITS.DESCRIPTION).optional(),
+  status: fieldMissionStatusEnum.optional(),
+  autonomyLevel: autonomyLevelEnum.optional(),
+  linkedProjectId: z.string().nullable().optional(),
+  tasks: z.array(z.string()).max(200).optional(),
+});
+
+export const fieldTaskCreateSchema = z.object({
+  actor: z.string().max(50).optional(),
+  missionId: z.string().nullable().optional().default(null),
+  title: z.string().min(1, "Title is required").max(LIMITS.TITLE),
+  description: z.string().max(LIMITS.DESCRIPTION).optional().default(""),
+  type: fieldTaskTypeEnum.optional().default("custom"),
+  serviceId: z.string().nullable().optional().default(null),
+  assignedTo: agentRoleEnum.nullable().optional().default(null),
+  status: fieldTaskStatusEnum.optional().default("draft"),
+  approvalRequired: z.boolean().optional().default(true),
+  payload: z.record(z.string(), z.unknown()).optional().default({}).refine(
+    (val) => JSON.stringify(val).length <= 10240,
+    "Payload exceeds 10KB limit",
+  ),
+  linkedTaskId: z.string().nullable().optional().default(null),
+  blockedBy: z.array(z.string()).max(LIMITS.MAX_BLOCKED_BY).optional().default([]),
+  scheduledFor: z.string().max(30).nullable().optional().default(null),
+});
+
+export const fieldTaskUpdateSchema = z.object({
+  id: z.string().min(1, "Task ID is required"),
+  actor: z.string().max(50).optional(),
+  missionId: z.string().nullable().optional(),
+  title: z.string().min(1).max(LIMITS.TITLE).optional(),
+  description: z.string().max(LIMITS.DESCRIPTION).optional(),
+  type: fieldTaskTypeEnum.optional(),
+  serviceId: z.string().nullable().optional(),
+  assignedTo: agentRoleEnum.nullable().optional(),
+  status: fieldTaskStatusEnum.optional(),
+  approvalRequired: z.boolean().optional(),
+  payload: z.record(z.string(), z.unknown()).optional().refine(
+    (val) => !val || JSON.stringify(val).length <= 10240,
+    "Payload exceeds 10KB limit",
+  ),
+  result: z.record(z.string(), z.unknown()).optional(),
+  linkedTaskId: z.string().nullable().optional(),
+  blockedBy: z.array(z.string()).max(LIMITS.MAX_BLOCKED_BY).optional(),
+  rejectionFeedback: z.string().max(LIMITS.DESCRIPTION).nullable().optional(),
+  scheduledFor: z.string().max(30).nullable().optional(),
+});
+
+export const fieldServiceCreateSchema = z.object({
+  actor: z.string().max(50).optional(),
+  id: z.string().min(1).max(50).regex(/^[a-z0-9-]+$/, "ID must be lowercase alphanumeric with hyphens"),
+  name: z.string().min(1, "Name is required").max(LIMITS.TITLE),
+  mcpPackage: z.string().min(1).max(500),
+  status: serviceStatusEnum.optional().default("disconnected"),
+  authType: serviceAuthTypeEnum.optional().default("api-key"),
+  credentialId: z.string().nullable().optional().default(null),
+  riskLevel: serviceRiskLevelEnum.optional().default("medium"),
+  capabilities: z.array(z.string().max(100)).max(50).optional().default([]),
+  allowedAgents: z.array(z.string().max(50)).max(20).optional().default([]),
+  config: z.record(z.string(), z.unknown()).optional().default({}).refine(
+    (val) => JSON.stringify(val).length <= 10240,
+    "Config exceeds 10KB limit",
+  ),
+  catalogId: z.string().nullable().optional().default(null),
+});
+
+export const fieldServiceUpdateSchema = z.object({
+  id: z.string().min(1, "Service ID is required"),
+  actor: z.string().max(50).optional(),
+  name: z.string().min(1).max(LIMITS.TITLE).optional(),
+  mcpPackage: z.string().min(1).max(500).optional(),
+  status: serviceStatusEnum.optional(),
+  authType: serviceAuthTypeEnum.optional(),
+  credentialId: z.string().nullable().optional(),
+  riskLevel: serviceRiskLevelEnum.optional(),
+  capabilities: z.array(z.string().max(100)).max(50).optional(),
+  allowedAgents: z.array(z.string().max(50)).max(20).optional(),
+  config: z.record(z.string(), z.unknown()).optional().refine(
+    (val) => !val || JSON.stringify(val).length <= 10240,
+    "Config exceeds 10KB limit",
+  ),
+  catalogId: z.string().nullable().optional(),
+});
+
+export const approvalConfigUpdateSchema = z.object({
+  mode: autonomyLevelEnum.optional(),
+  overrides: z.record(z.string().max(50), autonomyLevelEnum).optional(),
+});
+
+// ─── Vault schemas ──────────────────────────────────────────────────────────
+
+export const vaultStoreSchema = z.object({
+  actor: z.string().max(50).optional(),
+  serviceId: z.string().min(1, "Service ID is required").max(100),
+  data: z.string().min(1, "Credential data is required").max(10000),
+  masterPassword: z.string().min(1, "Master password is required").max(500),
+  expiresAt: z.string().nullable().optional().default(null),
+});
+
+export const vaultDecryptSchema = z.object({
+  actor: z.string().max(50).optional(),
+  credentialId: z.string().min(1, "Credential ID is required"),
+  masterPassword: z.string().min(1, "Master password is required").max(500),
+});
+
+// ─── Execution schemas ─────────────────────────────────────────────────────────
+
+export const executeTaskSchema = z.object({
+  taskId: z.string().min(1, "Task ID is required"),
+  masterPassword: z.string().max(500).optional(),
+  actor: z.string().max(50).optional(),
+  dryRun: z.boolean().optional(),
+});
+
+// ─── Field Task Template schemas ──────────────────────────────────────────────
+
+export const fieldTemplateCreateSchema = z.object({
+  name: z.string().min(1, "Name is required").max(LIMITS.TITLE),
+  description: z.string().max(LIMITS.DESCRIPTION).optional().default(""),
+  type: fieldTaskTypeEnum.optional().default("custom"),
+  serviceId: z.string().nullable().optional().default(null),
+  payload: z.record(z.string(), z.unknown()).optional().default({}).refine(
+    (val) => JSON.stringify(val).length <= 10240,
+    "Payload exceeds 10KB limit",
+  ),
+  tags: z.array(z.string().max(LIMITS.TAG)).max(LIMITS.MAX_TAGS).optional().default([]),
+  createdBy: z.string().max(50).optional().default("system"),
+});
+
+export const fieldTemplateInstantiateSchema = z.object({
+  templateId: z.string().min(1, "Template ID is required"),
+  variables: z.record(z.string(), z.string()).optional().default({}),
+  missionId: z.string().nullable().optional().default(null),
+  assignedTo: z.string().max(50).nullable().optional().default(null),
+  linkedTaskId: z.string().nullable().optional().default(null),
+  actor: z.string().max(50).optional().default("system"),
+});
+
+// ─── Batch schemas ───────────────────────────────────────────────────────────
+
+export const fieldBatchSchema = z.object({
+  action: z.enum(["submit-for-approval", "approve", "reject"]),
+  taskIds: z.array(z.string().min(1)).min(1).max(50),
+  actor: z.string().max(50).optional().default("system"),
+  rejectionFeedback: z.string().max(LIMITS.DESCRIPTION).optional(),
+});
+
+// ─── Validation helper ─────────────────────────────────────────────────────────
+

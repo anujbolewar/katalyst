@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import type { Task, Goal, Project, BrainDumpEntry, ActivityEvent, InboxMessage, DecisionItem, AgentDefinition, SkillDefinition } from "@/lib/types";
+import type { Task, Goal, Project, BrainDumpEntry, ActivityEvent, InboxMessage, DecisionItem, AgentDefinition, SkillDefinition, ReferralRecord } from "@/lib/types";
 import { showSuccess, showError } from "@/lib/toast";
 import { apiFetch } from "@/lib/api-client";
 
@@ -259,4 +259,9 @@ export function useAgents() {
 export function useSkills() {
   const { items: skills, ...rest } = useDataResource<SkillDefinition>("skills", "skills", "Skill");
   return { skills, ...rest };
+}
+
+export function useReferrals() {
+  const { items: referrals, ...rest } = useDataResource<ReferralRecord>("referrals", "referrals", "Referral", 15_000);
+  return { referrals, ...rest };
 }
