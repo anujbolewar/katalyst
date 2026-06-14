@@ -129,6 +129,10 @@ export async function GET() {
     }
   }
 
+  // ─── Safety: filter edges that reference deleted/missing nodes ────────
+  const nodeIds = new Set(nodes.map((n) => n.id));
+  const validEdges = edges.filter((e) => nodeIds.has(e.source) && nodeIds.has(e.target));
+
   const treeMap = new Map(treesData.trees.map((t) => [t.goalId, t]));
   for (const n of nodes) {
     if (n.type === "goal") {
@@ -141,7 +145,7 @@ export async function GET() {
   }
 
   return NextResponse.json(
-    { nodes, edges, treeCount: treesData.trees.length },
+    { nodes, edges: validEdges, treeCount: treesData.trees.length },
     { headers: { "Cache-Control": "private, max-age=5, stale-while-revalidate=10" } },
   );
 }
