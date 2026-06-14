@@ -234,7 +234,7 @@ export class Dispatcher {
       // Start tracking the session
       const sessionId = this.health.startSession(agentId, taskId, "task", 0);
 
-      // Spawn the Claude Code process
+      // Spawn the Claude Code process — set PID immediately via onSpawned
       const spawnPromise = this.runner.spawnAgent({
         prompt,
         maxTurns: this.config.execution.maxTurns,
@@ -242,6 +242,11 @@ export class Dispatcher {
         skipPermissions: this.config.execution.skipPermissions,
         allowedTools: this.config.execution.allowedTools,
         cwd: "", // Uses runner default (workspace root)
+        onSpawned: (pid) => {
+          if (pid > 0) {
+            this.health.updateSessionPid(sessionId, pid);
+          }
+        },
       });
 
       // Handle completion asynchronously
@@ -602,6 +607,11 @@ export class Dispatcher {
         skipPermissions: this.config.execution.skipPermissions,
         allowedTools: this.config.execution.allowedTools,
         cwd: "",
+        onSpawned: (pid) => {
+          if (pid > 0) {
+            this.health.updateSessionPid(sessionId, pid);
+          }
+        },
       });
 
       // Parse cost/usage from Claude Code output

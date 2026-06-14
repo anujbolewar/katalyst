@@ -192,11 +192,24 @@ export class HealthMonitor {
    * Check all active sessions and mark any with dead PIDs as failed.
    * Called periodically (every minute) to proactively free up concurrency slots
    * instead of waiting for a GET request to /api/runs.
+   *
+   * Also cleans pid=0 zombie sessions: if a session has pid=0 for more than
+   * 2 minutes (the spawn never resolved), mark it as failed.
    */
   cleanStaleSessions(): void {
+    const now = Date.now();
+    const ZOMBIE_TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes for pid=0 zombie
+
     for (const [id, session] of this.activeSessions) {
-      // Skip sessions with PID 0 (just started, PID not yet assigned)
-      if (session.pid <= 0) continue;
+      if (session.pid <= 0) {
+        // Zombie: never got a PID — spawn likely crashed before resolving
+        const startedMs = new Date(session.startedAt).getTime();
+        if (now - startedMs > ZOMBIE_TIMEOUT_MS) {
+          logger.warn("health", `Zombie session detected: ${id} (pid=0 for ${Math.round((now - startedMs)/1000)}s) — marking as failed`);
+          this.endSession(id, 1, "Agent spawn never resolved (zombie session)", false);
+        }
+        continue;
+      }
 
       if (!isProcessRunning(session.pid)) {
         logger.warn("health", `Stale session detected: ${id} (PID ${session.pid} is dead) — marking as failed`);

@@ -24,7 +24,10 @@ export interface DaemonConfig {
     allowedTools: string[];
     agentTeams: boolean;
     claudeBinaryPath: string | null;
+    agentBinaryPath: string | null;
     maxTaskContinuations: number;
+    ollama: { enabled: boolean; model: string | null };
+    engineType: "auto" | "opencode" | "claude" | "custom";
   };
   inbox: {
     maxContinuations: number;

@@ -141,7 +141,6 @@ describe("validateBinary", () => {
   });
 
   it("rejects arbitrary binaries", () => {
-    expect(validateBinary("node")).toBe(false);
     expect(validateBinary("bash")).toBe(false);
     expect(validateBinary("rm")).toBe(false);
     expect(validateBinary("python")).toBe(false);
@@ -150,7 +149,7 @@ describe("validateBinary", () => {
   it("extracts basename from full paths", () => {
     expect(validateBinary("/usr/local/bin/claude")).toBe(true);
     expect(validateBinary("/some/path/to/claude.exe")).toBe(true);
-    expect(validateBinary("/usr/local/bin/node")).toBe(false);
+    expect(validateBinary("/usr/local/bin/node")).toBe(true);
   });
 });
 
@@ -334,7 +333,10 @@ describe("daemon types", () => {
         allowedTools: ["Edit", "Write"],
         agentTeams: false,
         claudeBinaryPath: null,
+        agentBinaryPath: null,
         maxTaskContinuations: 2,
+        ollama: { enabled: false, model: null },
+        engineType: "auto" as const,
       },
       inbox: {
         maxContinuations: 2,

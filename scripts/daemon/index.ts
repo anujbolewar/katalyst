@@ -107,6 +107,26 @@ async function handleStart(): Promise<void> {
   // Clean stale PID file
   if (existingPid) removePidFile();
 
+  // Clean stale status file if no running daemon (fresh start)
+  if (existsSync(STATUS_FILE)) {
+    try {
+      const status = JSON.parse(readFileSync(STATUS_FILE, "utf-8"));
+      if (status.pid && !isProcessRunning(status.pid)) {
+        logger.info("daemon", "Cleaning stale status file from previous run (PID no longer running)");
+        try { unlinkSync(STATUS_FILE); } catch { /* best effort */ }
+        try { unlinkSync(STATUS_FILE + ".tmp"); } catch { /* best effort */ }
+      }
+    } catch { /* corrupt status file — remove it */ 
+      try { unlinkSync(STATUS_FILE); } catch { /* best effort */ }
+    }
+  }
+
+  // Clean stale retry queue on fresh start
+  if (existsSync(path.join(DATA_DIR, "daemon-retry-queue.json"))) {
+    try { unlinkSync(path.join(DATA_DIR, "daemon-retry-queue.json")); } catch { /* best effort */ }
+    try { unlinkSync(path.join(DATA_DIR, "daemon-retry-queue.json.tmp")); } catch { /* best effort */ }
+  }
+
   console.log("\n=== Katalyst Agent Daemon ===\n");
 
   // Load configuration

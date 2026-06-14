@@ -12,156 +12,166 @@ import treeKill from "tree-kill";
 const WORKSPACE_ROOT = path.resolve(__dirname, "../../..");
 const MAX_STDOUT_SIZE = 10_000_000; // 10MB max captured output
 
-// ─── Claude Binary Detection ─────────────────────────────────────────────────
+// ─── Agent Binary Detection ──────────────────────────────────────────────────
 
-/**
- * Resolved Claude binary info.
- * On Windows, npm global installs create .cmd shim files that can't be
- * spawned directly with shell: false. Instead we resolve the underlying
- * JS entry point and spawn it via node.exe.
- */
 interface ResolvedBinary {
-  /** The binary to spawn (claude, claude.exe, or node.exe for .cmd shims) */
   bin: string;
-  /** Extra args to prepend (the JS entry point path when using node.exe) */
   prefixArgs: string[];
-  /** Original path for logging */
   originalPath: string;
+  engineType: "opencode" | "claude" | "custom";
+  skipValidation: boolean;
 }
 
-// Cache the resolved binary to avoid repeated lookups
 let cachedBinary: ResolvedBinary | null = null;
 
-/**
- * Resolve the JS entry point from an npm .cmd shim file.
- * npm .cmd files contain: "%_prog%" "%dp0%\node_modules\...\cli.js" %*
- * We extract the relative path and resolve it.
- */
 function resolveJsFromCmd(cmdPath: string): string | null {
   try {
     const content = readFileSync(cmdPath, "utf-8");
-    // Match the pattern: "%dp0%\node_modules\...\cli.js" or similar
     const match = content.match(/%dp0%\\([^"]+\.js)/i) ||
                   content.match(/%dp0%\\([^\s"]+\.js)/i);
     if (match) {
       const dir = path.dirname(cmdPath);
       const jsPath = path.join(dir, match[1]);
-      if (existsSync(jsPath)) {
-        return jsPath;
-      }
+      if (existsSync(jsPath)) return jsPath;
     }
   } catch { /* couldn't read .cmd file */ }
-
-  // Fallback: check the standard npm global structure
   const dir = path.dirname(cmdPath);
   const standard = path.join(dir, "node_modules", "@anthropic-ai", "claude-code", "cli.js");
-  if (existsSync(standard)) {
-    return standard;
-  }
-
+  if (existsSync(standard)) return standard;
   return null;
 }
 
-function findClaudeBinary(): ResolvedBinary {
-  if (cachedBinary) return cachedBinary;
-
-  // 1. Check config override
-  try {
-    const config = loadConfig();
-    if (config.execution.claudeBinaryPath) {
-      logger.info("runner", `Using configured binary path: ${config.execution.claudeBinaryPath}`);
-      cachedBinary = {
-        bin: config.execution.claudeBinaryPath,
-        prefixArgs: [],
-        originalPath: config.execution.claudeBinaryPath,
-      };
-      return cachedBinary;
-    }
-  } catch { /* config load failed, continue with auto-detect */ }
-
-  // 2. Check common install locations (Windows + Unix)
+function resolveBinary(name: string): string | null {
   const candidates: string[] = [];
-
   if (process.platform === "win32") {
     const appData = process.env.APPDATA ?? "";
     const localAppData = process.env.LOCALAPPDATA ?? "";
     const userProfile = process.env.USERPROFILE ?? "";
-
     candidates.push(
-      // npm global
-      path.join(appData, "npm", "claude.cmd"),
-      path.join(appData, "npm", "claude"),
-      // pnpm global
-      path.join(localAppData, "pnpm", "claude.cmd"),
-      path.join(localAppData, "pnpm", "claude"),
-      // User .local/bin (common on WSL-adjacent setups)
-      path.join(userProfile, ".local", "bin", "claude"),
-      path.join(userProfile, ".local", "bin", "claude.exe"),
+      path.join(appData, "npm", `${name}.cmd`),
+      path.join(appData, "npm", name),
+      path.join(localAppData, "pnpm", `${name}.cmd`),
+      path.join(localAppData, "pnpm", name),
+      path.join(userProfile, ".local", "bin", name),
+      path.join(userProfile, ".local", "bin", `${name}.exe`),
     );
   } else {
     const home = process.env.HOME ?? "";
     candidates.push(
-      path.join(home, ".local", "bin", "claude"),
-      path.join(home, ".npm-global", "bin", "claude"),
-      "/usr/local/bin/claude",
-      "/usr/bin/claude",
+      path.join(home, ".local", "bin", name),
+      path.join(home, ".npm-global", "bin", name),
+      `/usr/local/bin/${name}`,
+      `/usr/bin/${name}`,
     );
   }
+  for (const c of candidates) {
+    if (c && existsSync(c)) return c;
+  }
+  return null;
+}
 
-  for (const candidate of candidates) {
-    if (candidate && existsSync(candidate)) {
-      logger.info("runner", `Found claude at: ${candidate}`);
+function resolveFromPath(name: string): string | null {
+  try {
+    const cmd = process.platform === "win32" ? `where ${name}` : `which ${name}`;
+    const result = execSync(cmd, { encoding: "utf-8", timeout: 5000 }).trim().split("\n")[0].trim();
+    if (result) return result;
+  } catch { /* not found */ }
+  return null;
+}
 
-      // On Windows, .cmd shims can't be spawned directly — resolve the JS entry point
-      if (candidate.endsWith(".cmd")) {
-        const jsEntry = resolveJsFromCmd(candidate);
-        if (jsEntry) {
-          logger.info("runner", `Resolved .cmd shim → ${jsEntry} (via node.exe)`);
-          cachedBinary = {
-            bin: process.execPath, // node.exe
-            prefixArgs: [jsEntry],
-            originalPath: candidate,
-          };
-          return cachedBinary;
-        }
-      }
+function findAgentBinary(): ResolvedBinary {
+  if (cachedBinary) return cachedBinary;
 
-      cachedBinary = { bin: candidate, prefixArgs: [], originalPath: candidate };
+  const config = loadConfig();
+  const engineType = config.execution.engineType;
+
+  // 1. Custom engine — requires agentBinaryPath to be set
+  if (engineType === "custom") {
+    const customPath = config.execution.agentBinaryPath;
+    if (customPath) {
+      logger.info("runner", `Using custom engine: ${customPath}`);
+      cachedBinary = { bin: customPath, prefixArgs: [], originalPath: customPath, engineType: "custom", skipValidation: true };
       return cachedBinary;
     }
+    logger.error("runner", "Engine type is 'custom' but no agentBinaryPath configured. Set it in daemon-config.json or switch to auto.");
+    throw new Error("Custom engine requires agentBinaryPath to be configured");
   }
 
-  // 3. Try which/where via execSync (catches PATH entries we missed)
-  try {
-    const cmd = process.platform === "win32" ? "where claude" : "which claude";
-    const result = execSync(cmd, { encoding: "utf-8", timeout: 5000 })
-      .trim()
-      .split("\n")[0]
-      .trim();
-    if (result) {
-      logger.info("runner", `Found claude via PATH: ${result}`);
-
-      if (result.endsWith(".cmd")) {
-        const jsEntry = resolveJsFromCmd(result);
+  // 2. OpenCode only — skip claude fallback
+  if (engineType === "opencode") {
+    const opencodePath = resolveBinary("opencode") ?? resolveFromPath("opencode");
+    if (opencodePath) {
+      logger.info("runner", `Found opencode at: ${opencodePath}`);
+      if (opencodePath.endsWith(".cmd")) {
+        const jsEntry = resolveJsFromCmd(opencodePath);
         if (jsEntry) {
           logger.info("runner", `Resolved .cmd shim → ${jsEntry} (via node.exe)`);
-          cachedBinary = {
-            bin: process.execPath,
-            prefixArgs: [jsEntry],
-            originalPath: result,
-          };
+          cachedBinary = { bin: process.execPath, prefixArgs: [jsEntry], originalPath: opencodePath, engineType: "opencode", skipValidation: false };
           return cachedBinary;
         }
       }
-
-      cachedBinary = { bin: result, prefixArgs: [], originalPath: result };
+      cachedBinary = { bin: opencodePath, prefixArgs: [], originalPath: opencodePath, engineType: "opencode", skipValidation: false };
       return cachedBinary;
     }
-  } catch { /* not found in PATH */ }
+    logger.error("runner", "Engine type is 'opencode' but binary not found.");
+    throw new Error("OpenCode binary not found. Install opencode or switch engineType to auto/claude.");
+  }
 
-  // 4. Fallback — return "claude" and let spawn fail with a descriptive error
-  logger.warn("runner", "Could not auto-detect claude binary. Set 'claudeBinaryPath' in daemon-config.json or install Claude Code globally (npm i -g @anthropic-ai/claude-code)");
-  return { bin: "claude", prefixArgs: [], originalPath: "claude" };
+  // 3. Claude only — skip opencode detection
+  if (engineType === "claude") {
+    const claudePath = resolveBinary("claude") ?? resolveFromPath("claude");
+    if (claudePath) {
+      logger.info("runner", `Found claude at: ${claudePath}`);
+      if (claudePath.endsWith(".cmd")) {
+        const jsEntry = resolveJsFromCmd(claudePath);
+        if (jsEntry) {
+          logger.info("runner", `Resolved .cmd shim → ${jsEntry} (via node.exe)`);
+          cachedBinary = { bin: process.execPath, prefixArgs: [jsEntry], originalPath: claudePath, engineType: "claude", skipValidation: false };
+          return cachedBinary;
+        }
+      }
+      cachedBinary = { bin: claudePath, prefixArgs: [], originalPath: claudePath, engineType: "claude", skipValidation: false };
+      return cachedBinary;
+    }
+    logger.error("runner", "Engine type is 'claude' but binary not found.");
+    throw new Error("Claude Code binary not found. Install claude (npm i -g @anthropic-ai/claude-code) or switch engineType to auto.");
+  }
+
+  // 4. Auto-detect — opencode priority, claude fallback
+  const opencodePath = resolveBinary("opencode") ?? resolveFromPath("opencode");
+  if (opencodePath) {
+    logger.info("runner", `Found opencode at: ${opencodePath}`);
+    if (opencodePath.endsWith(".cmd")) {
+      const jsEntry = resolveJsFromCmd(opencodePath);
+      if (jsEntry) {
+        logger.info("runner", `Resolved .cmd shim → ${jsEntry} (via node.exe)`);
+        cachedBinary = { bin: process.execPath, prefixArgs: [jsEntry], originalPath: opencodePath, engineType: "opencode", skipValidation: false };
+        return cachedBinary;
+      }
+    }
+    cachedBinary = { bin: opencodePath, prefixArgs: [], originalPath: opencodePath, engineType: "opencode", skipValidation: false };
+    return cachedBinary;
+  }
+
+  // Fallback: claude
+  const claudePath = resolveBinary("claude") ?? resolveFromPath("claude");
+  if (claudePath) {
+    logger.info("runner", `Found claude at: ${claudePath}`);
+    if (claudePath.endsWith(".cmd")) {
+      const jsEntry = resolveJsFromCmd(claudePath);
+      if (jsEntry) {
+        logger.info("runner", `Resolved .cmd shim → ${jsEntry} (via node.exe)`);
+        cachedBinary = { bin: process.execPath, prefixArgs: [jsEntry], originalPath: claudePath, engineType: "claude", skipValidation: false };
+        return cachedBinary;
+      }
+    }
+    cachedBinary = { bin: claudePath, prefixArgs: [], originalPath: claudePath, engineType: "claude", skipValidation: false };
+    return cachedBinary;
+  }
+
+  // Last resort — return "claude" and let spawn fail
+  logger.warn("runner", "Could not auto-detect opencode or claude. Set 'agentBinaryPath' in daemon-config.json.");
+  return { bin: "claude", prefixArgs: [], originalPath: "claude", engineType: "claude", skipValidation: false };
 }
 
 // ─── Claude Code Output Parser ───────────────────────────────────────────────
@@ -224,32 +234,55 @@ export class AgentRunner {
    * Returns when the process exits or times out.
    */
   async spawnAgent(opts: SpawnOptions): Promise<SpawnResult & { pid: number }> {
-    const resolved = findClaudeBinary();
+    const resolved = findAgentBinary();
 
-    if (!validateBinary(resolved.originalPath)) {
+    if (!resolved.skipValidation && !validateBinary(resolved.originalPath)) {
       throw new Error(`Security: binary "${resolved.originalPath}" is not in the allowed list`);
     }
 
-    // Build args array (NOT string interpolation — prevents shell injection)
-    // prefixArgs contains the JS entry point when spawning via node.exe
-    const args: string[] = [
-      ...resolved.prefixArgs,
-      "-p", opts.prompt,
-      "--output-format", "json",
-      "--max-turns", String(opts.maxTurns),
-    ];
+    const config = loadConfig();
 
-    if (opts.skipPermissions) {
-      args.push("--dangerously-skip-permissions");
-      logger.security("runner", "Spawning with --dangerously-skip-permissions");
-    } else if (opts.allowedTools && opts.allowedTools.length > 0) {
-      args.push("--allowedTools", ...opts.allowedTools);
-      logger.info("runner", `Allowed tools: ${opts.allowedTools.join(", ")}`);
+    // Build args array
+    let args: string[];
+    if (resolved.engineType === "opencode") {
+      args = [
+        ...resolved.prefixArgs,
+        "run", opts.prompt,
+        "--format", "json",
+        "--model", config.execution.ollama?.enabled && config.execution.ollama?.model
+          ? `opencode-go/${config.execution.ollama.model}`
+          : "opencode-go/deepseek-v4-pro",
+      ];
+    } else {
+      args = [
+        ...resolved.prefixArgs,
+        "-p", opts.prompt,
+        "--output-format", "json",
+        "--max-turns", String(opts.maxTurns),
+      ];
+
+      // Permission/tool flags only apply to claude, not custom engines
+      if (resolved.engineType !== "custom") {
+        if (opts.skipPermissions) {
+          args.push("--dangerously-skip-permissions");
+          logger.security("runner", "Spawning with --dangerously-skip-permissions");
+        } else if (opts.allowedTools && opts.allowedTools.length > 0) {
+          args.push("--allowedTools", ...opts.allowedTools);
+          logger.info("runner", `Allowed tools: ${opts.allowedTools.join(", ")}`);
+        }
+      }
     }
 
-    const safeEnv = buildSafeEnv({ agentTeams: opts.agentTeams });
+    // Build safe env, injecting Ollama vars if enabled
+    let safeEnv = buildSafeEnv({ agentTeams: opts.agentTeams });
 
-    logger.debug("runner", `Spawning: ${resolved.bin} ${resolved.prefixArgs.length ? resolved.prefixArgs[0] + " " : ""}-p "<prompt>" --max-turns ${opts.maxTurns}`);
+    if (config.execution.ollama?.enabled && config.execution.ollama?.model) {
+      safeEnv.OPENAI_API_BASE = "http://localhost:11434/v1";
+      safeEnv.OPENAI_API_KEY = "ollama";
+      logger.info("runner", `Ollama mode: model=${config.execution.ollama.model}`);
+    }
+
+    logger.debug("runner", `Spawning (${resolved.engineType}): ${resolved.bin} ...`);
     logger.debug("runner", `CWD: ${opts.cwd || this.cwd}`);
 
     return new Promise<SpawnResult & { pid: number }>((resolve) => {
@@ -336,7 +369,7 @@ export class AgentRunner {
 
         const binPath = resolved.originalPath;
         if (err.message.includes("ENOENT")) {
-          logger.error("runner", `Claude binary not found (${binPath}). Set "claudeBinaryPath" in daemon-config.json or install Claude Code globally: npm i -g @anthropic-ai/claude-code`);
+          logger.error("runner", `Agent binary not found (${binPath}). Set "agentBinaryPath" in daemon-config.json or install opencode/claude globally.`);
           // Clear cached path so next attempt retries detection
           cachedBinary = null;
         } else {

@@ -31,7 +31,10 @@ const DEFAULT_CONFIG: DaemonConfig = {
     allowedTools: ["Edit", "Write"],
     agentTeams: false,
     claudeBinaryPath: null,
+    agentBinaryPath: null,
     maxTaskContinuations: 2,
+    ollama: { enabled: false, model: null },
+    engineType: "auto" as const,
   },
   inbox: {
     maxContinuations: 2,
@@ -112,8 +115,25 @@ function validateConfig(config: unknown): DaemonConfig {
     } else if (ex.claudeBinaryPath === null) {
       result.execution.claudeBinaryPath = null;
     }
+    if (typeof ex.agentBinaryPath === "string") {
+      result.execution.agentBinaryPath = ex.agentBinaryPath;
+    } else if (ex.agentBinaryPath === null) {
+      result.execution.agentBinaryPath = null;
+    }
     if (typeof ex.maxTaskContinuations === "number" && ex.maxTaskContinuations >= 0 && ex.maxTaskContinuations <= 5) {
       result.execution.maxTaskContinuations = ex.maxTaskContinuations;
+    }
+    if (typeof ex.engineType === "string" &&
+        ["auto", "opencode", "claude", "custom"].includes(ex.engineType)) {
+      result.execution.engineType = ex.engineType as typeof result.execution.engineType;
+    }
+    // Merge ollama
+    if (ex.ollama && typeof ex.ollama === "object") {
+      const o = ex.ollama as Record<string, unknown>;
+      result.execution.ollama = {
+        enabled: typeof o.enabled === "boolean" ? o.enabled : false,
+        model: typeof o.model === "string" && o.model.trim() ? o.model.trim() : null,
+      };
     }
   }
 

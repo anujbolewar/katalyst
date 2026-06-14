@@ -94,7 +94,7 @@ export function enforcePromptLimit(prompt: string): string {
 
 // ─── Spawn Safety ────────────────────────────────────────────────────────────
 
-const ALLOWED_BINARIES = ["claude", "claude.cmd", "claude.exe"];
+const ALLOWED_BINARIES = ["claude", "claude.cmd", "claude.exe", "opencode", "opencode.cmd", "opencode.exe", "node", "node.exe"];
 
 /**
  * Validate that only the Claude binary is being spawned.
@@ -148,6 +148,14 @@ export function buildSafeEnv(opts?: { agentTeams?: boolean }): Record<string, st
   // the user's session; child agent processes need it to authenticate.
   if (process.env.CLAUDE_CODE_OAUTH_TOKEN) {
     safeEnv.CLAUDE_CODE_OAUTH_TOKEN = process.env.CLAUDE_CODE_OAUTH_TOKEN;
+  }
+
+  // API tokens for custom engines (e.g. Python agent using Anthropic API directly)
+  if (process.env.ANTHROPIC_API_KEY) {
+    safeEnv.ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+  }
+  if (process.env.MC_API_TOKEN) {
+    safeEnv.MC_API_TOKEN = process.env.MC_API_TOKEN;
   }
 
   // Agent Teams: experimental multi-agent coordination
