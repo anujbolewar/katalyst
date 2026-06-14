@@ -76,31 +76,62 @@ Rules:
 - Maximum depth of 3 levels (root → category → action)
 - Each leaf node must be a single, concrete, executable action
 - Each node must have a short, descriptive title (max 80 characters)
+- Every node MUST include a "description" field. Leaf descriptions should be 1-2 sentences
 - The root node is the goal itself
 
 Return the response as a JSON object with this structure:
 {
   "title": "Goal title",
-  "description": "Brief description of the goal",
+  "description": "Brief description of the overall goal",
   "children": [
     {
       "title": "Category 1",
+      "description": "Brief description of this category",
       "children": [
-        { "title": "Specific action 1.1" },
-        { "title": "Specific action 1.2" }
+        { "title": "Specific action 1.1", "description": "1-2 sentence explanation of what this task involves" },
+        { "title": "Specific action 1.2", "description": "1-2 sentence explanation of what this task involves" }
       ]
     },
     {
       "title": "Category 2",
+      "description": "Brief description of this category",
       "children": [
-        { "title": "Specific action 2.1" },
-        { "title": "Specific action 2.2" }
+        { "title": "Specific action 2.1", "description": "1-2 sentence explanation of what this task involves" },
+        { "title": "Specific action 2.2", "description": "1-2 sentence explanation of what this task involves" }
       ]
     }
   ]
 }
 
 Only return the JSON object, no other text.`;
+
+// ─── Low-Effort Fast Decomposition Prompt ─────────────────────────────────
+// Single-step, flat tree — no multi-agent pipeline
+export const FAST_DECOMPOSE_PROMPT = `You are a task decomposition AI.
+You have the following objective: "{goal}".
+
+Extra user context: "{extraContext}"
+
+Break this objective into a flat hierarchical task tree. Keep it simple and fast.
+
+Rules:
+- Maximum depth of 2 levels (root → action)
+- Each leaf node must be a single, concrete, executable action
+- Every node MUST include a "title" and "description" field
+- Generate exactly 3-6 top-level tasks
+- Skip research and review — just produce the tree
+
+Return ONLY a JSON object with this exact structure:
+{
+  "tree": {
+    "title": "Goal title",
+    "description": "Brief description",
+    "children": [
+      { "title": "Action 1", "description": "What to do" },
+      { "title": "Action 2", "description": "What to do" }
+    ]
+  }
+}`;
 
 // ─── Goal Clarifying Questions Prompt ──────────────────────────────────────
 // Agent: Question Framer — explains WHY each question matters
@@ -143,12 +174,15 @@ Include: domain context, key constraints, success factors, and risks.
 ## STAGE 2 — DECOMPOSER AGENT  
 Based on the Researcher's brief, break the goal into a hierarchical task tree.
 Maximum depth of 3 levels (root → category → action).
+Every node MUST include a "description" field. Leaf action descriptions should be 1-2 sentences explaining what to do and why.
 
 ## STAGE 3 — REVIEWER AGENT
 Review the task tree for completeness, feasibility, and clarity.
 Flag any gaps or improvements.
 
 Goal: "{goal}"
+
+Extra user context: "{extraContext}"
 
 Return ONLY a JSON object with this exact structure:
 {
@@ -159,12 +193,13 @@ Return ONLY a JSON object with this exact structure:
   "decomposer": {
     "tree": {
       "title": "Goal title",
-      "description": "Brief description",
+      "description": "Brief description of the overall goal",
       "children": [
         {
           "title": "Category",
+          "description": "Brief description of this category's purpose",
           "children": [
-            { "title": "Action" }
+            { "title": "Action", "description": "1-2 sentence detailed explanation of what this task involves and why it matters" }
           ]
         }
       ]

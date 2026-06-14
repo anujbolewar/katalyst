@@ -3,6 +3,18 @@ import type { Task, Subtask, Importance } from "@/lib/types";
 import type { GoalNode } from "./types";
 
 /**
+ * Auto-assign a suitable agent based on keywords in the task title and description.
+ */
+function pickAgent(title: string, description?: string): string {
+  const text = `${title.toLowerCase()} ${(description ?? "").toLowerCase()}`;
+
+  if (/market|seo|copy|campaign|social|ad|brand|blog|content|launch|growth|sales|landing|pricing|monet|messag/.test(text)) return "marketer";
+  if (/research|analy|competitor|validat|discover|interview|survey|audit|study/.test(text)) return "researcher";
+  if (/strateg|plan|priorit|financ|legal|compliance|business|roadmap|okr|kpi/.test(text)) return "business-analyst";
+  return "developer";
+}
+
+/**
  * Converts a hierarchical GoalNode tree from LLM decomposition
  * into a flat array of Task objects ready for the Kanban board.
  *
@@ -22,12 +34,16 @@ export function adaptGoalTreeToTasks(root: GoalNode): Task[] {
     const subtasks: Subtask[] = [];
 
     // Depth-2 children become subtasks of this branch
+    const leafNotes: string[] = [];
     for (const leaf of branch.children) {
       subtasks.push({
         id: generateId("sub"),
         title: leaf.title,
         done: false,
       });
+      if (leaf.description) {
+        leafNotes.push(`${leaf.title}: ${leaf.description}`);
+      }
     }
 
     // If no children, the branch itself is a leaf — make it a subtask
@@ -49,7 +65,7 @@ export function adaptGoalTreeToTasks(root: GoalNode): Task[] {
       kanban: "not-started",
       projectId: null,
       milestoneId: null,
-      assignedTo: null,
+      assignedTo: pickAgent(branch.title, branch.description),
       collaborators: [],
       dailyActions: [],
       subtasks,
@@ -59,7 +75,9 @@ export function adaptGoalTreeToTasks(root: GoalNode): Task[] {
       acceptanceCriteria: [],
       comments: [],
       tags: ["goal-decomposition"],
-      notes: `Auto-generated from goal decomposition.\nGoal: ${root.title}`,
+      notes: leafNotes.length > 0
+        ? `Auto-generated from goal decomposition.\nGoal: ${root.title}\n\nSubtasks:\n${leafNotes.map((n) => `- ${n}`).join("\n")}`
+        : `Auto-generated from goal decomposition.\nGoal: ${root.title}`,
       dueDate: null,
       createdAt: now,
       updatedAt: now,

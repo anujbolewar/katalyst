@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { spawn, type ChildProcessWithoutNullStreams, execSync } from "child_process";
 import { existsSync } from "fs";
-import { getGoalTrees, mutateGoalTrees } from "@/lib/storage";
+import { mutateGoalTrees } from "@/lib/storage";
 
 const EDIT_PROMPT = `You are a workflow graph editor. Given the current task tree (JSON) and a user's change request,
 modify the tree accordingly. You can add, remove, rename, or restructure nodes.

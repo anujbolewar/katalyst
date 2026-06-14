@@ -1,159 +1,30 @@
 import { NextResponse } from "next/server";
-import { spawn, type ChildProcessWithoutNullStreams, execSync } from "child_process";
-import { existsSync } from "fs";
 import { mutateTasks, mutateGoals, mutateGoalTrees } from "@/lib/storage";
 import { generateId } from "@/lib/utils";
 import type { Goal, GoalType, GoalStatus, GoalTreeRecord, GoalTreeNode } from "@/lib/types";
-import { TREE_DECOMPOSE_PROMPT, DECOMPOSE_WITH_PIPELINE_PROMPT, formatPrompt } from "@/features/goal-decomposition/prompts";
+import { DECOMPOSE_WITH_PIPELINE_PROMPT, FAST_DECOMPOSE_PROMPT, formatPrompt } from "@/features/goal-decomposition/prompts";
 import { parseGoalTree } from "@/features/goal-decomposition/parser";
 import { adaptGoalTreeToTasks } from "@/features/goal-decomposition/adapter";
 import type { GoalNode } from "@/features/goal-decomposition/types";
-
-// ─── LLM Backend Detection ──────────────────────────────────────────────────
-
-interface LlmBackend {
-  bin: string;
-  args: (prompt: string) => string[];
-  parseOutput: (stdout: string) => string;
-  name: string;
-}
-
-function findBinary(...candidates: string[]): string | null {
-  for (const c of candidates) {
-    if (c && existsSync(c)) return c;
-  }
-  return null;
-}
-
-function whichBinary(name: string): string | null {
-  try {
-    const path = execSync(`which ${name} 2>/dev/null`, { encoding: "utf-8", timeout: 3000 }).trim();
-    return path && existsSync(path) ? path : null;
-  } catch {
-    return null;
-  }
-}
-
-function detectBackend(): LlmBackend | null {
-  // Prefer opencode — supports multiple free models
-  const opencodeBin =
-    findBinary(
-      process.env.OPENCODE_BIN ?? "",
-      "/home/ab-11/.nvm/versions/node/v22.22.2/bin/opencode",
-      "/usr/local/bin/opencode",
-      "/usr/bin/opencode",
-    ) ?? whichBinary("opencode");
-
-  if (opencodeBin) {
-    return {
-      bin: opencodeBin,
-      name: "opencode",
-      args: (prompt: string) => [
-        "run", prompt,
-        "--format", "json",
-        "--model", "opencode-go/deepseek-v4-pro",
-        "--variant", "max",
-      ],
-      parseOutput: (stdout: string): string => {
-        // opencode outputs JSONL: one JSON object per line
-        const textParts: string[] = [];
-        for (const line of stdout.split("\n")) {
-          try {
-            const evt = JSON.parse(line);
-            if (evt.type === "text" && evt.part?.text) {
-              textParts.push(evt.part.text);
-            }
-          } catch { /* skip non-JSON lines */ }
-        }
-        return textParts.join("\n");
-      },
-    };
-  }
-
-  // Fallback: Claude Code
-  const claudeBin =
-    findBinary(
-      process.env.CLAUDE_BIN ?? "",
-      "/home/ab-11/.local/bin/claude",
-      "/usr/local/bin/claude",
-      "/usr/bin/claude",
-    ) ?? whichBinary("claude");
-
-  if (claudeBin) {
-    return {
-      bin: claudeBin,
-      name: "claude",
-      args: (prompt: string) => [
-        "-p", prompt,
-        "--output-format", "json",
-        "--max-turns", "10",
-      ],
-      parseOutput: (stdout: string): string => {
-        // Claude wraps output in {"type":"result",...,"result":"..."}
-        try {
-          const envelope = JSON.parse(stdout);
-          if (envelope.result && typeof envelope.result === "string") {
-            return envelope.result;
-          }
-        } catch { /* not JSON-wrapped */ }
-        return stdout;
-      },
-    };
-  }
-
-  return null;
-}
-
-// ─── Spawn LLM ──────────────────────────────────────────────────────────────
-
-interface LlmResult {
-  stdout: string;
-  stderr: string;
-  exitCode: number | null;
-  timedOut: boolean;
-  backend: string;
-}
-
-function spawnLlm(backend: LlmBackend, prompt: string, timeoutMs = 120_000): Promise<LlmResult> {
-  return new Promise((resolve) => {
-    const args = backend.args(prompt);
-    const child: ChildProcessWithoutNullStreams = spawn(backend.bin, args, {
-      env: { ...process.env },
-      stdio: ["ignore", "pipe", "pipe"],
-    }) as unknown as ChildProcessWithoutNullStreams;
-
-    let stdout = "";
-    let stderr = "";
-    const MAX_OUTPUT = 1_000_000;
-
-    child.stdout.on("data", (chunk: Buffer) => {
-      if (stdout.length < MAX_OUTPUT) stdout += chunk.toString();
-    });
-
-    child.stderr.on("data", (chunk: Buffer) => {
-      if (stderr.length < MAX_OUTPUT) stderr += chunk.toString();
-    });
-
-    const timer = setTimeout(() => {
-      child.kill("SIGTERM");
-    }, timeoutMs);
-
-    child.on("close", (code: number | null) => {
-      clearTimeout(timer);
-      resolve({ stdout, stderr, exitCode: code, timedOut: false, backend: backend.name });
-    });
-
-    child.on("error", (err) => {
-      clearTimeout(timer);
-      resolve({ stdout, stderr: stderr || String(err), exitCode: null, timedOut: false, backend: backend.name });
-    });
-  });
-}
+import { detectBackend, spawnLlm } from "@/lib/llm";
+import type { LlmResult } from "@/lib/llm";
 
 // ─── POST /api/goal/decompose ───────────────────────────────────────────────
 
+/**
+ * Detect if the parsed pipeline object itself is a tree (has title + children).
+ * Smaller models like deepseek-v4-pro may skip the {"tree": ...} wrapper and
+ * return the tree object directly at the top level.
+ */
+function detectTopLevelTree(pipeline: Record<string, unknown>): unknown | null {
+  if (typeof pipeline.title === "string" && Array.isArray(pipeline.children)) {
+    return { title: pipeline.title, description: pipeline.description, children: pipeline.children };
+  }
+  return null;
+}
+
 export async function POST(request: Request) {
-  let body: { goal?: string; answers?: { id: string; question: string; answer: string }[] };
+  let body: { goal?: string; answers?: { id: string; question: string; answer: string }[]; extraContext?: string; effortLevel?: string };
   try {
     body = await request.json();
   } catch {
@@ -166,9 +37,11 @@ export async function POST(request: Request) {
   }
 
   const answers = body.answers ?? [];
+  const extraContext = body.extraContext?.trim() ?? "";
+  const isHighEffort = body.effortLevel === "high";
 
   // 1. Detect available LLM backend
-  const backend = detectBackend();
+  const backend = detectBackend("max");
   if (!backend) {
     return NextResponse.json(
       { error: "No LLM backend found. Install opencode or claude." },
@@ -184,7 +57,12 @@ export async function POST(request: Request) {
       .join("\n\n");
     promptGoal = `${goal}\n\nClarifying context from user:\n${qaBlock}`;
   }
-  const prompt = formatPrompt(DECOMPOSE_WITH_PIPELINE_PROMPT, { goal: promptGoal });
+
+  const promptTemplate = isHighEffort ? DECOMPOSE_WITH_PIPELINE_PROMPT : FAST_DECOMPOSE_PROMPT;
+  const prompt = formatPrompt(promptTemplate, {
+    goal: promptGoal,
+    extraContext: extraContext || "None provided",
+  });
 
   // 3. Call the LLM
   let result: LlmResult;
@@ -218,15 +96,21 @@ export async function POST(request: Request) {
     const jsonMatch = textContent.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error("No JSON found");
     pipeline = JSON.parse(jsonMatch[0]);
-    const tree = pipeline.decomposer?.tree;
-    if (!tree) throw new Error("Missing decomposer.tree in response");
-    rootNode = parseGoalTree(JSON.stringify(tree));
+
+    // Low effort: tree is at top level. High effort: tree is nested under decomposer.
+    // Fallback: smaller models may omit the "tree" wrapper and return the tree object directly.
+    const tree = isHighEffort
+      ? (pipeline.decomposer?.tree)
+      : ((pipeline as unknown as { tree: unknown }).tree ?? detectTopLevelTree(pipeline));
+
+    if (!tree) throw new Error("Missing tree in response");
+    rootNode = parseGoalTree(tree as Record<string, unknown>);
   } catch (err) {
     return NextResponse.json(
       {
         error: "Failed to parse decomposition result",
         detail: String(err),
-        rawResponse: textContent.slice(0, 500),
+        rawResponse: textContent.slice(0, 2000),
       },
       { status: 500 },
     );
@@ -276,6 +160,7 @@ export async function POST(request: Request) {
       id: node.id,
       title: node.title,
       description: node.description,
+      status: node.status,
       children: node.children.map(stripStatus),
     };
   }

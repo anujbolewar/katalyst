@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Target, Loader2, ArrowRight, ChevronRight, Sparkles, MessageSquare, Check, Search, FileCheck, Bot, Brain } from "lucide-react";
+import { Target, Loader2, ArrowRight, ChevronRight, MessageSquare, Check, Search, FileCheck, Bot, Brain, Zap, Shield, GitGraph } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,7 +26,21 @@ interface PipelineStage {
   status: "pending" | "active" | "done";
 }
 
-type Step = "input" | "framing" | "clarify" | "decomposing";
+type EffortLevel = "low" | "high";
+type Step = "input" | "framing" | "clarify" | "decomposing" | "done";
+
+const XAI_CYCLE_MESSAGES = [
+  "Analyzing goal intent...",
+  "Identifying domain context...",
+  "Mapping technical constraints...",
+  "Evaluating success factors...",
+  "Scanning risk dimensions...",
+  "Decomposing into hierarchical tasks...",
+  "Validating task completeness...",
+  "Reviewing category coverage...",
+  "Checking for gaps...",
+  "Finalizing task tree...",
+];
 
 export default function GoalIntakePage() {
   const router = useRouter();
@@ -36,11 +50,42 @@ export default function GoalIntakePage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [customInputs, setCustomInputs] = useState<Record<string, string>>({});
+  const [extraContext, setExtraContext] = useState("");
+  const [effortLevel, setEffortLevel] = useState<EffortLevel>("low");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [rawResponse, setRawResponse] = useState<string | null>(null);
   const [pipelineStages, setPipelineStages] = useState<PipelineStage[]>([]);
   const [researcherFindings, setResearcherFindings] = useState<string[]>([]);
   const [reviewerNotes, setReviewerNotes] = useState<string | null>(null);
+  const [goalId, setGoalId] = useState<string | null>(null);
+  const [taskCount, setTaskCount] = useState<number>(0);
+  const [xaiMessage, setXaiMessage] = useState("");
+  const xaiIdxRef = useRef(0);
+  const xaiTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [showResults, setShowResults] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (xaiTimerRef.current) clearInterval(xaiTimerRef.current);
+    };
+  }, []);
+
+  function startXaiCycler() {
+    xaiIdxRef.current = 0;
+    setXaiMessage(XAI_CYCLE_MESSAGES[0]);
+    xaiTimerRef.current = setInterval(() => {
+      xaiIdxRef.current = (xaiIdxRef.current + 1) % XAI_CYCLE_MESSAGES.length;
+      setXaiMessage(XAI_CYCLE_MESSAGES[xaiIdxRef.current]);
+    }, 2000);
+  }
+
+  function stopXaiCycler() {
+    if (xaiTimerRef.current) {
+      clearInterval(xaiTimerRef.current);
+      xaiTimerRef.current = null;
+    }
+  }
 
   async function handleAnalyze() {
     const trimmed = goal.trim();
@@ -52,7 +97,6 @@ export default function GoalIntakePage() {
     setError(null);
     setStep("framing");
 
-    // Simulate agent pipeline during framing
     setPipelineStages([
       { icon: Bot, label: "Framer Agent", detail: "Analyzing goal intent...", status: "active" },
       { icon: Search, label: "Researcher Agent", detail: "Waiting...", status: "pending" },
@@ -74,9 +118,7 @@ export default function GoalIntakePage() {
       const data = await res.json();
       setFramingLogic(data.framingLogic ?? "");
 
-      // Mark framer done
       setPipelineStages((p) => p.map((s, i) => i === 0 ? { ...s, status: "done" as const, detail: data.framingLogic ?? "Questions framed" } : s));
-
       await delay(400);
       setPipelineStages((p) => p.map((s, i) => i === 1 ? { ...s, status: "done" as const, detail: "Context gathered from goal analysis" } : s));
       await delay(300);
@@ -99,13 +141,29 @@ export default function GoalIntakePage() {
   async function handleDecompose() {
     setLoading(true);
     setError(null);
+    setShowResults(false);
+    setResearcherFindings([]);
+    setReviewerNotes(null);
+    setGoalId(null);
+    setTaskCount(0);
+    setRawResponse(null);
     setStep("decomposing");
 
-    setPipelineStages([
-      { icon: Search, label: "Researcher", detail: "Gathering domain context...", status: "active" },
-      { icon: Bot, label: "Decomposer", detail: "Waiting...", status: "pending" },
-      { icon: FileCheck, label: "Reviewer", detail: "Waiting...", status: "pending" },
-    ]);
+    const isHigh = effortLevel === "high";
+
+    setPipelineStages(
+      isHigh
+        ? [
+            { icon: Search, label: "Researcher", detail: "Gathering domain context...", status: "active" },
+            { icon: Bot, label: "Decomposer", detail: "Waiting...", status: "pending" },
+            { icon: FileCheck, label: "Reviewer", detail: "Waiting...", status: "pending" },
+          ]
+        : [
+            { icon: Bot, label: "Decomposer", detail: "Generating task tree...", status: "active" },
+          ],
+    );
+
+    startXaiCycler();
 
     try {
       const answerList = questions.map((q) => ({
@@ -113,31 +171,46 @@ export default function GoalIntakePage() {
         answer: customInputs[q.id]?.trim() || answers[q.id] || q.options[0],
       }));
 
-      await delay(500);
-      setPipelineStages((p) => p.map((s, i) => i === 0 ? { ...s, detail: "Analyzing domain and constraints..." } : s));
-
       const res = await fetch("/api/goal/decompose", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ goal: goal.trim(), answers: answerList }),
+        body: JSON.stringify({
+          goal: goal.trim(),
+          answers: answerList,
+          extraContext: extraContext.trim(),
+          effortLevel,
+        }),
       });
 
-      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Decomposition failed");
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        const errMsg = errBody.error || "Decomposition failed";
+        const err = new Error(errMsg);
+        (err as unknown as Record<string, unknown>).rawResponse = errBody.rawResponse;
+        throw err;
+      }
       const data = await res.json();
 
-      // Show researcher findings
-      if (data.pipeline?.researcher?.findings) {
-        setResearcherFindings(data.pipeline.researcher.findings);
-        setPipelineStages((p) => p.map((s, i) => i === 0 ? { ...s, status: "done" as const, detail: data.pipeline.researcher.brief ?? "Research complete" } : s));
-      }
-      await delay(400);
+      stopXaiCycler();
+      setGoalId(data.goalId);
+      setTaskCount(data.taskCount);
 
-      // Show decomposer stage
+      // Reveal results with staged animations
+      if (isHigh && data.pipeline?.researcher?.findings) {
+        setPipelineStages((p) => p.map((s, i) => i === 0 ? { ...s, status: "done" as const, detail: data.pipeline.researcher.brief ?? "Research complete" } : s));
+        setResearcherFindings(data.pipeline.researcher.findings);
+        await delay(500);
+      } else {
+        setPipelineStages((p) => p.map((s, i) => i === 0 ? { ...s, status: "done" as const, detail: `Generated ${data.taskCount} tasks` } : s));
+        setShowResults(true);
+        setStep("done");
+        return;
+      }
+
       setPipelineStages((p) => p.map((s, i) => i === 1 ? { ...s, status: "active" as const, detail: `Generated ${data.taskCount} task categories...` } : s));
       await delay(600);
       setPipelineStages((p) => p.map((s, i) => i === 1 ? { ...s, status: "done" as const, detail: `${data.taskCount} tasks with subtasks created` } : s));
 
-      // Show reviewer stage
       if (data.pipeline?.reviewer) {
         setReviewerNotes(data.pipeline.reviewer.notes);
         setPipelineStages((p) => p.map((s, i) => i === 2 ? { ...s, status: "active" as const, detail: "Validating task quality..." } : s));
@@ -146,10 +219,14 @@ export default function GoalIntakePage() {
       }
 
       await delay(400);
-      router.push(`/objectives/${data.goalId}`);
+      setShowResults(true);
+      setStep("done");
     } catch (err) {
+      stopXaiCycler();
       setError(err instanceof Error ? err.message : "Decomposition failed");
-      setStep("clarify");
+      if (err instanceof Error && (err as unknown as Record<string, unknown>).rawResponse) {
+        setRawResponse((err as unknown as Record<string, unknown>).rawResponse as string);
+      }
     } finally {
       setLoading(false);
     }
@@ -171,6 +248,7 @@ export default function GoalIntakePage() {
                 {step === "framing" && "Framer Agent is analyzing your goal..."}
                 {step === "clarify" && "Answer these questions to refine your task breakdown."}
                 {step === "decomposing" && "Multi-agent pipeline: Researcher → Decomposer → Reviewer"}
+                {step === "done" && "Decomposition complete — review the results below."}
               </p>
             </div>
 
@@ -178,8 +256,8 @@ export default function GoalIntakePage() {
             <div className="flex items-center justify-center gap-2">
               {["Goal", "Frame", "Clarify", "Decompose"].map((label, i) => (
                 <span key={label} className="flex items-center gap-1">
-                  <Badge variant={["input","framing","clarify","decomposing"][i] === step ? "default" : "outline"} className="gap-1 text-[11px]">
-                    <span className={cn("h-1.5 w-1.5 rounded-full", ["input","framing","clarify","decomposing"][i] === step ? "bg-primary-foreground" : "bg-muted-foreground")} />
+                  <Badge variant={["input","framing","clarify","decomposing","done"][i] === step || (["input","framing","clarify","decomposing","done"][i] === "decomposing" && step === "done") ? "default" : "outline"} className="gap-1 text-[11px]">
+                    <span className={cn("h-1.5 w-1.5 rounded-full", ["input","framing","clarify","decomposing","done"][i] === step || (["input","framing","clarify","decomposing","done"][i] === "decomposing" && step === "done") ? "bg-primary-foreground" : "bg-muted-foreground")} />
                     {label}
                   </Badge>
                   {i < 3 && <ChevronRight className="h-3 w-3 text-muted-foreground" />}
@@ -199,7 +277,22 @@ export default function GoalIntakePage() {
                     value={goal} onChange={(e) => { setGoal(e.target.value); if (error) setError(null); }}
                     className="min-h-[100px] resize-y" disabled={loading} autoFocus
                   />
-                  {error && <p className="text-sm text-[var(--destructive)]">{error}</p>}
+                  {error && (
+                  <>
+                    <p className="text-sm font-medium text-[var(--destructive)]">{error}</p>
+                    {rawResponse && (
+                      <details className="mt-2">
+                        <summary className="text-[11px] text-muted-foreground cursor-pointer hover:text-foreground">
+                          Raw LLM Response
+                        </summary>
+                        <pre className="mt-1 text-[10px] text-muted-foreground bg-[#0A0A0A] p-2 rounded border border-[#2A2A2A] overflow-auto max-h-32 whitespace-pre-wrap">{rawResponse}</pre>
+                      </details>
+                    )}
+                    <button onClick={() => { setStep("clarify"); setError(null); setRawResponse(null); }} className="text-xs text-muted-foreground hover:text-foreground mt-2">
+                      ← Back to clarify
+                    </button>
+                  </>
+                )}
                   <Button onClick={handleAnalyze} disabled={loading || !goal.trim()} className="w-full gap-2">
                     {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analyzing...</> : <><MessageSquare className="h-4 w-4" /> Analyze & Refine</>}
                   </Button>
@@ -230,7 +323,7 @@ export default function GoalIntakePage() {
                       </div>
                     ))}
                   </div>
-                  {error && <p className="text-sm text-[var(--destructive)]">{error}</p>}
+                  {error && <p className="text-sm font-medium text-[var(--destructive)]">{error}</p>}
                 </CardContent>
               </Card>
             )}
@@ -262,7 +355,7 @@ export default function GoalIntakePage() {
                         <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--accent)] text-xs">{idx + 1}</span>
                         {q.question}
                       </CardTitle>
-                      {q.reasoning && <p className="text-[11px] text-muted-foreground mt-1 italic">"{q.reasoning}"</p>}
+                      {q.reasoning && <p className="text-[11px] text-muted-foreground mt-1 italic">&ldquo;{q.reasoning}&rdquo;</p>}
                     </CardHeader>
                     <CardContent className="space-y-2">
                       {q.options.map((opt) => (
@@ -280,7 +373,58 @@ export default function GoalIntakePage() {
                     </CardContent>
                   </Card>
                 ))}
-                {error && <p className="text-sm text-[var(--destructive)]">{error}</p>}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium">Any extra context about this project? (Optional)</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Textarea
+                      placeholder="e.g. team size, tech stack, timeline, constraints, target users..."
+                      value={extraContext}
+                      onChange={(e) => setExtraContext(e.target.value)}
+                      className="min-h-[80px] resize-y"
+                    />
+                  </CardContent>
+                </Card>
+
+                {/* Effort Level Selector */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium">Effort Level</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        onClick={() => setEffortLevel("low")}
+                        className={cn(
+                          "flex flex-col items-center gap-1.5 rounded-lg border p-4 text-center transition-all",
+                          effortLevel === "low"
+                            ? "border-[var(--ring)] bg-[var(--accent)]"
+                            : "border-border hover:bg-[var(--accent)]/50",
+                        )}
+                      >
+                        <Zap className={cn("h-5 w-5", effortLevel === "low" ? "text-[var(--ring)]" : "text-muted-foreground")} />
+                        <span className="text-sm font-medium">Low</span>
+                        <span className="text-[10px] text-muted-foreground">Fast · Flat task list · No deep validation</span>
+                      </button>
+                      <button
+                        onClick={() => setEffortLevel("high")}
+                        className={cn(
+                          "flex flex-col items-center gap-1.5 rounded-lg border p-4 text-center transition-all",
+                          effortLevel === "high"
+                            ? "border-[var(--ring)] bg-[var(--accent)]"
+                            : "border-border hover:bg-[var(--accent)]/50",
+                        )}
+                      >
+                        <Shield className={cn("h-5 w-5", effortLevel === "high" ? "text-[var(--ring)]" : "text-muted-foreground")} />
+                        <span className="text-sm font-medium">High</span>
+                        <span className="text-[10px] text-muted-foreground">Deep · Multi-agent · Reviewed</span>
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {error && <p className="text-sm font-medium text-[var(--destructive)]">{error}</p>}
                 <Button onClick={handleDecompose} disabled={loading} className="w-full gap-2">
                   {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Decomposing...</> : <>Decompose Goal <ArrowRight className="h-4 w-4" /></>}
                 </Button>
@@ -289,19 +433,34 @@ export default function GoalIntakePage() {
             )}
 
             {/* ── Step: Decomposing (agent pipeline) ─────────────────────── */}
-            {step === "decomposing" && (
+            {(step === "decomposing" || step === "done") && (
               <div className="space-y-4">
                 <Card>
                   <CardContent className="py-6 space-y-4">
                     <div className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin text-[var(--info)]" />
-                      <span className="text-sm font-medium">Agent Pipeline: Researcher → Decomposer → Reviewer</span>
+                      {step === "decomposing" && <Loader2 className="h-4 w-4 animate-spin text-[var(--info)]" />}
+                      {step === "done" && <Check className="h-4 w-4 text-[var(--success)]" />}
+                      <span className="text-sm font-medium">
+                        {step === "decomposing" ? `Agent Pipeline${effortLevel === "high" ? ": Researcher → Decomposer → Reviewer" : ""}` : "Decomposition Complete"}
+                      </span>
                     </div>
+
                     <div className="space-y-3">
                       {pipelineStages.map((s, i) => (
-                        <div key={i} className={cn("flex items-start gap-3 rounded-md border p-3 transition-all", s.status === "active" ? "border-[var(--info)] bg-[var(--info)]/5" : s.status === "done" ? "border-[var(--success)]/30 bg-[var(--success)]/5" : "border-[#2A2A2A] opacity-40")}>
+                        <div
+                          key={i}
+                          style={{ animationDelay: `${i * 150}ms` }}
+                          className={cn(
+                            "flex items-start gap-3 rounded-md border p-3 transition-all animate-fade-in-up",
+                            s.status === "active" ? "border-[var(--info)] bg-[var(--info)]/5" :
+                            s.status === "done" ? "border-[var(--success)]/30 bg-[var(--success)]/5" :
+                            "border-[#2A2A2A] opacity-40",
+                          )}
+                        >
                           <div className={cn("mt-0.5 rounded-full p-1.5", s.status === "active" ? "bg-[var(--info)]/10" : s.status === "done" ? "bg-[var(--success)]/10" : "bg-[#1A1A1A]")}>
-                            {s.status === "active" ? <Loader2 className="h-3.5 w-3.5 animate-spin text-[var(--info)]" /> : s.status === "done" ? <Check className="h-3.5 w-3.5 text-[var(--success)]" /> : <s.icon className="h-3.5 w-3.5 text-muted-foreground" />}
+                            {s.status === "active" ? <Loader2 className="h-3.5 w-3.5 animate-spin text-[var(--info)]" /> :
+                             s.status === "done" ? <Check className="h-3.5 w-3.5 text-[var(--success)]" /> :
+                             <s.icon className="h-3.5 w-3.5 text-muted-foreground" />}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className={cn("text-xs font-medium", s.status === "active" ? "text-[var(--info)]" : s.status === "done" ? "text-[var(--success)]" : "text-muted-foreground")}>{s.label}</p>
@@ -311,16 +470,27 @@ export default function GoalIntakePage() {
                       ))}
                     </div>
 
+                    {/* XAI Cycling message during loading */}
+                    {step === "decomposing" && xaiMessage && (
+                      <div className="rounded-md border border-[var(--info)]/20 bg-[var(--info)]/5 p-3 animate-fade-in-up">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <Loader2 className="h-3 w-3 animate-spin text-[var(--info)]" />
+                          <span className="text-[11px] font-medium text-[var(--info)]">Agent Thinking</span>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground">{xaiMessage}</p>
+                      </div>
+                    )}
+
                     {/* Researcher findings */}
-                    {researcherFindings.length > 0 && (
-                      <div className="rounded-md border border-[var(--info)]/20 bg-[var(--info)]/5 p-3">
+                    {showResults && researcherFindings.length > 0 && (
+                      <div className="rounded-md border border-[var(--info)]/20 bg-[var(--info)]/5 p-3 animate-fade-in-up">
                         <div className="flex items-center gap-1.5 mb-1.5">
                           <Search className="h-3 w-3 text-[var(--info)]" />
                           <span className="text-[11px] font-medium text-[var(--info)]">Research Findings</span>
                         </div>
                         <ul className="space-y-1">
                           {researcherFindings.map((f, i) => (
-                            <li key={i} className="text-[11px] text-muted-foreground flex gap-1.5">
+                            <li key={i} className="text-[11px] text-muted-foreground flex gap-1.5" style={{ animationDelay: `${i * 100}ms` }}>
                               <span className="text-[var(--info)] mt-1">•</span> {f}
                             </li>
                           ))}
@@ -329,8 +499,8 @@ export default function GoalIntakePage() {
                     )}
 
                     {/* Reviewer notes */}
-                    {reviewerNotes && (
-                      <div className="rounded-md border border-[var(--success)]/20 bg-[var(--success)]/5 p-3">
+                    {showResults && reviewerNotes && (
+                      <div className="rounded-md border border-[var(--success)]/20 bg-[var(--success)]/5 p-3 animate-fade-in-up">
                         <div className="flex items-center gap-1.5 mb-1">
                           <FileCheck className="h-3 w-3 text-[var(--success)]" />
                           <span className="text-[11px] font-medium text-[var(--success)]">Quality Review</span>
@@ -339,23 +509,40 @@ export default function GoalIntakePage() {
                       </div>
                     )}
 
-                    <div className="h-1 w-full overflow-hidden rounded-full bg-muted">
-                      <div className="h-full w-1/2 rounded-full bg-[var(--info)] animate-progress-indeterminate" />
-                    </div>
+                    {/* Progress bar during loading */}
+                    {step === "decomposing" && (
+                      <div className="h-1 w-full overflow-hidden rounded-full bg-muted">
+                        <div className="h-full w-1/2 rounded-full bg-[var(--info)] animate-progress-indeterminate" />
+                      </div>
+                    )}
+
+                    {/* View Workflow button */}
+                    {showResults && goalId && (
+                      <div className="animate-fade-in-up pt-2">
+                        <Button
+                          onClick={() => router.push(`/objectives/${goalId}`)}
+                          className="w-full gap-2 bg-[var(--ring)] text-black hover:bg-[var(--ring)]/90 font-medium"
+                        >
+                          <GitGraph /> View Workflow Graph <ArrowRight className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
 
                     {/* Answers recap */}
-                    <div className="space-y-1.5 pt-1">
-                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Your Answers</p>
-                      {questions.map((q) => (
-                        <div key={q.id} className="flex items-start gap-1.5 text-[11px] text-muted-foreground">
-                          <Check className="h-3 w-3 mt-0.5 text-[var(--success)] shrink-0" />
-                          <span className="truncate"><span className="text-foreground/60">{q.question}</span>{" → "}{customInputs[q.id]?.trim() || answers[q.id] || q.options[0]}</span>
-                        </div>
-                      ))}
-                    </div>
+                    {showResults && (
+                      <div className="space-y-1.5 pt-1 animate-fade-in-up">
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Your Answers</p>
+                        {questions.map((q) => (
+                          <div key={q.id} className="flex items-start gap-1.5 text-[11px] text-muted-foreground">
+                            <Check className="h-3 w-3 mt-0.5 text-[var(--success)] shrink-0" />
+                            <span className="truncate"><span className="text-foreground/60">{q.question}</span>{" → "}{customInputs[q.id]?.trim() || answers[q.id] || q.options[0]}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
-                {error && <p className="text-sm text-[var(--destructive)]">{error}</p>}
+                {error && <p className="text-sm font-medium text-[var(--destructive)]">{error}</p>}
               </div>
             )}
           </div>

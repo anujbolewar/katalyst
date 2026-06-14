@@ -11,6 +11,7 @@ export {
   TREE_DECOMPOSE_PROMPT,
   CLARIFY_GOAL_PROMPT,
   DECOMPOSE_WITH_PIPELINE_PROMPT,
+  FAST_DECOMPOSE_PROMPT,
 } from "./prompts";
 export type {
   GoalNode,

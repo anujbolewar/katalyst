@@ -70,19 +70,22 @@ interface RawTreeNode {
   children?: RawTreeNode[];
 }
 
-export function parseGoalTree(text: string): GoalNode {
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    return {
-      id: nanoid(),
-      title: "Parse Error",
-      description: "Failed to parse LLM response as JSON tree",
-      status: TASK_STATUS_STARTED,
-      children: [],
-    };
+export function parseGoalTree(input: string | Record<string, unknown>): GoalNode {
+  let raw: RawTreeNode;
+
+  if (typeof input === "string") {
+    const jsonMatch = input.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error("No JSON object found in LLM response");
+    }
+    raw = JSON.parse(jsonMatch[0]) as RawTreeNode;
+  } else {
+    raw = input as unknown as RawTreeNode;
   }
 
-  const raw: RawTreeNode = JSON.parse(jsonMatch[0]);
+  if (!raw.title || typeof raw.title !== "string") {
+    throw new Error("Parsed tree node missing required 'title' field");
+  }
 
   function convert(node: RawTreeNode): GoalNode {
     return {

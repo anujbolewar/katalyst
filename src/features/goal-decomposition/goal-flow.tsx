@@ -19,14 +19,11 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { Pencil, Trash2, X, Check } from "lucide-react";
+import { Pencil, Trash2, X, Check, Sparkles, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { GoalNode } from "./types";
 import {
-  TASK_STATUS_STARTED,
   TASK_STATUS_EXECUTING,
-  TASK_STATUS_COMPLETED,
-  TASK_STATUS_FAILED,
 } from "./types";
 
 // ─── Constants ─────────────────────────────────────────────────────────────
@@ -132,61 +129,149 @@ interface GoalNodeData {
   description?: string;
   status: GoalNode["status"];
   nodeType: NodeType;
+  pendingChange?: "update" | "add" | "remove";
+}
+
+interface GoalNodeCardCallbacks {
+  onEdit: () => void;
+  onAiEdit: () => void;
+  onDelete: () => void;
+  isAiEditing: boolean;
+  aiEditInput: string;
+  onAiEditInputChange: (val: string) => void;
+  onAiEditSubmit: () => void;
+  onAiEditCancel: () => void;
+  aiEditLoading: boolean;
 }
 
 function GoalNodeCard({ data, selected }: NodeProps) {
-  const d = data as unknown as GoalNodeData;
-  const color = TYPE_COLORS[d.nodeType];
-  const status = STATUS_COLORS[d.status] ?? STATUS_COLORS.started;
+  const d = (data as unknown as GoalNodeData) ?? ({} as GoalNodeData);
+  const cbs = (data as unknown as { callbacks?: GoalNodeCardCallbacks }).callbacks;
+  const nodeType = (d.nodeType as NodeType | undefined) ?? "task";
+  const color = TYPE_COLORS[nodeType] ?? TYPE_COLORS.task;
+  const statusInfo = STATUS_COLORS[d.status ?? "started"] ?? STATUS_COLORS.started;
+  const title = d.title ?? "Untitled";
+  const description = d.description;
+
+  // Local input state for AI edit (managed locally so keystrokes don't re-render parent)
+  const [localAiInput, setLocalAiInput] = useState(cbs?.aiEditInput ?? "");
+  useEffect(() => {
+    if (cbs?.isAiEditing) {
+      setLocalAiInput(cbs.aiEditInput ?? "");
+    }
+  }, [cbs?.isAiEditing, cbs?.aiEditInput]);
+
+  const pendingBorder = d.pendingChange === "update"
+    ? "border-[#F59E0B] shadow-[0_0_0_2px_#F59E0B22]"
+    : d.pendingChange === "add"
+      ? "border-[#00FF41] border-dashed shadow-[0_0_0_2px_#00FF4122]"
+      : d.pendingChange === "remove"
+        ? "border-[#DC2626] opacity-50 line-through"
+        : "";
 
   return (
     <div
       className={cn(
-        "rounded-lg border p-3 transition-all duration-150",
+        "group rounded-lg border p-3 transition-all duration-150 relative",
         selected ? "border-[#00FF41] shadow-[0_0_0_2px_#00FF4122]" : "border-[#2A2A2A] hover:border-[#00FF41]",
+        pendingBorder,
       )}
       style={{ width: NODE_W, minHeight: 80, background: "#1A1A1A" }}
     >
       <Handle type="target" position={Position.Top} style={{ background: color, border: "none", width: 8, height: 8 }} />
       <Handle type="source" position={Position.Bottom} style={{ background: color, border: "none", width: 8, height: 8 }} />
 
+      {/* Hover action bar */}
+      {cbs && (
+        <div className="absolute top-1.5 right-1.5 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={(e) => { e.stopPropagation(); cbs.onEdit(); }}
+            className="h-6 w-6 flex items-center justify-center rounded hover:bg-[#2A2A2A] text-[#888] hover:text-white transition-colors"
+            title="Edit"
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); cbs.onAiEdit(); }}
+            className="h-6 w-6 flex items-center justify-center rounded hover:bg-[#2A2A2A] text-[#888] hover:text-[#A855F7] transition-colors"
+            title="AI Edit"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); cbs.onDelete(); }}
+            className="h-6 w-6 flex items-center justify-center rounded hover:bg-[#2A2A2A] text-[#888] hover:text-[#F87171] transition-colors"
+            title="Delete"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Type badge */}
       <div className="flex items-center gap-1.5 mb-1.5">
         <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
         <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color }}>
-          {TYPE_LABELS[d.nodeType]}
+          {TYPE_LABELS[nodeType] ?? "TASK"}
         </span>
       </div>
 
       {/* Title */}
       <p className="text-[13px] font-medium text-white leading-tight truncate">
-        {d.title}
+        {title}
       </p>
 
       {/* Description */}
-      {d.description && (
+      {description && (
         <p className="text-[11px] text-[#888888] mt-0.5 line-clamp-2 leading-snug">
-          {d.description}
+          {description}
         </p>
+      )}
+
+      {/* AI Edit inline input */}
+      {cbs?.isAiEditing && (
+        <div className="mt-2 space-y-1.5" onClick={(e) => e.stopPropagation()}>
+          <input
+            value={localAiInput}
+            onChange={(e) => {
+              setLocalAiInput(e.target.value);
+              cbs.onAiEditInputChange(e.target.value);
+            }}
+            placeholder="Ask AI to change this task..."
+            className="w-full bg-[#0A0A0A] border border-[#2A2A2A] rounded px-2 py-1 text-[11px] text-white placeholder-[#555] focus:outline-none focus:border-[#A855F7]"
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === "Enter") cbs.onAiEditSubmit();
+              if (e.key === "Escape") cbs.onAiEditCancel();
+            }}
+          />
+          <div className="flex gap-1">
+            <button
+              onClick={cbs.onAiEditSubmit}
+              disabled={cbs.aiEditLoading || !localAiInput.trim()}
+              className="h-6 w-6 flex items-center justify-center rounded bg-[#A855F722] hover:bg-[#A855F733] text-[#A855F7] disabled:opacity-40 transition-colors"
+            >
+              {cbs.aiEditLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
+            </button>
+            <button
+              onClick={cbs.onAiEditCancel}
+              className="h-6 w-6 flex items-center justify-center rounded bg-[#2A2A2A] hover:bg-[#333] text-[#888] transition-colors"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Status pill */}
       <div
         className="mt-2 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium border"
-        style={{ backgroundColor: status.bg, color: status.text, borderColor: status.border }}
+        style={{ backgroundColor: statusInfo.bg, color: statusInfo.text, borderColor: statusInfo.border }}
       >
-        {STATUS_LABELS[d.status]}
+        {STATUS_LABELS[d.status ?? "started"] ?? "todo"}
       </div>
     </div>
   );
-}
-
-// ─── Floating Menu ─────────────────────────────────────────────────────────
-
-interface MenuState {
-  x: number;
-  y: number;
-  nodeId: string;
 }
 
 // ─── Edit Drawer ───────────────────────────────────────────────────────────
@@ -295,18 +380,50 @@ function EditDrawer({ open, nodeId, initialTitle, initialDescription, initialSta
 
 interface GoalFlowProps {
   root: GoalNode;
+  goalId: string;
   className?: string;
+  pendingDiffs?: ChangeInstruction[] | null;
+  onManualUpdate?: (nodeId: string, changes: { title: string; description: string; status: string; nodeType: NodeType }) => Promise<void>;
+  onManualDelete?: (nodeId: string) => Promise<void>;
 }
 
-function GoalFlowInner({ root, className }: GoalFlowProps) {
-  const { nodes: initialNodes, edges: initialEdges } = useMemo(() => treeLayout(root), [root]);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+interface ChangeInstruction {
+  action: "update" | "add" | "remove";
+  nodeId: string;
+  parentId?: string;
+  title?: string;
+  description?: string;
+}
+
+function GoalFlowInner({ root, goalId, className, pendingDiffs, onManualUpdate, onManualDelete }: GoalFlowProps) {
+  const { nodes: layoutNodes, edges: layoutEdges } = useMemo(() => treeLayout(root), [root]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(layoutNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(layoutEdges);
   const { fitView } = useReactFlow();
-  const [menu, setMenu] = useState<MenuState | null>(null);
   const [drawer, setDrawer] = useState<{ nodeId: string; title: string; description: string; status: string; nodeType: NodeType } | null>(null);
   const nodeTypes = useMemo(() => ({ goalNode: GoalNodeCard }), []);
   const flowRef = useRef<HTMLDivElement>(null);
+
+  const snapshotRef = useRef<{ nodes: Node[]; edges: Edge[] } | null>(null);
+  const prevDiffsRef = useRef<ChangeInstruction[] | null | undefined>(undefined);
+
+  // AI Edit state
+  const [aiEditTarget, setAiEditTarget] = useState<string | null>(null);
+  const [aiEditInput, setAiEditInput] = useState("");
+  const [aiEditLoading, setAiEditLoading] = useState(false);
+  const aiEditInputRef = useRef(aiEditInput);
+  useEffect(() => { aiEditInputRef.current = aiEditInput; }, [aiEditInput]);
+
+  // Sync nodes/edges when root prop changes (e.g., after DB save)
+  const prevRootRef = useRef(root);
+  useEffect(() => {
+    if (prevRootRef.current !== root) {
+      prevRootRef.current = root;
+      const { nodes: newNodes, edges: newEdges } = treeLayout(root);
+      setNodes(newNodes);
+      setEdges(newEdges);
+    }
+  }, [root, setNodes, setEdges]);
 
   // Fit view on load
   useEffect(() => {
@@ -314,43 +431,117 @@ function GoalFlowInner({ root, className }: GoalFlowProps) {
     return () => clearTimeout(timer);
   }, [fitView]);
 
-  // Close menu on outside click or Escape
+  // Pending diffs: apply visual indicators without full re-render
   useEffect(() => {
-    if (!menu) return;
-    const close = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest("[data-menu]")) setMenu(null);
-    };
-    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") setMenu(null); };
-    document.addEventListener("click", close);
-    document.addEventListener("keydown", esc);
-    return () => { document.removeEventListener("click", close); document.removeEventListener("keydown", esc); };
-  }, [menu]);
+    const prev = prevDiffsRef.current;
+    prevDiffsRef.current = pendingDiffs;
 
-  const onNodeClick = useCallback((_event: React.MouseEvent, node: Node) => {
-    const pos = (node as unknown as { positionAbsolute?: { x: number; y: number } }).positionAbsolute;
-    setMenu({
-      x: (pos?.x ?? node.position.x) + NODE_W,
-      y: (pos?.y ?? node.position.y),
-      nodeId: node.id,
-    });
-  }, []);
+    const hasDiffs = pendingDiffs && pendingDiffs.length > 0;
+    const hadDiffs = prev && prev.length > 0;
 
-  const handleEdit = useCallback(() => {
-    if (!menu) return;
-    const node = nodes.find((n) => n.id === menu.nodeId);
+    if (hasDiffs && !hadDiffs) {
+      const changedIds = new Set(pendingDiffs.map((d) => d.nodeId));
+      const removeIds = new Set(pendingDiffs.filter((d) => d.action === "remove").map((d) => d.nodeId));
+      const addDiffs = pendingDiffs.filter((d) => d.action === "add");
+
+      setNodes((nds) => {
+        snapshotRef.current = {
+          nodes: nds.map((n) => ({ ...n, data: { ...(n.data as Record<string, unknown>) } })),
+          edges: edges.map((e) => ({ ...e })),
+        };
+
+        const updated = nds.map((n) => {
+          if (removeIds.has(n.id)) {
+            return { ...n, data: { ...n.data, pendingChange: "remove" as const } };
+          }
+          if (changedIds.has(n.id)) {
+            const diff = pendingDiffs.find((d) => d.nodeId === n.id);
+            return {
+              ...n,
+              data: {
+                ...n.data,
+                ...(diff?.title ? { title: diff.title } : {}),
+                ...(diff?.description !== undefined ? { description: diff.description } : {}),
+                pendingChange: "update" as const,
+              },
+            };
+          }
+          return n;
+        });
+
+        for (const diff of addDiffs) {
+          const parentNode = nds.find((n) => n.id === diff.parentId);
+          if (parentNode) {
+            updated.push({
+              id: diff.nodeId,
+              type: "goalNode",
+              position: { x: parentNode.position.x, y: parentNode.position.y + NODE_H + V_GAP },
+              data: {
+                title: diff.title || "New node",
+                description: diff.description || "",
+                status: "started" as const,
+                nodeType: "task" as NodeType,
+                pendingChange: "add" as const,
+              },
+            });
+          }
+        }
+
+        return updated;
+      });
+
+      setEdges((eds) => {
+        const updated = [...eds];
+        for (const diff of addDiffs) {
+          if (diff.parentId) {
+            updated.push({
+              id: `${diff.parentId}->${diff.nodeId}`,
+              source: diff.parentId,
+              target: diff.nodeId,
+              type: "smoothstep",
+              animated: true,
+              style: { stroke: "#00FF41", strokeWidth: 2, strokeDasharray: "5 5" },
+              markerEnd: { type: MarkerType.ArrowClosed, color: "#00FF41", width: 12, height: 12 },
+            });
+          }
+        }
+        return updated;
+      });
+    } else if (!hasDiffs && hadDiffs && snapshotRef.current) {
+      setNodes(snapshotRef.current.nodes);
+      setEdges(snapshotRef.current.edges);
+      snapshotRef.current = null;
+    }
+  }, [pendingDiffs]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleEdit = useCallback((nodeId: string) => {
+    const node = nodes.find((n) => n.id === nodeId);
     if (!node) return;
     const d = node.data as unknown as GoalNodeData;
-    setDrawer({ nodeId: menu.nodeId, title: d.title, description: d.description ?? "", status: d.status, nodeType: d.nodeType });
-    setMenu(null);
-  }, [menu, nodes]);
+    setDrawer({ nodeId, title: d.title, description: d.description ?? "", status: d.status, nodeType: d.nodeType });
+  }, [nodes]);
 
-  const handleDelete = useCallback(() => {
-    if (!menu) return;
-    setNodes((nds) => nds.filter((n) => n.id !== menu.nodeId));
-    setEdges((eds) => eds.filter((e) => e.source !== menu.nodeId && e.target !== menu.nodeId));
-    setMenu(null);
-  }, [menu, setNodes, setEdges]);
+  const handleDelete = useCallback((nodeId: string) => {
+    // Build adjacency from current edges to find all descendants
+    const descendantIds = new Set<string>();
+    const stack = [nodeId];
+    while (stack.length > 0) {
+      const current = stack.pop()!;
+      descendantIds.add(current);
+      for (const e of edges) {
+        if (e.source === current && !descendantIds.has(e.target)) {
+          stack.push(e.target);
+        }
+      }
+    }
+
+    setNodes((nds) => nds.filter((n) => !descendantIds.has(n.id)));
+    setEdges((eds) => eds.filter((e) => !descendantIds.has(e.source) && !descendantIds.has(e.target)));
+
+    if (onManualDelete) {
+      onManualDelete(nodeId).catch(() => {});
+    }
+  }, [setNodes, setEdges, edges, onManualDelete]);
 
   const handleSaveDrawer = useCallback((data: { title: string; description: string; status: string; nodeType: NodeType }) => {
     if (!drawer) return;
@@ -361,18 +552,111 @@ function GoalFlowInner({ root, className }: GoalFlowProps) {
           : n,
       ),
     );
+    if (onManualUpdate) {
+      onManualUpdate(drawer.nodeId, data).catch(() => {});
+    }
     setDrawer(null);
-  }, [drawer, setNodes]);
+  }, [drawer, setNodes, onManualUpdate]);
+
+  const onNodeClick = useCallback((_event: React.MouseEvent, node: Node) => {
+    handleEdit(node.id);
+  }, [handleEdit]);
+
+  const handleAiEditOpen = useCallback((nodeId: string) => {
+    setAiEditTarget(nodeId);
+    setAiEditInput("");
+  }, []);
+
+  const handleAiEditCancel = useCallback(() => {
+    setAiEditTarget(null);
+    setAiEditInput("");
+  }, []);
+
+  const handleAiEditSubmit = useCallback(async () => {
+    if (!aiEditTarget || !aiEditInputRef.current.trim()) return;
+    const nodeId = aiEditTarget;
+    const instruction = aiEditInputRef.current.trim();
+    setAiEditLoading(true);
+
+    try {
+      const res = await fetch(`/api/goal/${goalId}/chat-edit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tree: root, message: `Change the node with id "${nodeId}": ${instruction}` }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.diffs) throw new Error(data.error || "Failed");
+
+      const diff = (data.diffs as ChangeInstruction[]).find((d) => d.nodeId === nodeId);
+      if (diff && diff.action === "update") {
+        setNodes((nds) => {
+          const node = nds.find((n) => n.id === nodeId);
+          const d = node?.data as unknown as GoalNodeData | undefined;
+          if (onManualUpdate) {
+            onManualUpdate(nodeId, {
+              title: diff.title ?? d?.title ?? "",
+              description: diff.description ?? d?.description ?? "",
+              status: d?.status ?? "started",
+              nodeType: d?.nodeType ?? "task",
+            }).catch(() => {});
+          }
+          return nds.map((n) =>
+            n.id === nodeId
+              ? {
+                  ...n,
+                  data: {
+                    ...n.data,
+                    ...(diff.title ? { title: diff.title } : {}),
+                    ...(diff.description !== undefined ? { description: diff.description } : {}),
+                  },
+                }
+              : n,
+          );
+        });
+      }
+    } catch {
+      // silently fail — user can retry
+    } finally {
+      setAiEditLoading(false);
+      setAiEditTarget(null);
+      setAiEditInput("");
+    }
+  }, [aiEditTarget, goalId, root, setNodes, onManualUpdate]);
+
+  // Inject callbacks into node data so GoalNodeCard can use them
+  const augmentedNodes = useMemo(() => {
+    return nodes.map((n) => {
+      const nodeId = n.id;
+      return {
+        ...n,
+        data: {
+          ...n.data,
+          callbacks: {
+            onEdit: () => handleEdit(nodeId),
+            onAiEdit: () => handleAiEditOpen(nodeId),
+            onDelete: () => handleDelete(nodeId),
+            isAiEditing: aiEditTarget === nodeId,
+            aiEditInput: aiEditInputRef.current,
+            onAiEditInputChange: setAiEditInput,
+            onAiEditSubmit: handleAiEditSubmit,
+            onAiEditCancel: handleAiEditCancel,
+            aiEditLoading,
+          } satisfies GoalNodeCardCallbacks,
+        },
+      };
+    });
+  }, [nodes, handleEdit, handleAiEditOpen, handleDelete, aiEditTarget, handleAiEditSubmit, handleAiEditCancel, aiEditLoading]);
 
   return (
     <div ref={flowRef} className={cn("w-full", className)} style={{ height: 600 }}>
       <ReactFlow
-        nodes={nodes}
+        nodes={augmentedNodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        nodeTypes={nodeTypes}
         onNodeClick={onNodeClick}
+        nodeTypes={nodeTypes}
         fitView
         fitViewOptions={{ padding: 0.2, maxZoom: 1.2, minZoom: 0.15, duration: 500 }}
         nodesDraggable={true}
@@ -398,28 +682,6 @@ function GoalFlowInner({ root, className }: GoalFlowProps) {
           zoomable
         />
       </ReactFlow>
-
-      {/* Floating menu */}
-      {menu && (
-        <div
-          data-menu
-          className="absolute z-40 bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg shadow-xl py-1 min-w-[120px]"
-          style={{ left: menu.x + 8, top: menu.y }}
-        >
-          <button
-            onClick={handleEdit}
-            className="flex items-center gap-2 w-full px-3 py-2 text-[12px] text-[#888888] hover:text-white hover:bg-[#222222] transition-colors"
-          >
-            <Pencil className="h-3.5 w-3.5" /> Edit
-          </button>
-          <button
-            onClick={handleDelete}
-            className="flex items-center gap-2 w-full px-3 py-2 text-[12px] text-[#DC2626] hover:bg-[#222222] transition-colors"
-          >
-            <Trash2 className="h-3.5 w-3.5" /> Delete
-          </button>
-        </div>
-      )}
 
       {/* Edit drawer */}
       {drawer && (

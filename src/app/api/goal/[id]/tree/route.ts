@@ -62,7 +62,7 @@ export async function GET(
     })),
   };
 
-  const taskStatuses = treeRecord.taskIds.map((tid, idx) => {
+  const taskStatuses = treeRecord.taskIds.map((tid, _idx) => {
     const task = taskMap.get(tid);
     return {
       id: tid,
