@@ -14,15 +14,15 @@
       ],
       "skillIds": [],
       "status": "active",
-      "createdAt": "2026-01-24T22:17:49.775Z",
-      "updatedAt": "2026-01-24T22:17:49.775Z"
+      "createdAt": "2026-05-15T04:31:35.817Z",
+      "updatedAt": "2026-05-15T04:31:35.817Z"
     },
     {
       "id": "researcher",
       "name": "Researcher",
       "icon": "Search",
       "description": "Market research, competitive analysis, evaluation",
-      "instructions": "You are acting as a Research Analyst. Your role is to investigate topics thoroughly and produce actionable insights for a solo software entrepreneur.\n\nSteps:\n1. Read mission-control/data/ai-context.md for current project context\n2. Search the web for the most current information on this topic\n3. Cross-reference multiple sources for accuracy\n4. Focus on practical, actionable findings\n5. Consider the solo entrepreneur context (limited time, limited budget, need for leverage)",
+      "instructions": "You are acting as a Research Analyst. Your role is to investigate topics thoroughly and produce actionable insights for a solo software entrepreneur.\n\nSteps:\n1. Read katalyst/data/ai-context.md for current project context\n2. Search the web for the most current information on this topic\n3. Cross-reference multiple sources for accuracy\n4. Focus on practical, actionable findings\n5. Consider the solo entrepreneur context (limited time, limited budget, need for leverage)",
       "capabilities": [
         "web-research",
         "competitive-analysis",
@@ -34,15 +34,15 @@
         "skill_demo_research"
       ],
       "status": "active",
-      "createdAt": "2026-01-24T22:17:49.775Z",
-      "updatedAt": "2026-01-24T22:17:49.775Z"
+      "createdAt": "2026-05-15T04:31:35.817Z",
+      "updatedAt": "2026-05-15T04:31:35.817Z"
     },
     {
       "id": "developer",
       "name": "Developer",
       "icon": "Code",
       "description": "Implementation, bug fixes, testing, deployment",
-      "instructions": "You are acting as a Software Engineer. Your role is to write clean, well-tested code and handle all technical implementation tasks.\n\nBefore starting:\n1. Read mission-control/data/ai-context.md for current project context\n2. Check the project's CLAUDE.md for coding conventions\n3. Review existing code patterns before writing new code",
+      "instructions": "You are acting as a Software Engineer. Your role is to write clean, well-tested code and handle all technical implementation tasks.\n\nBefore starting:\n1. Read katalyst/data/ai-context.md for current project context\n2. Check the project's CLAUDE.md for coding conventions\n3. Review existing code patterns before writing new code",
       "capabilities": [
         "full-stack-development",
         "bug-fixes",
@@ -52,12 +52,11 @@
         "architecture"
       ],
       "skillIds": [
-        "skill_demo_task_mgmt",
-        "skill_field_ops"
+        "skill_demo_task_mgmt"
       ],
       "status": "active",
-      "createdAt": "2026-01-24T22:17:49.775Z",
-      "updatedAt": "2026-03-16T22:00:00.000Z"
+      "createdAt": "2026-05-15T04:31:35.817Z",
+      "updatedAt": "2026-05-15T04:31:35.817Z"
     },
     {
       "id": "marketer",
@@ -73,19 +72,17 @@
         "social-media",
         "positioning"
       ],
-      "skillIds": [
-        "skill_field_ops"
-      ],
+      "skillIds": [],
       "status": "active",
-      "createdAt": "2026-01-24T22:17:49.775Z",
-      "updatedAt": "2026-03-16T22:00:00.000Z"
+      "createdAt": "2026-05-15T04:31:35.817Z",
+      "updatedAt": "2026-05-15T04:31:35.817Z"
     },
     {
       "id": "business-analyst",
       "name": "Business Analyst",
       "icon": "BarChart3",
       "description": "Strategy, planning, prioritization, financials",
-      "instructions": "You are acting as a Business Analyst and Strategist advising a solo software entrepreneur.\n\nBefore starting:\n1. Read mission-control/data/ai-context.md for a quick snapshot of current state\n2. Read mission-control/data/projects.json to understand current projects\n3. Read mission-control/data/goals.json to understand priorities",
+      "instructions": "You are acting as a Business Analyst and Strategist advising a solo software entrepreneur.\n\nBefore starting:\n1. Read katalyst/data/ai-context.md for a quick snapshot of current state\n2. Read katalyst/data/projects.json to understand current projects\n3. Read katalyst/data/goals.json to understand priorities",
       "capabilities": [
         "market-analysis",
         "feature-prioritization",
@@ -94,32 +91,11 @@
         "strategic-planning"
       ],
       "skillIds": [
-        "skill_demo_eisenhower",
-        "skill_field_ops"
+        "skill_demo_eisenhower"
       ],
       "status": "active",
-      "createdAt": "2026-01-24T22:17:49.775Z",
-      "updatedAt": "2026-03-16T22:00:00.000Z"
-    },
-    {
-      "id": "tester",
-      "name": "Tester",
-      "icon": "Bug",
-      "description": "QA testing, bug reporting, playtesting, performance analysis, and code improvement suggestions",
-      "instructions": "You are acting as a QA Tester and Playtest Analyst. Your role is to simulate, run, and test code for bugs, report them clearly, and suggest improvements.\n\nBefore starting:\n1. Read mission-control/data/ai-context.md for current project context\n2. Read the project's CLAUDE.md for testing conventions\n3. Review existing bug reports and test results\n\nYour testing methodology:\n- **Functional Testing**: Run the code, exercise all features, verify expected behavior\n- **Edge Case Testing**: Try boundary conditions, invalid inputs, unexpected sequences\n- **Performance Testing**: Profile frame rates, memory usage, load times\n- **Regression Testing**: After fixes, re-test related functionality\n- **Playtest Analysis**: Evaluate game feel, difficulty balance, fun factor\n\nWhen reporting bugs:\n- Severity: critical / major / minor / cosmetic\n- Steps to reproduce (numbered, specific)\n- Expected vs actual behavior\n- Environment details (browser, OS, screen size)\n- Screenshots or console output when available\n\nWhen suggesting improvements:\n- Distinguish between bugs (broken) and enhancements (could be better)\n- Prioritize by player impact\n- Include code snippets for suggested fixes when possible\n- Consider performance implications of suggestions",
-      "capabilities": [
-        "functional-testing",
-        "bug-reporting",
-        "performance-profiling",
-        "playtest-analysis",
-        "regression-testing",
-        "code-review",
-        "improvement-suggestions"
-      ],
-      "skillIds": [],
-      "status": "active",
-      "createdAt": "2026-02-28T20:50:21.322Z",
-      "updatedAt": "2026-02-28T20:50:21.322Z"
+      "createdAt": "2026-05-15T04:31:35.817Z",
+      "updatedAt": "2026-05-15T04:31:35.817Z"
     }
   ]
 }

@@ -1,1 +1,313 @@
-{ "tasks": [] }
+{
+  "tasks": [
+    {
+      "id": "task_demo_1",
+      "title": "Design hero section for landing page",
+      "description": "Create a compelling hero section with headline, subheadline, CTA button, and product screenshot. Should communicate value prop in under 5 seconds.",
+      "importance": "important",
+      "urgency": "urgent",
+      "kanban": "in-progress",
+      "projectId": "proj_demo_1",
+      "milestoneId": "mile_demo_1",
+      "assignedTo": "developer",
+      "collaborators": [
+        "marketer"
+      ],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_1",
+          "title": "Write headline and subheadline copy",
+          "done": true
+        },
+        {
+          "id": "sub_2",
+          "title": "Design layout in Figma",
+          "done": true
+        },
+        {
+          "id": "sub_3",
+          "title": "Implement responsive HTML/CSS",
+          "done": false
+        },
+        {
+          "id": "sub_4",
+          "title": "Add animations and micro-interactions",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": 180,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "Hero loads in under 2 seconds",
+        "CTA button is above the fold on mobile",
+        "Headline communicates core value proposition"
+      ],
+      "comments": [
+        {
+          "id": "cmt_demo_1",
+          "author": "me",
+          "content": "Focus on \"save time\" messaging. Our users care most about efficiency.",
+          "createdAt": "2026-06-11T04:31:35.817Z"
+        },
+        {
+          "id": "cmt_demo_2",
+          "author": "developer",
+          "content": "Headline and subheadline copy are done. Moving to responsive implementation now.",
+          "createdAt": "2026-06-13T04:31:35.817Z"
+        }
+      ],
+      "tags": [
+        "design",
+        "frontend"
+      ],
+      "notes": "",
+      "createdAt": "2026-06-07T04:31:35.817Z",
+      "updatedAt": "2026-06-13T22:31:35.817Z",
+      "completedAt": null
+    },
+    {
+      "id": "task_demo_2",
+      "title": "Set up email signup form with validation",
+      "description": "Add an email capture form to the landing page. Must validate email format, prevent duplicates, and store in our database.",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": "proj_demo_1",
+      "milestoneId": "mile_demo_1",
+      "assignedTo": "developer",
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [],
+      "blockedBy": [
+        "task_demo_1"
+      ],
+      "estimatedMinutes": 120,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "Email validation on client and server side",
+        "Success/error toast notifications",
+        "Duplicate email detection"
+      ],
+      "comments": [],
+      "tags": [
+        "backend",
+        "forms"
+      ],
+      "notes": "Consider using a third-party form service to speed this up.",
+      "createdAt": "2026-06-07T04:31:35.817Z",
+      "updatedAt": "2026-06-07T04:31:35.817Z",
+      "completedAt": null
+    },
+    {
+      "id": "task_demo_3",
+      "title": "Research competitor API pricing models",
+      "description": "Analyze how competitors price their API access. Look at rate limits, tiers, and developer experience.",
+      "importance": "not-important",
+      "urgency": "urgent",
+      "kanban": "in-progress",
+      "projectId": "proj_demo_2",
+      "milestoneId": "mile_demo_2",
+      "assignedTo": "researcher",
+      "collaborators": [
+        "business-analyst"
+      ],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_5",
+          "title": "Identify top 5 competitors",
+          "done": true
+        },
+        {
+          "id": "sub_6",
+          "title": "Document pricing tiers",
+          "done": false
+        },
+        {
+          "id": "sub_7",
+          "title": "Analyze developer docs quality",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": 90,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "Comparison table with at least 5 competitors",
+        "Price-per-request analysis"
+      ],
+      "comments": [
+        {
+          "id": "cmt_demo_3",
+          "author": "researcher",
+          "content": "Found 7 competitors so far. Most use tiered pricing with free tiers. Will have the full analysis ready by tomorrow.",
+          "createdAt": "2026-06-13T20:31:35.817Z"
+        }
+      ],
+      "tags": [
+        "research",
+        "pricing"
+      ],
+      "notes": "",
+      "createdAt": "2026-06-09T04:31:35.817Z",
+      "updatedAt": "2026-06-13T20:31:35.817Z",
+      "completedAt": null
+    },
+    {
+      "id": "task_demo_4",
+      "title": "Design API authentication flow",
+      "description": "Design the OAuth2 authentication flow for the API. Consider developer experience, security, and token management.",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": "proj_demo_2",
+      "milestoneId": "mile_demo_2",
+      "assignedTo": null,
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [],
+      "blockedBy": [
+        "task_demo_3"
+      ],
+      "estimatedMinutes": 240,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "OAuth2 flow diagram",
+        "Token rotation strategy",
+        "Rate limiting design"
+      ],
+      "comments": [],
+      "tags": [
+        "security",
+        "architecture"
+      ],
+      "notes": "Depends on competitor research to inform our approach.",
+      "createdAt": "2026-06-09T04:31:35.817Z",
+      "updatedAt": "2026-06-09T04:31:35.817Z",
+      "completedAt": null
+    },
+    {
+      "id": "task_demo_5",
+      "title": "Write launch announcement blog post",
+      "description": "Write a blog post announcing the product launch. Include product screenshots, key features, and early-access signup link.",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": "proj_demo_1",
+      "milestoneId": "mile_demo_3",
+      "assignedTo": "marketer",
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [],
+      "blockedBy": [
+        "task_demo_1"
+      ],
+      "estimatedMinutes": 120,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "1000-1500 word blog post",
+        "Include 3+ product screenshots",
+        "SEO optimized title and meta description"
+      ],
+      "comments": [],
+      "tags": [
+        "content",
+        "launch"
+      ],
+      "notes": "",
+      "createdAt": "2026-06-11T04:31:35.817Z",
+      "updatedAt": "2026-06-11T04:31:35.817Z",
+      "completedAt": null
+    },
+    {
+      "id": "task_demo_6",
+      "title": "Analyze content marketing strategy options",
+      "description": "Research and recommend a content strategy: blog, YouTube, Twitter threads, or newsletter. Include effort estimates and expected ROI.",
+      "importance": "not-important",
+      "urgency": "not-urgent",
+      "kanban": "done",
+      "projectId": null,
+      "milestoneId": null,
+      "assignedTo": "business-analyst",
+      "collaborators": [
+        "researcher"
+      ],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_8",
+          "title": "Research channel options",
+          "done": true
+        },
+        {
+          "id": "sub_9",
+          "title": "Estimate effort per channel",
+          "done": true
+        },
+        {
+          "id": "sub_10",
+          "title": "Create recommendation doc",
+          "done": true
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": 90,
+      "actualMinutes": 75,
+      "acceptanceCriteria": [
+        "Comparison of at least 4 channels",
+        "ROI estimates for each",
+        "Clear recommendation with rationale"
+      ],
+      "comments": [
+        {
+          "id": "cmt_demo_4",
+          "author": "business-analyst",
+          "content": "Completed the analysis. Recommending a blog + Twitter thread combo. Newsletter can wait until we have 500+ signups. Full report attached to the task notes.",
+          "createdAt": "2026-06-12T04:31:35.817Z"
+        }
+      ],
+      "tags": [
+        "strategy",
+        "content"
+      ],
+      "notes": "Recommendation: Start with weekly blog posts + Twitter thread repurposing. Newsletter when audience exceeds 500 subscribers.",
+      "createdAt": "2026-06-04T04:31:35.817Z",
+      "updatedAt": "2026-06-12T04:31:35.817Z",
+      "completedAt": "2026-06-12T04:31:35.817Z"
+    },
+    {
+      "id": "task_demo_7",
+      "title": "Review and approve landing page design",
+      "description": "Review the developer's landing page implementation and provide feedback. Approve or request changes.",
+      "importance": "important",
+      "urgency": "urgent",
+      "kanban": "not-started",
+      "projectId": "proj_demo_1",
+      "milestoneId": "mile_demo_1",
+      "assignedTo": "me",
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [],
+      "blockedBy": [
+        "task_demo_1"
+      ],
+      "estimatedMinutes": 30,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "Design reviewed against brand guidelines",
+        "Mobile responsiveness verified",
+        "CTA placement approved"
+      ],
+      "comments": [],
+      "tags": [
+        "review"
+      ],
+      "notes": "",
+      "createdAt": "2026-06-09T04:31:35.817Z",
+      "updatedAt": "2026-06-09T04:31:35.817Z",
+      "completedAt": null
+    }
+  ]
+}

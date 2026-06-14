@@ -1,3 +1,67 @@
 {
-  "events": []
+  "events": [
+    {
+      "id": "evt_demo_1",
+      "type": "task_created",
+      "actor": "system",
+      "taskId": "task_demo_1",
+      "summary": "Task created: Design hero section for landing page",
+      "details": "New task created and assigned to developer with marketer as collaborator.",
+      "timestamp": "2026-06-07T04:31:35.817Z"
+    },
+    {
+      "id": "evt_demo_2",
+      "type": "task_delegated",
+      "actor": "system",
+      "taskId": "task_demo_1",
+      "summary": "Task delegated to developer: Design hero section for landing page",
+      "details": "\"Design hero section for landing page\" was assigned to developer with marketer collaborating.",
+      "timestamp": "2026-06-07T04:31:35.817Z"
+    },
+    {
+      "id": "evt_demo_3",
+      "type": "task_updated",
+      "actor": "developer",
+      "taskId": "task_demo_1",
+      "summary": "Task started: Design hero section for landing page",
+      "details": "Developer began working on the hero section. Copy subtasks completed.",
+      "timestamp": "2026-06-11T04:31:35.817Z"
+    },
+    {
+      "id": "evt_demo_4",
+      "type": "task_delegated",
+      "actor": "system",
+      "taskId": "task_demo_3",
+      "summary": "Task delegated to researcher: Research competitor API pricing models",
+      "details": "\"Research competitor API pricing models\" was assigned to researcher with business-analyst collaborating.",
+      "timestamp": "2026-06-09T04:31:35.817Z"
+    },
+    {
+      "id": "evt_demo_5",
+      "type": "task_completed",
+      "actor": "business-analyst",
+      "taskId": "task_demo_6",
+      "summary": "Task completed: Analyze content marketing strategy options",
+      "details": "\"Analyze content marketing strategy options\" was marked as done by business-analyst.",
+      "timestamp": "2026-06-12T04:31:35.817Z"
+    },
+    {
+      "id": "evt_demo_6",
+      "type": "task_delegated",
+      "actor": "system",
+      "taskId": "task_demo_5",
+      "summary": "Task delegated to marketer: Write launch announcement blog post",
+      "details": "\"Write launch announcement blog post\" was assigned to marketer.",
+      "timestamp": "2026-06-11T04:31:35.817Z"
+    },
+    {
+      "id": "evt_demo_7",
+      "type": "agent_checkin",
+      "actor": "researcher",
+      "taskId": "task_demo_3",
+      "summary": "Researcher check-in: API pricing research 50% complete",
+      "details": "Found 7 competitors with public pricing. Compiling comparison table.",
+      "timestamp": "2026-06-13T20:31:35.817Z"
+    }
+  ]
 }

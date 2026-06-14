@@ -1,7 +1,7 @@
 {
   "id": "snap_demo",
   "name": "Demo Data",
-  "description": "Sample tasks, projects, goals, and agent communications to explore Mission Control.",
+  "description": "Sample tasks, projects, goals, and agent communications to explore Katalyst.",
   "createdAt": "2026-02-24T18:27:04.683Z",
   "version": 1,
   "data": {
@@ -466,7 +466,7 @@
         },
         {
           "id": "bd_demo_3",
-          "content": "Add dark mode to the landing page — match the Mission Control vibe.",
+          "content": "Add dark mode to the landing page — match the Katalyst vibe.",
           "capturedAt": "2026-02-24T14:26:59.160Z",
           "processed": false,
           "convertedTo": null,
@@ -696,8 +696,8 @@
         {
           "id": "skill_demo_task_mgmt",
           "name": "Task Management",
-          "description": "Manages tasks in Mission Control via JSON data files",
-          "content": "# Task Management\n\nAll data lives in mission-control/data/ as JSON files.\n\n## Quick Reference\n- AI Context: katalyst/data/ai-context.md (read FIRST)\n- Tasks: mission-control/data/tasks.json\n- Goals: katalyst/data/goals.json\n- Projects: katalyst/data/projects.json\n\n## Creating a Task\nRequired: id, title, description, importance, urgency, kanban, assignedTo\nGenerate IDs as: task_{Date.now()}\n\n## After Any Data Modification\nRun pnpm gen:context in mission-control/ to regenerate ai-context.md",
+          "description": "Manages tasks in Katalyst via JSON data files",
+          "content": "# Task Management\n\nAll data lives in katalyst/data/ as JSON files.\n\n## Quick Reference\n- AI Context: katalyst/data/ai-context.md (read FIRST)\n- Tasks: katalyst/data/tasks.json\n- Goals: katalyst/data/goals.json\n- Projects: katalyst/data/projects.json\n\n## Creating a Task\nRequired: id, title, description, importance, urgency, kanban, assignedTo\nGenerate IDs as: task_{Date.now()}\n\n## After Any Data Modification\nRun pnpm gen:context in katalyst/ to regenerate ai-context.md",
           "agentIds": [
             "developer",
             "researcher",

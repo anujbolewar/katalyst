@@ -1,1 +1,82 @@
-{ "goals": [] }
+{
+  "goals": [
+    {
+      "id": "goal_demo_1",
+      "title": "Launch SaaS product to first 100 users",
+      "type": "long-term",
+      "timeframe": "Q2 2026",
+      "parentGoalId": null,
+      "projectId": "proj_demo_1",
+      "status": "in-progress",
+      "milestones": [
+        "mile_demo_1",
+        "mile_demo_2",
+        "mile_demo_3"
+      ],
+      "tasks": [
+        "task_demo_1",
+        "task_demo_2",
+        "task_demo_5"
+      ],
+      "createdAt": "2026-05-15T04:31:35.817Z"
+    },
+    {
+      "id": "mile_demo_1",
+      "title": "Landing page live and collecting signups",
+      "type": "medium-term",
+      "timeframe": "2026-06-21T04:31:35.817Z",
+      "parentGoalId": "goal_demo_1",
+      "projectId": "proj_demo_1",
+      "status": "in-progress",
+      "milestones": [],
+      "tasks": [
+        "task_demo_1",
+        "task_demo_2"
+      ],
+      "createdAt": "2026-05-31T04:31:35.817Z"
+    },
+    {
+      "id": "mile_demo_2",
+      "title": "Beta API ready for testing",
+      "type": "medium-term",
+      "timeframe": "2026-07-05T04:31:35.817Z",
+      "parentGoalId": "goal_demo_1",
+      "projectId": "proj_demo_2",
+      "status": "not-started",
+      "milestones": [],
+      "tasks": [
+        "task_demo_3",
+        "task_demo_4"
+      ],
+      "createdAt": "2026-05-31T04:31:35.817Z"
+    },
+    {
+      "id": "mile_demo_3",
+      "title": "First 50 beta signups",
+      "type": "medium-term",
+      "timeframe": "2026-07-14T04:31:35.817Z",
+      "parentGoalId": "goal_demo_1",
+      "projectId": null,
+      "status": "not-started",
+      "milestones": [],
+      "tasks": [
+        "task_demo_5"
+      ],
+      "createdAt": "2026-06-04T04:31:35.817Z"
+    },
+    {
+      "id": "goal_demo_2",
+      "title": "Build sustainable content engine",
+      "type": "long-term",
+      "timeframe": "Q3 2026",
+      "parentGoalId": null,
+      "projectId": null,
+      "status": "not-started",
+      "milestones": [],
+      "tasks": [
+        "task_demo_6"
+      ],
+      "createdAt": "2026-06-07T04:31:35.817Z"
+    }
+  ]
+}

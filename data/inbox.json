@@ -1,1 +1,64 @@
-{ "messages": [] }
+{
+  "messages": [
+    {
+      "id": "msg_demo_1",
+      "from": "system",
+      "to": "developer",
+      "type": "delegation",
+      "taskId": "task_demo_1",
+      "subject": "New assignment: Design hero section for landing page",
+      "body": "You have been assigned to: \"Design hero section for landing page\"\n\nCreate a compelling hero section with headline, subheadline, CTA button, and product screenshot.",
+      "status": "read",
+      "createdAt": "2026-06-07T04:31:35.817Z",
+      "readAt": "2026-06-07T04:31:35.817Z"
+    },
+    {
+      "id": "msg_demo_1b",
+      "from": "system",
+      "to": "marketer",
+      "type": "delegation",
+      "taskId": "task_demo_1",
+      "subject": "Collaborator assignment: Design hero section for landing page",
+      "body": "You have been added as a collaborator on: \"Design hero section for landing page\"\n\nWork with the developer (lead) to create compelling hero copy and CTA messaging.",
+      "status": "read",
+      "createdAt": "2026-06-07T04:31:35.817Z",
+      "readAt": "2026-06-08T04:31:35.817Z"
+    },
+    {
+      "id": "msg_demo_2",
+      "from": "business-analyst",
+      "to": "me",
+      "type": "report",
+      "taskId": "task_demo_6",
+      "subject": "Completed: Analyze content marketing strategy options",
+      "body": "Task \"Analyze content marketing strategy options\" has been completed.\n\nRecommendation: Start with weekly blog posts + Twitter thread repurposing. Newsletter when audience exceeds 500 subscribers.\n\nKey findings:\n- Blog posts have the best long-term SEO value\n- Twitter threads can be repurposed from blog content with minimal effort\n- Newsletter requires a critical mass of subscribers to justify the effort",
+      "status": "unread",
+      "createdAt": "2026-06-12T04:31:35.817Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_demo_3",
+      "from": "researcher",
+      "to": "me",
+      "type": "update",
+      "taskId": "task_demo_3",
+      "subject": "Progress update: API pricing research",
+      "body": "Halfway through the competitor API pricing analysis. Found 7 competitors with public pricing.\n\nEarly observation: most offer a free tier with 1000 requests/month. Paid tiers range from $29-$99/month.\n\nWill have the full comparison ready by tomorrow.",
+      "status": "unread",
+      "createdAt": "2026-06-13T20:31:35.817Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_demo_4",
+      "from": "system",
+      "to": "marketer",
+      "type": "delegation",
+      "taskId": "task_demo_5",
+      "subject": "New assignment: Write launch announcement blog post",
+      "body": "You have been assigned to: \"Write launch announcement blog post\"\n\nWrite a blog post announcing the product launch. Include product screenshots, key features, and early-access signup link.",
+      "status": "unread",
+      "createdAt": "2026-06-11T04:31:35.817Z",
+      "readAt": null
+    }
+  ]
+}

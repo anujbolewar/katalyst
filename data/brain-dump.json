@@ -1,1 +1,45 @@
-{ "entries": [] }
+{
+  "entries": [
+    {
+      "id": "bd_demo_1",
+      "content": "Could we add a referral program? Give users a unique link and reward them for signups.",
+      "capturedAt": "2026-06-12T04:31:35.817Z",
+      "processed": false,
+      "convertedTo": null,
+      "tags": [
+        "growth",
+        "idea"
+      ]
+    },
+    {
+      "id": "bd_demo_2",
+      "content": "Look into Stripe for payment processing. Need to compare with Paddle for international taxes.",
+      "capturedAt": "2026-06-13T04:31:35.817Z",
+      "processed": false,
+      "convertedTo": null,
+      "tags": [
+        "payments"
+      ]
+    },
+    {
+      "id": "bd_demo_3",
+      "content": "Add dark mode toggle to the landing page — match the Katalyst vibe.",
+      "capturedAt": "2026-06-14T00:31:35.817Z",
+      "processed": false,
+      "convertedTo": null,
+      "tags": [
+        "design"
+      ]
+    },
+    {
+      "id": "bd_demo_4",
+      "content": "Competitor X just raised $5M. Check their new features and positioning.",
+      "capturedAt": "2026-06-11T04:31:35.817Z",
+      "processed": true,
+      "convertedTo": "task_demo_3",
+      "tags": [
+        "competitive-analysis"
+      ]
+    }
+  ]
+}

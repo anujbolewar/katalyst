@@ -41,7 +41,13 @@
     ],
     "agentTeams": false,
     "claudeBinaryPath": null,
-    "maxTaskContinuations": 2
+    "agentBinaryPath": null,
+    "maxTaskContinuations": 2,
+    "engineType": "auto",
+    "ollama": {
+      "enabled": false,
+      "model": null
+    }
   },
   "inbox": {
     "maxContinuations": 2,

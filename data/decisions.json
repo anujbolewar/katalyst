@@ -1,1 +1,36 @@
-{ "decisions": [] }
+{
+  "decisions": [
+    {
+      "id": "dec_demo_1",
+      "requestedBy": "developer",
+      "taskId": "task_demo_1",
+      "question": "Which animation library should we use for the hero section?",
+      "options": [
+        "Framer Motion (full-featured, larger bundle)",
+        "CSS animations only (lightweight, limited)",
+        "GSAP (powerful, commercial license)"
+      ],
+      "context": "The hero section needs smooth entrance animations and scroll-triggered effects. Framer Motion integrates well with React but adds ~30kb. CSS-only is lighter but harder to maintain complex sequences.",
+      "status": "pending",
+      "answer": null,
+      "answeredAt": null,
+      "createdAt": "2026-06-13T04:31:35.817Z"
+    },
+    {
+      "id": "dec_demo_2",
+      "requestedBy": "marketer",
+      "taskId": "task_demo_5",
+      "question": "What tone should the launch blog post use?",
+      "options": [
+        "Professional/Enterprise (trust-focused)",
+        "Casual/Developer-friendly (approachable)",
+        "Bold/Visionary (thought-leadership)"
+      ],
+      "context": "Our target audience is technical founders and solo developers. The tone will set expectations for all future content. Competitors tend toward corporate language.",
+      "status": "pending",
+      "answer": null,
+      "answeredAt": null,
+      "createdAt": "2026-06-13T16:31:35.817Z"
+    }
+  ]
+}

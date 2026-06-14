@@ -12,8 +12,8 @@
         "research",
         "analysis"
       ],
-      "createdAt": "2026-01-24T22:17:49.775Z",
-      "updatedAt": "2026-01-24T22:17:49.775Z"
+      "createdAt": "2026-05-15T04:31:35.817Z",
+      "updatedAt": "2026-05-15T04:31:35.817Z"
     },
     {
       "id": "skill_demo_eisenhower",
@@ -29,14 +29,14 @@
         "eisenhower",
         "triage"
       ],
-      "createdAt": "2026-01-24T22:17:49.775Z",
-      "updatedAt": "2026-01-24T22:17:49.775Z"
+      "createdAt": "2026-05-15T04:31:35.817Z",
+      "updatedAt": "2026-05-15T04:31:35.817Z"
     },
     {
       "id": "skill_demo_task_mgmt",
       "name": "Task Management",
-      "description": "Manages tasks in Mission Control via JSON data files",
-      "content": "# Task Management\n\nAll data lives in mission-control/data/ as JSON files.\n\n## Quick Reference\n- AI Context: katalyst/data/ai-context.md (read FIRST)\n- Tasks: mission-control/data/tasks.json\n- Goals: katalyst/data/goals.json\n- Projects: katalyst/data/projects.json\n\n## Creating a Task\nRequired: id, title, description, importance, urgency, kanban, assignedTo\nGenerate IDs as: task_{Date.now()}\n\n## After Any Data Modification\nRun pnpm gen:context in mission-control/ to regenerate ai-context.md",
+      "description": "Manages tasks in Katalyst via JSON data files",
+      "content": "# Task Management\n\nAll data lives in katalyst/data/ as JSON files.\n\n## Quick Reference\n- AI Context: katalyst/data/ai-context.md (read FIRST)\n- Tasks: katalyst/data/tasks.json\n- Goals: katalyst/data/goals.json\n- Projects: katalyst/data/projects.json\n\n## Creating a Task\nRequired: id, title, description, importance, urgency, kanban, assignedTo\nGenerate IDs as: task_{Date.now()}\n\n## After Any Data Modification\nRun pnpm gen:context in katalyst/ to regenerate ai-context.md",
       "agentIds": [
         "developer",
         "researcher",
@@ -48,8 +48,8 @@
         "management",
         "workflow"
       ],
-      "createdAt": "2026-01-24T22:17:49.775Z",
-      "updatedAt": "2026-01-24T22:17:49.775Z"
+      "createdAt": "2026-05-15T04:31:35.817Z",
+      "updatedAt": "2026-05-15T04:31:35.817Z"
     }
   ]
 }
