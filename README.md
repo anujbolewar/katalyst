@@ -22,22 +22,6 @@ Katalyst separates the planning interface from the execution engine to maximize 
 - **The Muscle (Agent Engine):** A headless, sandboxed Python daemon (`/cli-engine`). It uses an intelligent tool-calling loop to safely run terminal commands, browse the web, and process AI logic locally (via Ollama) or remotely (via OpenRouter).
 - **The Nervous System:** A Node.js background router that orchestrates the communication between your web dashboard and the Python agents executing your matrix.
 
-## 🚀 Quick Start
-
-Ready to turn your vague goals into reality?
-
-```bash
-# 1. Install the workspace
-pnpm install
-
-# 2. Launch your dashboard
-pnpm dev
-
-# 3. Wake up the background agents
-pnpm daemon:start
-```
-
----
 
 ### 🗺️ Internal Roadmap
 *(What we're building next)*
