@@ -91,6 +91,47 @@ echo "[Katalyst] Dev server PID: $DEV_PID"
 
 # Start daemon if requested
 if $START_DAEMON; then
+  echo ""
+  echo "=== Cleaning previous daemon state ==="
+
+  # Stop existing daemon if running
+  if [ -f "data/daemon.pid" ]; then
+    OLD_PID=$(cat data/daemon.pid 2>/dev/null)
+    if [ -n "$OLD_PID" ] && kill -0 "$OLD_PID" 2>/dev/null; then
+      echo "  Stopping existing daemon (PID: $OLD_PID)..."
+      kill "$OLD_PID" 2>/dev/null || true
+      sleep 1
+      kill -9 "$OLD_PID" 2>/dev/null || true
+      sleep 1
+    fi
+  fi
+
+  # Clean stale daemon files
+  rm -f data/daemon.pid data/daemon-status.json data/daemon-status.json.tmp
+  rm -f data/daemon-retry-queue.json data/daemon-retry-queue.json.tmp
+  echo '{"runs":[]}' > data/active-runs.json
+  echo '{"runs":[]}' > data/respond-runs.json
+
+  # Reset in-progress tasks back to not-started
+  if [ -f "data/tasks.json" ]; then
+    node -e "
+    const fs = require('fs');
+    const data = JSON.parse(fs.readFileSync('data/tasks.json','utf-8'));
+    let changed = false;
+    for (const t of data.tasks) {
+      if (t.kanban === 'in-progress') {
+        t.kanban = 'not-started';
+        t.updatedAt = new Date().toISOString();
+        changed = true;
+      }
+    }
+    if (changed) fs.writeFileSync('data/tasks.json', JSON.stringify(data, null, 2));
+    " 2>/dev/null || true
+  fi
+
+  echo "✓ Daemon state cleaned"
+  echo ""
+
   sleep 3
   npx tsx scripts/daemon/index.ts start &
   DAEMON_PID=$!

@@ -16,7 +16,8 @@
     "seed:demo": "npx tsx scripts/seed-demo.ts",
     "daemon:start": "npx tsx scripts/daemon/index.ts start",
     "daemon:stop": "npx tsx scripts/daemon/index.ts stop",
-    "daemon:status": "npx tsx scripts/daemon/index.ts status"
+    "daemon:status": "npx tsx scripts/daemon/index.ts status",
+    "start:demo": "npx tsx scripts/start-demo.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
