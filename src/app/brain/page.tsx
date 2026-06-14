@@ -132,6 +132,7 @@ export default function BrainPage() {
         .join("g")
         .attr("cursor", "pointer")
         .call(
+          // @ts-expect-error D3 typings for Selection and DragBehavior are notoriously strict and mismatched here
           d3.drag<SVGGElement, GraphNode>()
             .on("start", (_event, d) => {
               if (!_event.active) simulation.alphaTarget(0.3).restart();
@@ -201,7 +202,7 @@ export default function BrainPage() {
           .attr("x2", (d) => (d.target as unknown as { x: number }).x)
           .attr("y2", (d) => (d.target as unknown as { y: number }).y);
 
-        node.attr("transform", (d) => `translate(${d.x},${d.y})`);
+        node.attr("transform", (d) => `translate(${(d as unknown as {x: number; y: number}).x},${(d as unknown as {x: number; y: number}).y})`);
       });
     };
 

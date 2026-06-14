@@ -309,20 +309,22 @@ export default function CommandCenterPage() {
                 </Card>
               </Link>
 
-              <Card className="sm:col-span-2 bg-muted/30">
-                <CardContent className="p-4 flex items-start gap-3">
-                  <div className="h-9 w-9 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
-                    <Users className="h-4 w-4 text-purple-500" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Deploy AI agents</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Assign tasks to Researcher, Developer, Marketer, or Business Analyst agents.
-                      They work through Claude Code and report back here.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+              <Link href="/team">
+                <Card className="sm:col-span-2 bg-muted/30 cursor-pointer hover:border-primary/30 transition-all h-full">
+                  <CardContent className="p-4 flex items-start gap-3">
+                    <div className="h-9 w-9 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
+                      <Users className="h-4 w-4 text-purple-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Deploy AI agents</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Assign tasks to Researcher, Developer, Marketer, or Business Analyst agents.
+                        They work through Claude Code and report back here.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
 
             <div className="pt-2 border-t border-border">

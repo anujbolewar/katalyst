@@ -5,6 +5,7 @@ import { Zap, Search, PanelLeftClose, PanelLeft, Lightbulb, Bot, X, Menu } from 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tip } from "@/components/ui/tip";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import { SKILLS } from "@/lib/types";
 import type { Task } from "@/lib/types";
@@ -245,6 +246,7 @@ export function CommandBar({ onCapture, sidebarOpen, onToggleSidebar, isMobile =
         )}
       </div>
 
+      <ThemeToggle />
     </header>
   );
 }

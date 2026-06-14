@@ -22,6 +22,7 @@ import {
   BookOpen,
   Zap,
   Shield,
+  Settings,
   Wrench,
   Globe,
   Brain,
@@ -51,6 +52,7 @@ const mainLinks = [
   { href: "/brain-dump", label: "Brain Dump", icon: Lightbulb },
   { href: "/checkpoints", label: "Checkpoints", icon: Flag },
   { href: "/autopilot", label: "Autopilot", icon: Zap },
+  { href: "/settings", label: "Settings", icon: Settings },
   { href: "/guide", label: "Guide", icon: BookOpen },
 ];
 

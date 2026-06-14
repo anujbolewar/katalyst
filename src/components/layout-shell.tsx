@@ -13,6 +13,7 @@ import { apiFetch } from "@/lib/api-client";
 import { showSuccess, showError } from "@/lib/toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ActiveRunsProvider } from "@/providers/active-runs-provider";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { cn } from "@/lib/utils";
 
 interface LayoutShellProps {
@@ -113,7 +114,9 @@ export function LayoutShell({ children }: LayoutShellProps) {
           </div>
         )}
         <ActiveRunsProvider>
-          {children}
+          <ErrorBoundary fallbackMessage="Something went wrong loading this page. Try refreshing.">
+            {children}
+          </ErrorBoundary>
         </ActiveRunsProvider>
       </main>
     </div>

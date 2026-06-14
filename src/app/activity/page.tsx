@@ -28,7 +28,7 @@ const agentIcons: Record<string, typeof User> = {
   system: Bot,
 };
 
-const eventTypeLabels: Record<EventType, string> = {
+const eventTypeLabels: Record<string, string> = {
   task_created: "Task Created",
   task_updated: "Task Updated",
   task_completed: "Task Completed",
@@ -40,9 +40,11 @@ const eventTypeLabels: Record<EventType, string> = {
   brain_dump_triaged: "Brain Dump Processed",
   milestone_completed: "Milestone Completed",
   agent_checkin: "Agent Check-in",
+  field_task_approved: "Field Task Approved",
+  field_task_rejected: "Field Task Rejected",
 };
 
-const eventTypeColors: Record<EventType, string> = {
+const eventTypeColors: Record<string, string> = {
   task_created: "bg-blue-500/20 text-blue-400",
   task_updated: "bg-purple-500/20 text-purple-400",
   task_completed: "bg-green-500/20 text-green-400",
@@ -54,6 +56,8 @@ const eventTypeColors: Record<EventType, string> = {
   brain_dump_triaged: "bg-pink-500/20 text-pink-400",
   milestone_completed: "bg-green-500/20 text-green-400",
   agent_checkin: "bg-indigo-500/20 text-indigo-400",
+  field_task_approved: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  field_task_rejected: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 };
 
 function groupByDate(events: ActivityEvent[]): Map<string, ActivityEvent[]> {
