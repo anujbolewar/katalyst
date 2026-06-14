@@ -29,6 +29,9 @@ yarn-error.log*
 .env*.local
 .env
 
+# docs
+/docs/
+
 # vercel
 .vercel
 
@@ -39,3 +42,37 @@ next-env.d.ts
 # python / scripts
 __pycache__/
 *.pyc
+cli-engine/.venv/
+
+# agent tooling
+.commandcode/
+AGENTS.md
+CLAUDE.md
+
+# daemon runtime
+data/daemon.log*
+data/daemon-status.json
+data/daemon.pid
+data/active-runs.json
+
+# generated data
+data/backups/
+data/reports/
+
+# database files
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# runtime generated data
+data/field-ops/
+data/goal-trees.json
+
+# convenience starter scripts (use run.sh)
+start-demo.sh
+start-new.sh
+start-resume.sh
+scripts/start-demo.ts
+
+# dead / obsolete
+types_old.ts
